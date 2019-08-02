@@ -1,8 +1,11 @@
+import Web3 from 'web3';
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import EthereumAccount from './components/EthereumAccount'
 import './App.css';
 import Account from "./KeyManager/Account";
+import Config from './Config';
+import Token from "./KeyManager/Token";
 
 export default class App extends Component {
   constructor(props) {
@@ -66,6 +69,21 @@ export default class App extends Component {
   }
 
   mainView() {
+    // TODO: Remove this test code related to tokens.
+    // const config = Config();
+    // console.log('config.ORIGIN_CHAIN.RPC: ', config.ORIGIN_CHAIN.RPC);
+    //
+    // const web3 = new Web3(config.ORIGIN_CHAIN.RPC);
+    // const tokenAddress = config.ORIGIN_CHAIN.WETH_ADDRESS;
+    // console.log('tokenAddress: ', tokenAddress);
+    // const token = Token.from(tokenAddress, web3);
+    // token.getBalance(this.account.address).then((result)=> {
+    //   console.log('Get balance result: ', result);
+    // });
+    // token.getTokenInfo().then((result)=>{
+    //   console.log('getTokenInfo result: ', result);
+    // });
+
     return (
       <div className="App">
         This is a main view.
