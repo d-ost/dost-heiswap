@@ -40,5 +40,23 @@ export default class Account {
     // TODO: This will be changed;
     return Account.new();
   }
+
+  static getBurnerAddresses() {
+
+  }
+
+  static createNewBurnerKey() {
+
+  }
+
+  static getBucketAddress(decryptKey) {
+
+  }
+
+  static createNewBucketKey(encryptKey){
+
+  }
+
+
 }
 

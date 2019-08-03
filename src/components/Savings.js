@@ -3,7 +3,8 @@ import * as web3 from 'web3';
 import 'bootstrap/dist/css/bootstrap.css';
 import HEISWAPABI from '../contracts/Heiswap.abi';
 import { serialize, h1, bn128 } from '../utils/AltBn128'
-import {Button} from "rimble-ui";
+import {Box, Button, Flex, Text} from "rimble-ui";
+import Header from "./Header";
 
 
 export default class Savings extends React.Component {

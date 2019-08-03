@@ -25,6 +25,7 @@ import BaseToken from "./KeyManager/BaseToken";
 import BurnerAction from "./components/BurnerAction";
 import Receive from "./components/Receive";
 import AdvancedAction from "./components/AdvancedAction";
+import Saving from "./components/Saving";
 
 let interval;
 
@@ -208,30 +209,25 @@ export default class App extends Component {
   }
 
   savingView() {
+
     return (
-      <div className="App">
-          This is a saving view.
-    {
-      //This is temporary fixed values
-    }
-      <Savings
-        beneficiary='123'
-        account='346'
+      <Saving
+        token={this.auxiliaryBaseToken}
+        account={this.account}
         changeView={this.changeView.bind(this)}
-        openModal={this.openModal.bind(this)}
-        closeModel={this.closeModal}
+        goBack={this.goBack.bind(this)}
       />
-      </div>
-    )
+    );
   }
 
   createPin() {
     return (
       <div className="App">
-      <CreatePin
-        changeView={this.changeView.bind(this)}
-        openModal={this.openModal.bind(this)}
-      />
+        <CreatePin
+          changeView={this.changeView.bind(this)}
+          openModal={this.openModal.bind(this)}
+          goBack={this.goBack.bind(this)}
+        />
       </div>
     )
   }
@@ -239,13 +235,11 @@ export default class App extends Component {
   verifyPin() {
     return (
       <div className="App">
-    {
-      //This is temporary fixed values
-    }
-      <VerifyPin
-        changeView={this.changeView.bind(this)}
-        openModal={this.openModal.bind(this)}
-      />
+        <VerifyPin
+          goBack={this.goBack.bind(this)}
+          changeView={this.changeView.bind(this)}
+          openModal={this.openModal.bind(this)}
+        />
       </div>
     )
   }

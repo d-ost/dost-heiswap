@@ -15,7 +15,7 @@ export default class Header extends React.Component {
         <Flex>
           <Box width={9/10} mt={2}>
             <Text fontWeight={1000} color='#84d1d4' mx={1} my={1} textAlign={'center'}>
-              Header Title
+              {this.props.title}
             </Text>
           </Box>
           <Box width={1/10}>

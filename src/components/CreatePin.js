@@ -1,28 +1,26 @@
 import React from 'react';
 import * as web3Utils from 'web3-utils';
+import Header from "./Header";
+import {Box, Button, Flex, Input, Text, Field} from "rimble-ui";
 
 export default class CreatePin extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      pin:'',
-      confirmPin:'',
       shown: false
     };
-    this.setPin = this.setPin.bind(this);
-    this.confirmPin = this.confirmPin.bind(this);
+    this.pin = '';
+    this.confirmPin = '';
     this.storePin = this.storePin.bind(this);
+    this.confirmPinEdited = this.confirmPinEdited.bind(this);
+    this.pinEdited = this.pinEdited.bind(this);
   }
 
-  toggle(state) {
-		this.setState({
-			shown: state
-		});
-	}
 
   storePin() {
-    console.log('in store pin');
-    if(this.validatePin()) {
+    console.log('in store pin', );
+    if(this.validatePin() === false) {
+      this.setState({shown: true});
       return;
     }
     let pinHash = this.getPinHash();
@@ -31,21 +29,15 @@ export default class CreatePin extends React.Component {
   }
 
   validatePin() {
-    if(this.state.pin.toString().length !== 6 || this.state.confirmPin.toString().length !== 6){
-      this.toggle(true);
-      return true;
+    if(this.pin === '' ||  this.confirmPin === '' ) {
+      return false;
     }
-
-    if(this.state.pin !== this.state.confirmPin) {
-      this.toggle(true);
-      return true;
-    }
-    return false;
+    return this.pin === this.confirmPin;
   }
 
   getPinHash() {
     let noOfTimeToHash = 3;
-    let pin = this.state.pin;
+    let pin = this.pin;
 
     for(let i = 0;i < noOfTimeToHash; i++){
       pin = web3Utils.keccak256(pin);
@@ -54,20 +46,19 @@ export default class CreatePin extends React.Component {
     return pin;
   }
 
-  setPin(event) {
-    this.setState({
-      pin: event.target.value
-    });
+  pinEdited(e) {
+    this.pin = e.target.value.toString().trim();
+    console.log('this.pin: ', this.pin);
   }
 
-  confirmPin(event) {
-    this.setState({
-      confirmPin: event.target.value
-    });
+  confirmPinEdited(e) {
+    this.confirmPin = e.target.value.toString().trim();
+    console.log('this.confirmPin: ', this.confirmPin);
   }
 
   render(){
-    let shown = {
+    console.log('Here in render');
+    	let shown = {
 			display: this.state.shown ? "block" : "none"
 		};
 
@@ -77,26 +68,38 @@ export default class CreatePin extends React.Component {
 
 
     return (
-      <div class="container">
-      <div class="row">
-        <div class="col-sm-3">
-        <label> Enter Pin </label>
-        </div>
-        <div class="col-sm-3">
-          <input type="password" name="pin" onChange={this.setPin} size="6"/>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-3">
-        <label> Confirm Pin </label>
-        </div>
-        <div class="col-sm-3">
-          <input type="password" name="pin" onChange={this.confirmPin} required size="6"/>
-        </div>
-      </div>
-      <div style={ shown }> Wrong Pin !!! </div>
-      <div style={ hidden }> </div>
-        <input type="submit" onClick={this.storePin} />
+
+      <div style={{width: '100%', backgroundColor: 'white',}} >
+        <Header
+          title={'Create Pin'}
+          goBack={this.props.goBack}
+        />
+        <Flex>
+          <Box width={1}>
+            <Field label="Enter PIN">
+              <Input name={'pin'} type="password" required={true} onChange={this.pinEdited} />
+            </Field>
+          </Box>
+        </Flex>
+        <Flex>
+          <Box width={1}>
+            <Field label="Re-Enter PIN">
+              <Input  name={'confirmpin'} type="password" required={true} onChange={this.confirmPinEdited} />
+            </Field>
+          </Box>
+        </Flex>
+        <Flex>
+          <div style={ shown }>
+            <Text color='red' mx={1} my={1} textAlign={'left'}>
+              {'Incorrect password'}
+            </Text>
+          </div>
+        </Flex>
+        <Flex>
+          <Button mainColor="#e4b030" ml={0} mt={2}  minWidth='98%' onClick={()=>{this.storePin()}}>
+            Lets Go!
+          </Button>
+        </Flex>
       </div>
     );
   }
