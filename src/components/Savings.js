@@ -3,6 +3,7 @@ import * as web3 from 'web3';
 import 'bootstrap/dist/css/bootstrap.css';
 import HEISWAPABI from '../contracts/Heiswap.abi';
 import { serialize, h1, bn128 } from '../utils/AltBn128'
+import {Button} from "rimble-ui";
 
 
 export default class Savings extends React.Component {
@@ -12,6 +13,11 @@ export default class Savings extends React.Component {
     this.setAmountToBeTransferred = this.setAmountToBeTransferred.bind(this);
     this.withdraw = this.withdraw.bind(this);
     localStorage.setItem('keyStores',''); // TODO: remove this as it is only for testing purpose
+  }
+
+   closeModal() {
+    console.log("closeModal");
+    this.props.closeModel();
   }
 
   async withdraw() {
@@ -109,9 +115,20 @@ export default class Savings extends React.Component {
   render(){
     return (
       <div class='container'>
+        <Button.Text
+          icononly
+          icon={"Close"}
+          color={"moon-gray"}
+          position={"absolute"}
+          top={0}
+          right={0}
+          mt={3}
+          mr={3}
+          onClick={this.closeModal.bind(this)}
+        />
         <div class="row">
             <div class="col-sm-6">
-            <span> Balance of  {this.props.account} : </span>
+            <span> Balance of  {this.props.account}  </span>
             </div>
             <div class="col-sm-6">
             {

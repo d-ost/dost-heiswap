@@ -16,6 +16,12 @@ export default class BurnerAction extends React.Component {
     this.props.openModal();
     this.props.changeView('receive');
   }
+  topUpClicked() {
+    console.log('topUpClicked');
+    this.props.openModal();
+    this.props.changeView('saving');
+  }
+
   render(){
     return (
       <div className='Action'>
@@ -28,7 +34,7 @@ export default class BurnerAction extends React.Component {
           </Button>
         </div>
         <div style={{paddingTop:'10px', width:'100%'}}>
-          <Button mainColor="#e4b030" marginRight={3} minWidth={183}>
+          <Button mainColor="#e4b030" marginRight={3} minWidth={183} onClick={()=>{this.topUpClicked()}}>
             Top up
           </Button>
           <Button mainColor="#e4b030" marginRight={0} minWidth={183}>

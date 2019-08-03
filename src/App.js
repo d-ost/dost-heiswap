@@ -168,6 +168,9 @@ export default class App extends Component {
       <Savings
         beneficiary='123'
         account='346'
+        changeView={this.changeView.bind(this)}
+        openModal={this.openModal.bind(this)}
+        closeModel={this.closeModal}
       />
       </div>
     )
