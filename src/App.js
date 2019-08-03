@@ -2,6 +2,7 @@ import Web3 from 'web3';
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import EthereumAccount from './components/EthereumAccount'
+import Savings from './components/Savings'
 import './App.css';
 import Account from "./KeyManager/Account";
 import Config from './Config';
@@ -43,7 +44,7 @@ export default class App extends Component {
 
     switch (this.state.view) {
       case 'main':
-        return this.mainView();
+        return this.savingView();
       case 'saving':
         return this.savingView();
       default:
@@ -98,6 +99,13 @@ export default class App extends Component {
     return (
       <div className="App">
           This is a saving view.
+    {
+      //This is temporary fixed values
+    }
+      <Savings
+        beneficiary='123'
+        account='346'
+      />
       </div>
     )
   }
