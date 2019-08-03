@@ -11,6 +11,7 @@ import TokenBalance from "./components/TokenBalance";
 import Send from "./components/Send";
 import CreatePin from "./components/CreatePin";
 import VerifyPin from "./components/VerifyPin";
+import ScanQR from "./components/ScanQR";
 
 import {
   originTokens,
@@ -27,6 +28,8 @@ let interval;
 export default class App extends Component {
   constructor(props) {
     super(props);
+    this.previousView = 'default';
+    this.currentView = 'default';
     this.state = {
       view: 'default',
       isOpen: false
@@ -90,7 +93,12 @@ export default class App extends Component {
 
   changeView(view) {
     console.log('Change view called: ', view);
+    this.previousView = this.currentView;
+    this.currentView = view;
     this.setState({view: view});
+  }
+  goBack(){
+    this.changeView(this.previousView);
   }
   render() {
     console.log('Render is called');
@@ -113,6 +121,8 @@ export default class App extends Component {
         else {
           return this.createPin();
         }
+      case 'scanQR':
+        return this.scanQRView();
       default:
         return this.defaultView();
     }
@@ -217,6 +227,7 @@ export default class App extends Component {
       <React.Fragment>
         <Modal isOpen={this.state.isOpen}>
           <Send
+            changeView={this.changeView.bind(this)}
             tokens={this.auxiliaryTokens}
             baseToken={this.auxiliaryBaseToken}
             account={this.account}
@@ -233,6 +244,21 @@ export default class App extends Component {
           <Receive
             account={this.account}
             closeModel={this.closeModal}
+          />
+        </Modal>
+      </React.Fragment>
+    );
+  }
+
+  scanQRView() {
+    return (
+      <React.Fragment>
+        <Modal isOpen={this.state.isOpen}>
+          <ScanQR
+            changeView={this.changeView.bind(this)}
+            closeModel={this.closeModal}
+            goBack={this.goBack.bind(this)}
+
           />
         </Modal>
       </React.Fragment>

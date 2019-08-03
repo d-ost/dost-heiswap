@@ -22,6 +22,10 @@ export default class BurnerAction extends React.Component {
     console.log("closeModal");
     this.props.closeModel();
   }
+  scan() {
+    console.log("closeModal");
+    this.props.changeView('scanQR');
+  }
   render(){
 
     console.log('this.tokenSymbols: ', this.tokenSymbols);
@@ -54,7 +58,7 @@ export default class BurnerAction extends React.Component {
         />
         <Text fontWeight={'bold'}>OR</Text>
 
-        <Button mainColor="#e4b030" marginRight={0} minWidth={183}>
+        <Button mainColor="#e4b030" marginRight={0} minWidth={183} onClick={this.scan.bind(this)}>
           Scan QR Code
         </Button>
 
