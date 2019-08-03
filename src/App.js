@@ -2,6 +2,7 @@ import Web3 from 'web3';
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import EthereumAccount from './components/EthereumAccount'
+import Savings from './components/Savings'
 import { Modal, Card, Button } from 'rimble-ui';
 import './App.css';
 import Account from "./KeyManager/Account";
@@ -161,6 +162,13 @@ export default class App extends Component {
     return (
       <div className="App">
           This is a saving view.
+    {
+      //This is temporary fixed values
+    }
+      <Savings
+        beneficiary='123'
+        account='346'
+      />
       </div>
     )
   }
