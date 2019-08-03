@@ -58,14 +58,14 @@ export default class App extends Component {
     this.closeModal = this.closeModal.bind(this);
     this.openModal = this.openModal.bind(this);
 
-    interval = setInterval(this.poll.bind(this),7000)
+    interval = setInterval(this.poll.bind(this), 7000);
   }
 
   fetchBalances(address) {
     this.originTokens.forEach((token) => {
       token.getBalance(address);
     });
-    this.originBaseToken.getBalance(address)
+    this.originBaseToken.getBalance(address);
 
     this.auxiliaryTokens.forEach((token)=> {
       token.getBalance(address);
@@ -250,7 +250,6 @@ export default class App extends Component {
     )
   }
 
-
   sendView() {
     return (
       <React.Fragment>
@@ -296,8 +295,6 @@ export default class App extends Component {
 
   advanceView() {
     return (
-
-
       <div className="App">
         <Advanced
           goBack={this.goBack.bind(this)}
@@ -305,7 +302,6 @@ export default class App extends Component {
       </div>
     )
   }
-
 
   closeModal(e) {
     //e.preventDefault();

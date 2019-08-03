@@ -1,156 +1,83 @@
-module.exports = [
+module.export = [
 	{
-		"constant": true,
+		"constant": false,
 		"inputs": [
 			{
-				"name": "base",
-				"type": "uint256"
-			},
-			{
-				"name": "e",
-				"type": "uint256"
-			},
-			{
-				"name": "m",
-				"type": "uint256"
-			}
-		],
-		"name": "powmod",
-		"outputs": [
-			{
-				"name": "o",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "s",
-				"type": "uint256"
-			}
-		],
-		"name": "ecMulG",
-		"outputs": [
-			{
-				"name": "retP",
+				"name": "publicKey",
 				"type": "uint256[2]"
 			}
 		],
-		"payable": false,
-		"stateMutability": "view",
+		"name": "deposit",
+		"outputs": [],
+		"payable": true,
+		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
-		"constant": true,
+		"constant": false,
 		"inputs": [
 			{
-				"name": "x",
-				"type": "uint256"
-			}
-		],
-		"name": "modn",
-		"outputs": [
+				"name": "receiver",
+				"type": "address"
+			},
 			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "pure",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "x",
+				"name": "amountEther",
 				"type": "uint256"
 			},
 			{
-				"name": "y",
+				"name": "index",
 				"type": "uint256"
-			}
-		],
-		"name": "onCurve",
-		"outputs": [
+			},
 			{
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"payable": false,
-		"stateMutability": "pure",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
+				"name": "c0",
+				"type": "uint256"
+			},
 			{
-				"name": "p",
+				"name": "keyImage",
 				"type": "uint256[2]"
 			},
 			{
 				"name": "s",
+				"type": "uint256[]"
+			}
+		],
+		"name": "withdraw",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"name": "",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"name": "etherAmount",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"name": "idx",
 				"type": "uint256"
 			}
 		],
-		"name": "ecMul",
-		"outputs": [
-			{
-				"name": "retP",
-				"type": "uint256[2]"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
+		"name": "Deposited",
+		"type": "event"
 	},
 	{
 		"constant": true,
 		"inputs": [
 			{
-				"name": "beta",
-				"type": "uint256"
-			},
-			{
-				"name": "y",
+				"name": "amountEther",
 				"type": "uint256"
 			}
 		],
-		"name": "onCurveBeta",
-		"outputs": [
-			{
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"payable": false,
-		"stateMutability": "pure",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "P",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "G1y",
+		"name": "getCurrentRingIdx",
 		"outputs": [
 			{
 				"name": "",
@@ -165,33 +92,23 @@ module.exports = [
 		"constant": true,
 		"inputs": [
 			{
-				"name": "p0",
-				"type": "uint256[2]"
+				"name": "amountEther",
+				"type": "uint256"
 			},
 			{
-				"name": "p1",
-				"type": "uint256[2]"
+				"name": "index",
+				"type": "uint256"
 			}
 		],
-		"name": "ecAdd",
-		"outputs": [
-			{
-				"name": "retP",
-				"type": "uint256[2]"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "G1x",
+		"name": "getParticipants",
 		"outputs": [
 			{
 				"name": "",
-				"type": "uint256"
+				"type": "uint8"
+			},
+			{
+				"name": "",
+				"type": "uint8"
 			}
 		],
 		"payable": false,
@@ -202,33 +119,19 @@ module.exports = [
 		"constant": true,
 		"inputs": [
 			{
-				"name": "x",
-				"type": "uint256"
-			}
-		],
-		"name": "evalCurve",
-		"outputs": [
-			{
-				"name": "",
+				"name": "amountEther",
 				"type": "uint256"
 			},
 			{
-				"name": "",
+				"name": "index",
 				"type": "uint256"
 			}
 		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "N",
+		"name": "getPublicKeys",
 		"outputs": [
 			{
 				"name": "",
-				"type": "uint256"
+				"type": "bytes32[2][6]"
 			}
 		],
 		"payable": false,
@@ -239,15 +142,29 @@ module.exports = [
 		"constant": true,
 		"inputs": [
 			{
-				"name": "x",
+				"name": "amountEther",
 				"type": "uint256"
 			},
 			{
-				"name": "n",
+				"name": "index",
 				"type": "uint256"
 			}
 		],
-		"name": "addmodn",
+		"name": "getRingHash",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bytes"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getRingMaxParticipants",
 		"outputs": [
 			{
 				"name": "",
@@ -261,11 +178,11 @@ module.exports = [
 	{
 		"constant": true,
 		"inputs": [],
-		"name": "A",
+		"name": "relayerAddress",
 		"outputs": [
 			{
 				"name": "",
-				"type": "uint256"
+				"type": "address"
 			}
 		],
 		"payable": false,
