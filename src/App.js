@@ -3,22 +3,69 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import EthereumAccount from './components/EthereumAccount'
 import Savings from './components/Savings'
+import { Modal, Card, Button } from 'rimble-ui';
 import './App.css';
 import Account from "./KeyManager/Account";
-import Config from './Config';
-import Token from "./KeyManager/Token";
+import ERCToken from "./KeyManager/ERCToken";
+import TokenBalance from "./components/TokenBalance";
+import Send from "./components/Send";
+
+import {
+  originTokens,
+  auxiliaryTokens,
+  originWeb3,
+  auxiliaryWeb3
+} from './Config';
+import BaseToken from "./KeyManager/BaseToken";
+import BurnerAction from "./components/BurnerAction";
+import Receive from "./components/Receive";
+
+let interval;
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      view: 'default'
+      view: 'default',
+      isOpen: false
     };
     // TODO: This is temp, will change in next commit
     this.account = null;
 
+    this.originTokens = originTokens.map((tokenAddress) => {
+      const token = ERCToken.from(tokenAddress, originWeb3);
+      token.getTokenInfo();
+      return token;
+    });
+
+    this.auxiliaryTokens = auxiliaryTokens.map((tokenAddress) => {
+      const token = ERCToken.from(tokenAddress, auxiliaryWeb3);
+      token.getTokenInfo();
+      return token;
+    });
+
+    this.originBaseToken = BaseToken.from(originWeb3);
+    this.auxiliaryBaseToken = BaseToken.from(auxiliaryWeb3);
+
+    this.closeModal = this.closeModal.bind(this);
+    this.openModal = this.openModal.bind(this);
+
+    interval = setInterval(this.poll.bind(this),7000)
   }
 
+  fetchBalances(address) {
+    this.originTokens.forEach((token) => {
+      token.getBalance(address);
+    });
+    this.auxiliaryTokens.forEach((token)=> {
+      token.getBalance(address);
+    });
+  }
+  poll() {
+    this.fetchBalances(this.account.address);
+    // Update the view
+    this.setState({});
+  }
   componentDidMount(){
     console.log('componentDidMount');
     this.loadAccounts();
@@ -30,6 +77,7 @@ export default class App extends Component {
   }
   componentWillUnmount() {
     console.log('componentWillUnmount');
+    clearInterval(interval);
     window.removeEventListener("resize", this.updateDimensions.bind(this));
   }
   updateDimensions() {
@@ -38,6 +86,10 @@ export default class App extends Component {
     this.forceUpdate();
   }
 
+  changeView(view) {
+    console.log('Change view called: ', view);
+    this.setState({view: view});
+  }
   render() {
     console.log('Render is called');
     console.log('this.state: ', this.state);
@@ -47,6 +99,10 @@ export default class App extends Component {
         return this.mainView();
       case 'saving':
         return this.savingView();
+      case 'send':
+        return this.sendView();
+      case 'receive':
+        return this.receiveView();
       default:
         return this.defaultView();
     }
@@ -70,26 +126,33 @@ export default class App extends Component {
   }
 
   mainView() {
-    // TODO: Remove this test code related to tokens.
-    // const config = Config();
-    // console.log('config.ORIGIN_CHAIN.RPC: ', config.ORIGIN_CHAIN.RPC);
-    //
-    // const web3 = new Web3(config.ORIGIN_CHAIN.RPC);
-    // const tokenAddress = config.ORIGIN_CHAIN.WETH_ADDRESS;
-    // console.log('tokenAddress: ', tokenAddress);
-    // const token = Token.from(tokenAddress, web3);
-    // token.getBalance(this.account.address).then((result)=> {
-    //   console.log('Get balance result: ', result);
-    // });
-    // token.getTokenInfo().then((result)=>{
-    //   console.log('getTokenInfo result: ', result);
-    // });
-
+    const accountView = [];
+    console.log('this.auxiliaryTokens: ', this.auxiliaryTokens);
+    this.auxiliaryTokens.forEach((token)=> {
+      console.log('token', token);
+      accountView.push(
+        <div className="Card">
+          <TokenBalance
+            token={token}
+            account={this.account}
+          />
+        </div>
+      )
+    });
+    accountView.push(
+      <div className="Card">
+        <TokenBalance
+          token={this.auxiliaryBaseToken}
+          account={this.account}
+        />
+      </div>
+    )
     return (
       <div className="App">
-        This is a main view.
-        <EthereumAccount
-          account={this.account}
+        {accountView}
+        <BurnerAction
+          changeView={this.changeView.bind(this)}
+          openModal={this.openModal.bind(this)}
         />
       </div>
     )
@@ -109,4 +172,48 @@ export default class App extends Component {
       </div>
     )
   }
+  sendView() {
+    return (
+      <React.Fragment>
+        <Modal isOpen={this.state.isOpen}>
+          <Send
+            tokens={this.auxiliaryTokens}
+            baseToken={this.auxiliaryBaseToken}
+            account={this.account}
+            closeModel={this.closeModal}
+          />
+        </Modal>
+      </React.Fragment>
+    );
+  }
+  receiveView() {
+    return (
+      <React.Fragment>
+        <Modal isOpen={this.state.isOpen}>
+          <Receive
+            account={this.account}
+            closeModel={this.closeModal}
+          />
+        </Modal>
+      </React.Fragment>
+    );
+  }
+
+
+
+  closeModal(e) {
+    //e.preventDefault();
+    this.setState((state, props) => ({
+      isOpen: false,
+      view: 'main'
+    }));
+  }
+
+  openModal(e) {
+    //e.preventDefault();
+    this.setState((state, props) => ({
+      isOpen: true
+    }));
+  }
+
 }

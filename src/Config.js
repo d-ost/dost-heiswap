@@ -1,3 +1,6 @@
+import Utils from './KeyManager/Utils';
+import Web3 from "web3";
+
 const configs = [
     {
       DOMAINS: ["localhost", "dost.cash"],
@@ -13,8 +16,8 @@ const configs = [
           //WS: "ws://mosaicdao.org/aux/1405",
           ANCHOR_ADDRESS: "",
           OST_COGATEWAY_ADDRESS: "",
-          OST_ADDRESS: "",
-          WETH_ADDRESS: "",
+          OST_ADDRESS: "0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6",
+          WETH_ADDRESS: "0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6",
           WETH_GATEWAY_ADDRESS: "",
           STAKING_POOL_ADDRESS: "",
           EXPLORER: {
@@ -41,11 +44,30 @@ const configs = [
     }
   ];
 
+  function getTokenAddresses(chain) {
+    const addresses = [];
+    if (Utils.isValidAddress(chain.OST_ADDRESS)) {
+      addresses.push(chain.OST_ADDRESS)
+    }
+    if (Utils.isValidAddress(chain.WETH_ADDRESS)) {
+      addresses.push(chain.WETH_ADDRESS)
+    }
+    return addresses;
+  }
+
+  function  getOriginTokenAddresses(config) {
+    return getTokenAddresses(config.ORIGIN_CHAIN);
+  }
+
+  function  getAuxiliaryTokenAddresses(config) {
+    return getTokenAddresses(config.AUX_CHAIN);
+  }
+
   function findConfig(hostname) {
     return configs.filter(({ DOMAINS }) => DOMAINS.includes(hostname));
   }
 
-  export default function getConfig() {
+  function getConfig() {
     const hostname = window.location.hostname;
 
     const config = findConfig(hostname);
@@ -55,3 +77,18 @@ const configs = [
       throw new Error("Cannot find distinct config for this domain");
     }
   }
+
+  const config = getConfig();
+  const originTokens = getOriginTokenAddresses(config);
+  const auxiliaryTokens = getAuxiliaryTokenAddresses(config);
+  const originWeb3 = new Web3(config.ORIGIN_CHAIN.RPC);
+  const auxiliaryWeb3 = new Web3(config.AUX_CHAIN.RPC);
+  export default config
+  export {
+    originTokens,
+    auxiliaryTokens,
+    originWeb3,
+    auxiliaryWeb3
+  };
+
+
