@@ -49,6 +49,7 @@ export const deposit = (
     heiRingIndexEst: currentRingIndex,
     heiStealthSecretKey: stealthSecretKey,
     heiStealthPublicKey: stealthPublicKey,
+    heiRandomSecretKey: randomSecretKey,
     txHash: null,
   };
 
