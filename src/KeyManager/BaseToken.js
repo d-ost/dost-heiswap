@@ -1,9 +1,9 @@
 const Web3Utils = require('web3-utils');
 
 export default class BaseToken {
-  constructor(address, web3){
+  constructor(symbol,  web3){
     this.web3 = web3;
-
+    this.symbol = symbol;
     // This will store the balances for each address
     this.balances = {};
 
@@ -28,10 +28,10 @@ export default class BaseToken {
   saveBalance(address) {
     // This will call local storage.
   }
-  static from(web3) {
+  static from(symbol, web3) {
     if (!web3) {
       throw new Error('Web3 is undefined');
     }
-    return new BaseToken(web3);
+    return new BaseToken(symbol, web3);
   }
 }

@@ -6,10 +6,18 @@ export default class BurnerAction extends React.Component {
   constructor(props) {
     super(props);
     this.options = [];
+    this.account = this.props.account;
+    this.selectedOption = 0;
+    this.options = this.getLatestBalance();
+  }
+
+  getLatestBalance() {
+    const options = [];
     this.props.tokens.forEach((token,index)=>{
-      this.options.push({ value: token.address, label: `${token.symbol} - ${token.balance}`});
+      options.push({ value: index, label: `${token.symbol} - ${token.balances[this.account.address]}`});
     });
-    this.selectedOption = this.options[0].address;
+    options.push({value: options.length, label: `${this.props.baseToken.symbol} - ${this.props.baseToken.balances[this.account.address]}`});
+    return options;
   }
   sendClicked() {
     console.log('sendClicked');
@@ -22,8 +30,12 @@ export default class BurnerAction extends React.Component {
     console.log("closeModal");
     this.props.closeModel();
   }
+  scan() {
+    console.log("closeModal");
+    this.props.changeView('scanQR');
+  }
   render(){
-
+    this.options = this.getLatestBalance();
     console.log('this.tokenSymbols: ', this.tokenSymbols);
     return (
       <div className='Send' >
@@ -54,7 +66,7 @@ export default class BurnerAction extends React.Component {
         />
         <Text fontWeight={'bold'}>OR</Text>
 
-        <Button mainColor="#e4b030" marginRight={0} minWidth={183}>
+        <Button mainColor="#e4b030" marginRight={0} minWidth={183} onClick={this.scan.bind(this)}>
           Scan QR Code
         </Button>
 
