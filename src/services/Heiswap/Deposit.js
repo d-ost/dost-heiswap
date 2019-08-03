@@ -40,15 +40,17 @@ export const deposit = (
     .getCurrentRingIdx(TargetOstAmount)
     .call();
 
+  // Append "0x" in front of it, web3 requires it
+  const stealthPublicKey = bn128.ecMulG(stealthSecretKey).map(x => '0x' + x.toString(16));
+
   let heiswapToken = {
     heiTargetOstAmount: TargetOstAmount,
     heiRingIndexFinal: null,
     heiRingIndexEst: currentRingIndex,
+    heiStealthSecretKey: stealthSecretKey,
+    heiStealthPublicKey: stealthPublicKey,
     txHash: null,
-  }
-
-  // Append "0x" in front of it, web3 requires it
-  const stealthPublicKey = bn128.ecMulG(stealthSecretKey).map(x => '0x' + x.toString(16))
+  };
 
   try {
     const gasPrice = await Web3.eth.getGasPrice();
