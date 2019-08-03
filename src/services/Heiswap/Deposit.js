@@ -78,7 +78,7 @@ export const deposit = (
     heiswapToken.heiRingIndexFinal = realRingIndex;
     heiswapToken.txHash = depositResult.transactionHash;
   } catch (error) {
-    throw new error('Failed to deposit in ring');
+    throw new Error('Failed to deposit in ring');
   }
 
   return heiswapToken;
