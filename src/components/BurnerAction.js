@@ -7,19 +7,12 @@ export default class BurnerAction extends React.Component {
     super(props);
   }
   sendClicked() {
-    console.log('sendClicked');
     this.props.openModal();
     this.props.changeView('send');
   }
   receiveClicked() {
-    console.log('sendClicked');
     this.props.openModal();
     this.props.changeView('receive');
-  }
-  topUpClicked() {
-    console.log('topUpClicked');
-    this.props.openModal();
-    this.props.changeView('pin');
   }
 
   render(){

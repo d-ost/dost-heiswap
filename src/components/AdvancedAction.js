@@ -6,8 +6,11 @@ export default class AdvancedAction extends React.Component {
   constructor(props) {
     super(props);
   }
-  topUpClicked() {
 
+  topUpClicked() {
+    console.log('topUpClicked');
+    this.props.openModal();
+    this.props.changeView('pin');
   }
 
   advancedClicked() {
