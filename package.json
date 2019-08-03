@@ -13,7 +13,8 @@
     "rimble-ui": "0.9.6",
     "styled-components": "4.3.2",
     "web3": "2.0.0-alpha",
-    "web3-utils": "2.0.0-alpha"
+    "web3-utils": "2.0.0-alpha",
+    "react-select": "3.0.4"
   },
   "scripts": {
     "start": "react-scripts start",

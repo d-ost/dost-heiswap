@@ -13,7 +13,7 @@ library AltBn128 {
 
     // Number of elements in the field (often called `q`)
     // n = n(u) = 36u^4 + 36u^3 + 18u^2 + 6u + 1
-    uint256 constant public N = 0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000001;
+    uint256 constant  N = 0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000001;
 
     // p = p(u) = 36u^4 + 36u^3 + 24u^2 + 6u + 1
     // Field Order

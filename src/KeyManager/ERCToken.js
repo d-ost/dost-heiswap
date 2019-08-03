@@ -2,7 +2,7 @@ import Web3 from 'web3';
 const Web3Utils = require('web3-utils');
 const abi = require('../abi/EIP20');
 
-export default class Token {
+export default class ERCToken {
   constructor(address, web3){
     this.web3 = web3;
     this.address = address;
@@ -22,7 +22,6 @@ export default class Token {
     // Bind the functions.
     this.getBalance.bind(this);
     this.getTokenInfo.bind(this);
-    this.getBaseTokenBalance.bind(this);
     this.getERCTokenBalance.bind(this);
     this.getSymbolFromContract.bind(this);
     this.getNameFromContract.bind(this);
@@ -48,41 +47,37 @@ export default class Token {
     });
   }
 
-  getBalance(address) {
+  async getBalance(address) {
     console.log('getBalanceaddress: ', address);
-    return new Promise((resolve, reject) => {
-      const baseTokenBalancePromise = this.getBaseTokenBalance(address);
-      const erc20TokenBalancePromise = this.getERCTokenBalance(address);
-      Promise.all([baseTokenBalancePromise, erc20TokenBalancePromise])
-        .then((result)=>{
-          const newBalance = {
-            baseTokenBalance: result[0],
-            erc20TokenBalance: result[1],
-          };
-          this.balances[address] = newBalance;
-          resolve(newBalance);
-        })
-        .catch((e) => {
-          reject(e);
-        })
-    });
+    const balance = await this.getERCTokenBalance(address);
+    this.balances[address] = balance;
+    return balance;
   }
 
-  async getBaseTokenBalance(address){
-    return await this.web3.eth.getBalance(address);
-  }
   async getERCTokenBalance(address){
     //fixme: For hackathon I have used this as string.
     return ''+await this.contract.methods.balanceOf(address).call();
   }
   async getSymbolFromContract(){
-    this.symbol = await this.contract.methods.symbol().call();
+    let symbol = await this.contract.methods.symbol().call();
+    if (!symbol) {
+      symbol = 'Failed to fetch symbol'
+    }
+    this.symbol = symbol;
   }
   async getNameFromContract() {
-    this.name = await this.contract.methods.name().call();
+    let name = await this.contract.methods.name().call();
+    if (!name) {
+      name = 'Failed to fetch name'
+    }
+    this.name = name
   }
   async getDecimalsFromContract() {
-    this.decimals = await this.contract.methods.decimals().call();
+    let decimals = await this.contract.methods.decimals().call();
+    if (!decimals) {
+      decimals = 'Failed to fetch decimals'
+    }
+    this.decimals = decimals;
   }
 
   loadInfoFromLocalStorage(){
@@ -104,6 +99,6 @@ export default class Token {
     if (!web3) {
       throw new Error('Web3 is undefined');
     }
-    return new Token(address,web3);
+    return new ERCToken(address,web3);
   }
 }
