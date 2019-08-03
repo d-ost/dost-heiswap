@@ -31,6 +31,11 @@ export default class CreatePin extends React.Component {
   }
 
   validatePin() {
+    if(this.state.pin.toString().length !== 6 || this.state.confirmPin.toString().length !== 6){
+      this.toggle(true);
+      return true;
+    }
+
     if(this.state.pin !== this.state.confirmPin) {
       this.toggle(true);
       return true;
@@ -62,7 +67,7 @@ export default class CreatePin extends React.Component {
   }
 
   render(){
-    	let shown = {
+    let shown = {
 			display: this.state.shown ? "block" : "none"
 		};
 
@@ -78,7 +83,7 @@ export default class CreatePin extends React.Component {
         <label> Enter Pin </label>
         </div>
         <div class="col-sm-3">
-          <input type="password" name="pin" onChange={this.setPin}/>
+          <input type="password" name="pin" onChange={this.setPin} size="6"/>
         </div>
       </div>
       <div class="row">
@@ -86,10 +91,10 @@ export default class CreatePin extends React.Component {
         <label> Confirm Pin </label>
         </div>
         <div class="col-sm-3">
-          <input type="password" name="pin" onChange={this.confirmPin}/>
+          <input type="password" name="pin" onChange={this.confirmPin} required size="6"/>
         </div>
       </div>
-      <div style={ shown }> Wrong password !!! </div>
+      <div style={ shown }> Wrong Pin !!! </div>
       <div style={ hidden }> </div>
         <input type="submit" onClick={this.storePin} />
       </div>
