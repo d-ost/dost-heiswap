@@ -2,7 +2,11 @@
   "name": "dost",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "dependencies": {
+    "bip39": "^3.0.2",
+    "ethereumjs-wallet": "^0.6.3",
+    "keythereum": "^1.0.4",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.1",
