@@ -29,31 +29,29 @@ import Saving from "./components/Saving";
 
 let interval;
 
+const BURNER = 'BURNER';
+const BUCKET = 'BUCKET';
+
 export default class App extends Component {
   constructor(props) {
     super(props);
+
+    // Fixme: This is a quick fix for hackathon, this is used while going back
+    // from one screen to previous screen
     this.previousView = 'main';
     this.currentView = 'main';
+
     this.state = {
       view: 'default',
       isOpen: false
     };
-    // TODO: This is temp, will change in next commit
-    this.account = null;
 
-    this.originTokens = originTokens.map((tokenAddress) => {
-      const token = ERCToken.from(tokenAddress, originWeb3);
-      token.getTokenInfo();
-      return token;
-    });
+    // Get the accounts
+    const burnerAccounts = Account.getBurnerAddresses();
+    if (burnerAccounts.length == 0) {
+      Account.createNewBurnerKey();
+    }
 
-    this.auxiliaryTokens = auxiliaryTokens.map((tokenAddress) => {
-      const token = ERCToken.from(tokenAddress, auxiliaryWeb3);
-      token.getTokenInfo();
-      return token;
-    });
-
-    this.originBaseToken = BaseToken.from('ETH',originWeb3);
     this.auxiliaryBaseToken = BaseToken.from('OST', auxiliaryWeb3);
 
     this.closeModal = this.closeModal.bind(this);
@@ -62,25 +60,18 @@ export default class App extends Component {
     interval = setInterval(this.poll.bind(this), 7000);
   }
 
-  fetchBalances(address) {
-    this.originTokens.forEach((token) => {
-      token.getBalance(address);
-    });
-    this.originBaseToken.getBalance(address);
-
-    this.auxiliaryTokens.forEach((token)=> {
-      token.getBalance(address);
-    });
-    this.auxiliaryBaseToken.getBalance(address);
+  fetchBalances() {
+    const burnerAddress = Account.getBurnerAddresses();
+    this.auxiliaryBaseToken.getBalances(burnerAddress, BURNER);
+    const bucketAddress = Account.getBucketAddress();
+    this.auxiliaryBaseToken.getBalances(bucketAddress, BUCKET);
   }
   poll() {
-    this.fetchBalances(this.account.address);
+    this.fetchBalances();
     // Update the view
     this.setState({});
   }
   componentDidMount(){
-    console.log('componentDidMount');
-    this.loadAccounts();
     this.setState({view: 'main'});
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -88,12 +79,10 @@ export default class App extends Component {
     window.addEventListener("resize", this.updateDimensions.bind(this));
   }
   componentWillUnmount() {
-    console.log('componentWillUnmount');
     clearInterval(interval);
     window.removeEventListener("resize", this.updateDimensions.bind(this));
   }
   updateDimensions() {
-    console.log('updateDimensions');
     //force it to rerender when the window is resized to make sure qr fits etc
     this.forceUpdate();
   }
@@ -107,10 +96,16 @@ export default class App extends Component {
   goBack(){
     this.changeView(this.previousView);
   }
-  render() {
-    console.log('Render is called');
-    console.log('this.state: ', this.state);
 
+  onVerify(pin) {
+    const bucketAddress = Account.getBucketAddress();
+    if (bucketAddress.length == 0) {
+      Account.createNewBucketKey(pin);
+    }
+    this.changeView('saving')
+
+  }
+  render() {
     switch (this.state.view) {
       case 'main':
         return this.mainView();
@@ -137,14 +132,6 @@ export default class App extends Component {
     }
   }
 
-  // Other functions
-  // TODO: This is temp, will change in next commit
-  loadAccounts() {
-    // Get the default address.
-    const account = Account.getAccounts();
-    this.account = account;
-  }
-
   // View related functions
   defaultView() {
     return (
@@ -155,35 +142,21 @@ export default class App extends Component {
   }
 
   mainView() {
-    const accountView = [];
-    console.log('this.auxiliaryTokens: ', this.auxiliaryTokens);
-    this.auxiliaryTokens.forEach((token)=> {
-      console.log('token', token);
-      accountView.push(
-        <TokenBalance
-          token={token}
-          account={this.account}
-        />
-      )
-    });
-    accountView.push(
-      <TokenBalance
-        token={this.auxiliaryBaseToken}
-        account={this.account}
-      />
-    )
     return (
       <div className="App">
         <div className="Card">
           <Flex>
             <Box width={1}>
-              {accountView}
+              <TokenBalance
+                token={this.auxiliaryBaseToken}
+                context={BURNER}
+              />
             </Box>
           </Flex>
           <Flex>
             <Box width={1} mt={2} mb={2}>
               <Transactions
-
+                context={BURNER}
               />
             </Box>
           </Flex>
@@ -212,8 +185,8 @@ export default class App extends Component {
 
     return (
       <Saving
+        context={BUCKET}
         token={this.auxiliaryBaseToken}
-        account={this.account}
         changeView={this.changeView.bind(this)}
         goBack={this.goBack.bind(this)}
       />
@@ -236,6 +209,7 @@ export default class App extends Component {
     return (
       <div className="App">
         <VerifyPin
+          onVerify={this.onVerify.bind(this)}
           goBack={this.goBack.bind(this)}
           changeView={this.changeView.bind(this)}
           openModal={this.openModal.bind(this)}
@@ -291,6 +265,8 @@ export default class App extends Component {
     return (
       <div className="App">
         <Advanced
+          title={"Burner addresses"}
+          token={this.auxiliaryBaseToken}
           goBack={this.goBack.bind(this)}
         />
       </div>

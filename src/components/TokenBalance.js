@@ -8,12 +8,9 @@ export default class TokenBalance extends React.Component {
     this.balance = '0';
   }
   render(){
-    console.log('token: ', this.props.token);
     const imageName = Utils.getImagePathForSymbol(this.props.token.symbol);
-    console.log('imageName: ', imageName);
     const image = require(`../images/${imageName}`);
-    console.log('image: ', image);
-    this.balance = this.props.token.balances[this.props.account.address] || '0';
+    this.balance = this.props.token.totalBalances[this.props.context];
     return (
       <div className='BalanceCard'>
         <Flex>

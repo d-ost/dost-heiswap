@@ -3,7 +3,7 @@ import {Box, Button, Card, Flex, Text} from 'rimble-ui';
 import Utils from '../KeyManager/Utils'
 import TransactionDetails from './TransactionDetails'
 
-export default class AdvancedAction extends React.Component {
+export default class Transactions extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -26,9 +26,9 @@ export default class AdvancedAction extends React.Component {
         </Flex>
 
         <Flex>
-          <TransactionDetails>
-
-          </TransactionDetails>
+          <TransactionDetails
+            context={this.props.context}
+          />
         </Flex>
 
       </div>

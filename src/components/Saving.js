@@ -4,6 +4,7 @@ import Utils from '../KeyManager/Utils'
 import Header from "./Header";
 import TokenBalance from "./TokenBalance";
 import SavingAction from "./SavingAction";
+import Transactions from "./Transactions";
 
 export default class Saving extends React.Component {
   constructor(props) {
@@ -21,8 +22,16 @@ export default class Saving extends React.Component {
           <Flex>
             <Box width={1}>
               <TokenBalance
+                context={this.props.context}
                 token={this.props.token}
                 account={this.props.account}
+              />
+            </Box>
+          </Flex>
+          <Flex>
+            <Box width={1} mt={2} mb={2}>
+              <Transactions
+                context={"BUCKET"}
               />
             </Box>
           </Flex>

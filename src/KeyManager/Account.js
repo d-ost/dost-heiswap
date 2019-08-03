@@ -1,4 +1,5 @@
 import Web3 from 'web3';
+import {LocalStorage} from "../services/LocalStorage";
 const Web3Utils = require('web3-utils');
 
 export default class Account {
@@ -42,21 +43,31 @@ export default class Account {
   }
 
   static getBurnerAddresses() {
-
+    return LocalStorage.getBurnerAddresses();
   }
 
   static createNewBurnerKey() {
-
+    const account = Account.new();
+    LocalStorage.storeBurnerAddress(account.address, account.privateKey);
+    return account;
   }
 
-  static getBucketAddress(decryptKey) {
-
+  static getBucketAddress() {
+      return LocalStorage.getBucketAddresses();
   }
 
-  static createNewBucketKey(encryptKey){
-
+  static createNewBucketKey(pin){
+    const account = Account.new();
+    const encryptedKey = Account.encrypt(JSON.stringify(account.privateKey), pin);
+    LocalStorage.storeBucketAddress(account.address, encryptedKey);
+    return account;
   }
 
+
+  static encrypt(text, key) {
+    // TODO;
+    return text;
+  }
 
 }
 

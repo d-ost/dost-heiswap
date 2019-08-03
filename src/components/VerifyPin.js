@@ -28,7 +28,7 @@ export default class VerifyPin extends React.Component {
   pinEntered() {
     if (this.verifyPin()){
       this.props.goBack();
-      this.props.changeView('saving');
+      this.props.onVerify(this.pin);
       return;
     }
     this.setState({shown: true});

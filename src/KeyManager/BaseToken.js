@@ -1,3 +1,5 @@
+import BN from "bn.js";
+
 const Web3Utils = require('web3-utils');
 
 export default class BaseToken {
@@ -6,7 +8,7 @@ export default class BaseToken {
     this.symbol = symbol;
     // This will store the balances for each address
     this.balances = {};
-
+    this.totalBalances = {};
     // Load from the local storage.
     this.loadInfoFromLocalStorage();
 
@@ -14,6 +16,17 @@ export default class BaseToken {
     this.getBalance.bind(this);
   }
 
+  async getBalances(addresses, context) {
+    const allBalanceRequest = [];
+    addresses.forEach((address) => {
+      allBalanceRequest.push(this.getBalance(address));
+    });
+    let totalBalance = new BN(0);
+    Promise.all(allBalanceRequest).then((result) => {
+      totalBalance.add(new BN(result));
+      this.totalBalances[context] = totalBalance.toString(10);
+    });
+  }
   async getBalance(address) {
     const balance = await this.web3.eth.getBalance(address);
     this.balances[address] = balance;
