@@ -45,6 +45,7 @@ export const deposit = (
 
   let heiswapToken = {
     heiTargetOstAmount: TargetOstAmount,
+    heiTargetAddress: TargetAddress,
     heiRingIndexFinal: null,
     heiRingIndexEst: currentRingIndex,
     heiStealthSecretKey: stealthSecretKey,
