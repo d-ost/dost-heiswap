@@ -34,4 +34,18 @@ export default class BaseToken {
     }
     return new BaseToken(symbol, web3);
   }
+
+  async send(burnerKey, receiverAddress, amount) {
+    if(this.web3.utils.isAddress(receiverAddress)) {
+      throw new Error('Invalid ');
+    }
+    const receipt = await this.web3.eth.sendTransaction({
+      from: burnerKey,
+      to: receiverAddress,
+      value: await this.web3.utils.toWei(amount.toString(), 'ether')
+    });
+
+    console.log('receipt of send:- ',receipt);
+  }
+
 }
