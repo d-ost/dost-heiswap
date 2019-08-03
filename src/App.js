@@ -44,7 +44,7 @@ export default class App extends Component {
 
     switch (this.state.view) {
       case 'main':
-        return this.savingView();
+        return this.mainView();
       case 'saving':
         return this.savingView();
       default:
