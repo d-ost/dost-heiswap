@@ -19,7 +19,7 @@ export default class BurnerAction extends React.Component {
   topUpClicked() {
     console.log('topUpClicked');
     this.props.openModal();
-    this.props.changeView('saving');
+    this.props.changeView('pin');
   }
 
   render(){

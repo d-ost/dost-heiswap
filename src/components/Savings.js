@@ -160,7 +160,7 @@ export default class Savings extends React.Component {
 
       <div class="row">
         <div class="col-sm-6">
-          <button name="deposit" onClick={this.withdraw}> Deposit </button>
+          <button name="deposit" onClick={this.withdraw}> Withdraw </button>
         </div>
       </div>
 

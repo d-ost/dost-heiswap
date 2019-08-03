@@ -9,6 +9,8 @@ import Account from "./KeyManager/Account";
 import ERCToken from "./KeyManager/ERCToken";
 import TokenBalance from "./components/TokenBalance";
 import Send from "./components/Send";
+import CreatePin from "./components/CreatePin";
+import VerifyPin from "./components/VerifyPin";
 
 import {
   originTokens,
@@ -103,6 +105,14 @@ export default class App extends Component {
         return this.sendView();
       case 'receive':
         return this.receiveView();
+      case 'pin':
+        let pin = localStorage.getItem('pin');
+        if(pin && pin.length > 0) {
+          return this.verifyPin();
+        }
+        else {
+          return this.createPin();
+        }
       default:
         return this.defaultView();
     }
@@ -175,6 +185,33 @@ export default class App extends Component {
       </div>
     )
   }
+
+  createPin() {
+    return (
+      <div className="App">
+      <CreatePin
+        changeView={this.changeView.bind(this)}
+        openModal={this.openModal.bind(this)}
+      />
+      </div>
+    )
+  }
+
+  verifyPin() {
+    return (
+      <div className="App">
+    {
+      //This is temporary fixed values
+    }
+      <VerifyPin
+        changeView={this.changeView.bind(this)}
+        openModal={this.openModal.bind(this)}
+      />
+      </div>
+    )
+  }
+
+
   sendView() {
     return (
       <React.Fragment>
