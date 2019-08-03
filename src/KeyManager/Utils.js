@@ -7,11 +7,15 @@ export default class Utils {
   }
 
   static getImagePathForSymbol(symbol) {
-    if (symbol === 'st'){
-      return 'ost.jpg'
-    }
-    if (symbol === 'weth'){
-      return 'ethereum.png'
+    console.log('symbol------>: ', symbol);
+    if (symbol) {
+      symbol = symbol.toLowerCase();
+      if (symbol === 'st' || symbol === 'ost'){
+        return 'ost.jpg'
+      }
+      if (symbol === 'weth'){
+        return 'ethereum.png'
+      }
     }
     return 'ost.jpg'
   }

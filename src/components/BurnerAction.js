@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'rimble-ui';
+import {Box, Button, Card, Flex} from 'rimble-ui';
 import Utils from '../KeyManager/Utils'
 
 export default class BurnerAction extends React.Component {
@@ -24,23 +24,19 @@ export default class BurnerAction extends React.Component {
 
   render(){
     return (
-      <div className='Action'>
-        <div style={{width:'100%', display: 'inlineBlock'}}>
-          <Button mainColor="#e4b030" marginRight={3} minWidth={183} onClick={()=>{this.sendClicked()}}>
-            Send
-          </Button>
-          <Button mainColor="#e4b030" marginRight={0} minWidth={183} onClick={()=>{this.receiveClicked()}}>
-            Receive
-          </Button>
-        </div>
-        <div style={{paddingTop:'10px', width:'100%'}}>
-          <Button mainColor="#e4b030" marginRight={3} minWidth={183} onClick={()=>{this.topUpClicked()}}>
-            Top up
-          </Button>
-          <Button mainColor="#e4b030" marginRight={0} minWidth={183}>
-            Deposit
-          </Button>
-        </div>
+      <div style={{width: '100%'}} >
+        <Flex>
+          <Box width={1/2}>
+            <Button mainColor="#e4b030" ml={0} mt={2}  minWidth='98%' onClick={()=>{this.sendClicked()}}>
+              Send
+            </Button>
+          </Box>
+          <Box width={1/2}>
+            <Button mainColor="#e4b030" ml={1} mt={2}  minWidth='98%' onClick={()=>{this.receiveClicked()}}>
+              Receive
+            </Button>
+          </Box>
+        </Flex>
       </div>
     );
   }

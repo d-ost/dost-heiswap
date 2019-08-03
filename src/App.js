@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import EthereumAccount from './components/EthereumAccount'
 import Savings from './components/Savings'
-import { Modal, Card, Button } from 'rimble-ui';
+import {Modal, Card, Button, Flex, Box} from 'rimble-ui';
 import './App.css';
 import Account from "./KeyManager/Account";
 import ERCToken from "./KeyManager/ERCToken";
@@ -12,6 +12,8 @@ import Send from "./components/Send";
 import CreatePin from "./components/CreatePin";
 import VerifyPin from "./components/VerifyPin";
 import ScanQR from "./components/ScanQR";
+import Transactions from "./components/Transactions";
+import Advanced from './components/Advanced'
 
 import {
   originTokens,
@@ -22,14 +24,15 @@ import {
 import BaseToken from "./KeyManager/BaseToken";
 import BurnerAction from "./components/BurnerAction";
 import Receive from "./components/Receive";
+import AdvancedAction from "./components/AdvancedAction";
 
 let interval;
 
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this.previousView = 'default';
-    this.currentView = 'default';
+    this.previousView = 'main';
+    this.currentView = 'main';
     this.state = {
       view: 'default',
       isOpen: false
@@ -49,8 +52,8 @@ export default class App extends Component {
       return token;
     });
 
-    this.originBaseToken = BaseToken.from(originWeb3);
-    this.auxiliaryBaseToken = BaseToken.from(auxiliaryWeb3);
+    this.originBaseToken = BaseToken.from('ETH',originWeb3);
+    this.auxiliaryBaseToken = BaseToken.from('OST', auxiliaryWeb3);
 
     this.closeModal = this.closeModal.bind(this);
     this.openModal = this.openModal.bind(this);
@@ -62,9 +65,12 @@ export default class App extends Component {
     this.originTokens.forEach((token) => {
       token.getBalance(address);
     });
+    this.originBaseToken.getBalance(address)
+
     this.auxiliaryTokens.forEach((token)=> {
       token.getBalance(address);
     });
+    this.auxiliaryBaseToken.getBalance(address);
   }
   poll() {
     this.fetchBalances(this.account.address);
@@ -123,6 +129,8 @@ export default class App extends Component {
         }
       case 'scanQR':
         return this.scanQRView();
+      case 'advance':
+        return this.advanceView();
       default:
         return this.defaultView();
     }
@@ -151,29 +159,50 @@ export default class App extends Component {
     this.auxiliaryTokens.forEach((token)=> {
       console.log('token', token);
       accountView.push(
-        <div className="Card">
-          <TokenBalance
-            token={token}
-            account={this.account}
-          />
-        </div>
+        <TokenBalance
+          token={token}
+          account={this.account}
+        />
       )
     });
     accountView.push(
-      <div className="Card">
-        <TokenBalance
-          token={this.auxiliaryBaseToken}
-          account={this.account}
-        />
-      </div>
+      <TokenBalance
+        token={this.auxiliaryBaseToken}
+        account={this.account}
+      />
     )
     return (
       <div className="App">
-        {accountView}
-        <BurnerAction
-          changeView={this.changeView.bind(this)}
-          openModal={this.openModal.bind(this)}
-        />
+        <div className="Card">
+          <Flex>
+            <Box width={1}>
+              {accountView}
+            </Box>
+          </Flex>
+          <Flex>
+            <Box width={1} mt={2} mb={2}>
+              <Transactions
+
+              />
+            </Box>
+          </Flex>
+          <Flex>
+            <Box width={1}>
+              <AdvancedAction
+                changeView={this.changeView.bind(this)}
+                openModal={this.openModal.bind(this)}
+              />
+            </Box>
+          </Flex>
+          <Flex>
+            <Box width={1}>
+              <BurnerAction
+                changeView={this.changeView.bind(this)}
+                openModal={this.openModal.bind(this)}
+              />
+            </Box>
+          </Flex>
+        </div>
       </div>
     )
   }
@@ -265,6 +294,17 @@ export default class App extends Component {
     );
   }
 
+  advanceView() {
+    return (
+
+
+      <div className="App">
+        <Advanced
+          goBack={this.goBack.bind(this)}
+        />
+      </div>
+    )
+  }
 
 
   closeModal(e) {

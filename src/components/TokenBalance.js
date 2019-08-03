@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Text } from 'rimble-ui';
+import { Avatar, Text , Flex, Box} from 'rimble-ui';
 import Utils from '../KeyManager/Utils'
 
 export default class TokenBalance extends React.Component {
@@ -16,18 +16,20 @@ export default class TokenBalance extends React.Component {
     this.balance = this.props.token.balances[this.props.account.address] || '0';
     return (
       <div className='BalanceCard'>
-        <div className='Icon'>
-          <Avatar
-            size="60px"
-            src={image}
-          />
-        </div>
-        <div className='Symbol'>
-          <Text.p>{this.props.token.symbol}</Text.p>
-        </div>
-        <div className='Balance'>
-          <Text.p textAlign={'right'}>{this.balance}</Text.p>
-        </div>
+        <Flex>
+          <Box p={0} m={0} width={2/10}>
+            <Avatar
+              size="50px"
+              src={image}
+            />
+          </Box>
+          <Box pt={3} m={0} width={2/10}>
+            <Text.p color='#438bad' fontWeight='400' textAlign='left'>{this.props.token.symbol}</Text.p>
+          </Box>
+          <Box pt={3} pr={3} m={0} width={8/10} >
+            <Text.p textAlign='right' >{this.balance} </Text.p>
+          </Box>
+        </Flex>
 
       </div>
     );

@@ -80,8 +80,11 @@ const configs = [
   }
 
   const config = getConfig();
-  const originTokens = getOriginTokenAddresses(config);
-  const auxiliaryTokens = getAuxiliaryTokenAddresses(config);
+  //Fixme: Following 2 lines are commented only for demo
+  // const originTokens = getOriginTokenAddresses(config);
+  //const auxiliaryTokens = getAuxiliaryTokenAddresses(config);
+  const originTokens = [];
+  const auxiliaryTokens = [];
   const originWeb3 = new Web3(config.ORIGIN_CHAIN.RPC);
   const auxiliaryWeb3 = new Web3(config.AUX_CHAIN.RPC);
   export default config
