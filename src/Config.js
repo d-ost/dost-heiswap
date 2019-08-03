@@ -17,6 +17,7 @@ const configs = [
           WETH_ADDRESS: "",
           WETH_GATEWAY_ADDRESS: "",
           STAKING_POOL_ADDRESS: "",
+          HEISWAP: "0x6f3024f722a9f5680fd0ada93f0cb61853eced36",
           EXPLORER: {
               NAME: "",
               URL: "",
