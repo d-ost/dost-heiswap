@@ -2,11 +2,9 @@ import Web3 from 'web3';
 import {LocalStorage} from "../services/LocalStorage";
 const Web3Utils = require('web3-utils');
 
+const MIXER = 'mixerkey';
+const BURNER = 'burnerkey';
 export default class Account {
-  static KeyType = {
-    MIXER: 'mixerkey',
-    BURNER: 'burnerkey',
-  };
   static validatePrivateKey(privateKey) {
     if (!privateKey || !/^0x[0-9a-fA-F]{64}$/.test(privateKey)) {
       //fixme: Dont include private key in the execption;
@@ -15,7 +13,7 @@ export default class Account {
   }
 
   static fromPrivateKey(privateKey) {
-    Account.validatePrivateKey(privateKey);
+    //Account.validatePrivateKey(privateKey);
     return (new Web3()).eth.accounts.privateKeyToAccount(privateKey);
   }
 
@@ -25,7 +23,7 @@ export default class Account {
 
   static store(account, keyType) {
     console.log('keyType: ', keyType);
-    if (keyType !== Account.KeyType.MIXER && keyType !== Account.KeyType.BURNER) {
+    if (keyType !== MIXER && keyType !== BURNER) {
       throw new Error(`Unknown key type: ${keyType}`);
     }
     if (!Web3Utils.isAddress(account.address)) {

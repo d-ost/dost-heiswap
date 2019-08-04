@@ -2,7 +2,7 @@
 
 // Appends 0x in front of hex strings so
 // it fits the solidity format
-const append0x = (s: String): String => {
+const append0x = (s) => {
   if (s.indexOf('0x') !== 0) {
     return '0x' + s
   }

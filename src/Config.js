@@ -69,9 +69,10 @@ const configs = [
   }
 
   function getConfig() {
-    const hostname = window.location.hostname;
+    //const hostname = window.location.hostname;
 
-    const config = findConfig(hostname);
+
+    const config = findConfig('localhost');
     if (config.length === 1) {
       return config[0];
     } else {

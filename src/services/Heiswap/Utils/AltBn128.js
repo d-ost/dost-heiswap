@@ -16,12 +16,12 @@ const { soliditySha3, padLeft } = require('web3-utils')
 // Types
 // Since JS doesn't handle BigInteger well,
 // the scalar representation will be the a BN object
-export type Scalar = BN;
-export type Point = [Scalar, Scalar];
-export type Signature = [Scalar, Array<Scalar>, Point];
+// export type Scalar = BN;
+// export type Point = [Scalar, Scalar];
+// export type Signature = [Scalar, Array<Scalar>, Point];
 
 // AltBn128 field properties
-const P: Scalar = new BN(
+const P = new BN(
   '21888242871839275222246405745257275088696311157297823662689037894645226208583',
   10
 )
@@ -61,14 +61,14 @@ bn128.groupReduction = BN.red(bn128.curve.n)
 /**
  * Gets a random Scalar.
  */
-bn128.randomScalar = (): Scalar => {
+bn128.randomScalar = () => {
   return new BN(crypto.randomBytes(32), 16).toRed(bn128.groupReduction)
 }
 
 /**
  * Gets a random Point on curve.
  */
-bn128.randomPoint = (): Point => {
+bn128.randomPoint = () => {
   const recurse = () => {
     const x = new BN(crypto.randomBytes(32), 16).toRed(bn128.curve.red)
     const y2 = x
@@ -94,7 +94,7 @@ bn128.randomPoint = (): Point => {
  *
  *  Beta is used to calculate if the Point exists on the curve
  */
-bn128.evalCurve = (x: Scalar): [Scalar, Scalar] => {
+bn128.evalCurve = (x) => {
   const beta = x
     .mul(x)
     .mod(P)
@@ -110,7 +110,7 @@ bn128.evalCurve = (x: Scalar): [Scalar, Scalar] => {
 /**
  *  Calculates a Point given a Scalar
  */
-bn128.scalarToPoint = (_x: Scalar): Point => {
+bn128.scalarToPoint = (_x) => {
   let x = _x.mod(N)
 
   let beta, y, yP
@@ -129,7 +129,7 @@ bn128.scalarToPoint = (_x: Scalar): Point => {
 /**
  *  ECC addition operation
  */
-bn128.ecAdd = (point1: Point, point2: Point): Point => {
+bn128.ecAdd = (point1, point2) => {
   const p1 = bn128.curve.point(point1[0], point1[1])
   const p2 = bn128.curve.point(point2[0], point2[1])
   const fp = p1.add(p2)
@@ -140,7 +140,7 @@ bn128.ecAdd = (point1: Point, point2: Point): Point => {
 /**
  * ECC multiplication operation
  */
-bn128.ecMul = (p: Point, s: Scalar): Point => {
+bn128.ecMul = (p, s) => {
   const fp = bn128.curve.point(p[0], p[1]).mul(s)
 
   return [fp.getX(), fp.getY()]
@@ -149,7 +149,7 @@ bn128.ecMul = (p: Point, s: Scalar): Point => {
 /**
  * ECC multiplication operation for G
  */
-bn128.ecMulG = (s: Scalar): Point => {
+bn128.ecMulG = (s) => {
   return bn128.ecMul(G, s)
 }
 
@@ -157,18 +157,18 @@ bn128.ecMulG = (s: Scalar): Point => {
  * Ring signature generation
  */
 bn128.ringSign = (
-  message: String,
-  publicKeys: Array<Point>,
-  secretKey: Scalar,
-  secretKeyIdx: int
-): Signature => {
-  const keyCount: int = publicKeys.length
+  message,
+  publicKeys,
+  secretKey,
+  secretKeyIdx
+) => {
+  const keyCount = publicKeys.length
 
-  let c: Array<Scalar> = Array(keyCount).fill(new BN(0, 10))
-  let s: Array<Scalar> = Array(keyCount).fill(new BN(0, 10))
+  let c = Array(keyCount).fill(new BN(0, 10))
+  let s = Array(keyCount).fill(new BN(0, 10))
 
   // Step 1
-  let h: Point = h2(serialize(publicKeys))
+  let h = h2(serialize(publicKeys))
   let yTilde = bn128.ecMul(h, secretKey)
 
   // Step 2
@@ -226,10 +226,10 @@ bn128.ringSign = (
  *  Ring signature verification
  */
 bn128.ringVerify = (
-  message: String,
-  publicKeys: Array<Point>,
-  signature: Signature
-): Boolean => {
+  message,
+  publicKeys,
+  signature
+) => {
   const keyCount = publicKeys.length
 
   const [c0, s, yTilde] = signature
@@ -260,7 +260,7 @@ bn128.ringVerify = (
  *  Reference: https://gist.github.com/HarryR/a6d56a97ba7f1a4ebc43a40ca0f34044#file-longsigh-py-L26
  *  Returns (a^b) % n
  */
-const powmod = (a: Scalar, b: Scalar, n: Scalar): Scalar => {
+const powmod = (a, b, n) => {
   let c = new BN('0', 10)
   let f = new BN('1', 10)
   let k = new BN(parseInt(Math.log(b) / Math.log(2)), 10)
@@ -287,7 +287,7 @@ const powmod = (a: Scalar, b: Scalar, n: Scalar): Scalar => {
 /**
  * Returns a Scalar repreesntation of the hash of the input.
  */
-const h1 = (s: String): Scalar => {
+const h1 = (s) => {
   // Want to be compatible with the solidity implementation
   // which prepends "0x" by default
   if (s.indexOf('0x') !== 0) {
@@ -304,7 +304,7 @@ const h1 = (s: String): Scalar => {
  * Returns ECC Point of the Scalar representation of the hash
  * of the input.
  */
-const h2 = (hexStr: String): Point => {
+const h2 = (hexStr) => {
   // Note: hexStr should be a string in hexadecimal format!
   return bn128.scalarToPoint(h1(hexStr))
 }
@@ -312,7 +312,7 @@ const h2 = (hexStr: String): Point => {
 /**
  * Serializes the inputs into a hex string
  */
-const serialize = (arr: Array<any>): String => {
+const serialize = (arr) => {
   if (!Array.isArray(arr)) {
     // eslint-disable-next-line no-throw-literal
     throw 'arr should be of type array'

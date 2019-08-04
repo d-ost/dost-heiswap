@@ -1,5 +1,5 @@
 import { serialize, h1, bn128 } from './Utils/AltBn128.js';
-
+import crypto from 'crypto'
 // building on DepositPagje.js from Kendrick Tan, Heiswap, MIT
 // github.com/kendricktan/heiswap-dapp
 
@@ -15,15 +15,15 @@ import { serialize, h1, bn128 } from './Utils/AltBn128.js';
 
 // TargetOstAmount - must be exact the required amount
 //   for an available ring.
-export const deposit = (
+const deposit = async (
   Web3,
   HeiswapInstance,
-  FromAddress, 
+  FromAddress,
   TargetOstAmount,
   TargetAddress,
 ) => {
 
-  if (TargetOstAmount != 2) {
+  if (TargetOstAmount != 1) {
     throw new Error('For hackathon keep required single constant amount.');
   }
 
@@ -55,8 +55,12 @@ export const deposit = (
   };
 
   try {
-    const gasPrice = await Web3.eth.getGasPrice();
+    const gasPrice = '0x3B9ACA00';
 
+    console.log('FromAddress: ', FromAddress);
+    console.log('gasPrice: ', gasPrice);
+    console.log('nonce: ', await Web3.eth.getTransactionCount(FromAddress));
+    console.log('balance: ', await Web3.eth.getBalance(FromAddress));
     const depositResult = await HeiswapInstance
       .methods
       .deposit(stealthPublicKey)
@@ -65,12 +69,15 @@ export const deposit = (
           from: FromAddress,
           value: Web3.utils.toWei(TargetOstAmount.toString(10), 'ether'),
           gasLimit: '800000',
-          gasPrice
+          gasPrice: gasPrice,
+          nonce: await Web3.eth.getTransactionCount(FromAddress)
         }
       );
-    
+
+    console.log('depositResult', depositResult);
+
     // get event return value
-    const depositEventRetVal = depositResult.events.Deposited.returnValuues;
+    const depositEventRetVal = depositResult.events.Deposited.returnValues;
 
     // get the actual ring index
     const realRingIndex = depositEventRetVal.idx;
@@ -78,8 +85,11 @@ export const deposit = (
     heiswapToken.heiRingIndexFinal = realRingIndex;
     heiswapToken.txHash = depositResult.transactionHash;
   } catch (error) {
+    console.log('error: ', error);
     throw new Error('Failed to deposit in ring');
   }
 
   return heiswapToken;
 }
+
+module.exports = deposit;

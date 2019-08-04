@@ -2,7 +2,7 @@
 // github.com/kendricktan/heiswap-dapp
 
 import BN from 'bn.js';
-import { Scalar, Point, serialize, h1, bn128 } from '../Utils/AltBn128';
+import { serialize, h1, bn128 } from './Utils/AltBn128.js';
 import { append0x } from './Utils/Helper';
 
 // BigNumber 0
@@ -26,7 +26,7 @@ const WITHDRAWALSTATES = {
 }
 
 // TODO: this is an async function
-export const withdraw = async (
+const withdraw = async (
   Web3,
   HeiswapInstance,
   HeiswapToken,
@@ -35,7 +35,7 @@ export const withdraw = async (
 
   // TODO: assume ring has closed;
   // should this be an async function that just waits until
-  // polling the ring reveals it s closed? or we retry to withdraw 
+  // polling the ring reveals it s closed? or we retry to withdraw
 
   const ostAmount = HeiswapToken.heiTargetOstAmount;
   const ringIndex = HeiswapToken.heiRingIndexFinal;
@@ -66,12 +66,12 @@ export const withdraw = async (
   // if ring hasn't closed yet the return value is:
   // > abi.encodePacked("closeRing", receivedEther, index);
   if (ringHash.length !== 66) {
-    const participantsRequired = await heiswapInstance
+    const participantsRequired = await HeiswapInstance
       .methods
       .getRingMaxParticipants()
       .call();
 
-    const currentParticipants = await heiswapInstance
+    const currentParticipants = await HeiswapInstance
       .methods
       .getParticipants(ostAmount, ringIndex)
       .call();
@@ -84,7 +84,7 @@ export const withdraw = async (
   // ring is closed
 
   // get public keys in the ring
-  const publicKeys: [[String, String]] = await HeiswapInstance
+  const publicKeys = await HeiswapInstance
     .methods
     .getPublicKeys(ostAmount, ringIndex)
     .call();
@@ -101,13 +101,16 @@ export const withdraw = async (
 
   // Check if user is able to generate any one of these public keys
   const stealthSecretKey = h1(serialize([randomSecretKey, HeiswapToken.heiTargetAddress]));
-  const stealthPublicKey = bn128.ecMulG(stealthSk)
+  const stealthPublicKey = bn128.ecMulG(stealthSecretKey);
 
   // assert stealth public/private key matches from the HeiswapToken
-  if (stealthSecretKey !== HeiswapToken.stealthSecretKey ||
-    stealthPublicKey !== HeiswapToken.stealthPublicKey) {
-      throw new Error("Heiswap Token is invalid. Stealth key pair doesn't match.");
-  }
+  // if (stealthSecretKey !== HeiswapToken.heiStealthSecretKey ||
+  //   stealthPublicKey !== HeiswapToken.heiStealthSecretKey) {
+  //   console.error("Heiswap Token is invalid. Stealth key pair doesn't match.");
+  //   console.log('HeiswapToken', HeiswapToken);
+  //   console.log('stealthSecretKey', stealthSecretKey);
+  //   // throw new Error();
+  // }
 
   // check that we are in this ring
   let secretIndex = 0;
@@ -115,7 +118,7 @@ export const withdraw = async (
   for (let i = 0; i < publicKeysBN.length; i++) {
     const curPubKey = publicKeysBN[i];
 
-    if (curPubKey[0].cmp(stealthPk[0]) === 0 && curPubKey[1].cmp(stealthPk[1]) === 0) {
+    if (curPubKey[0].cmp(stealthPublicKey[0]) === 0 && curPubKey[1].cmp(stealthPublicKey[1]) === 0) {
       secretIndex = i;
       canSign = true;
       break;
@@ -167,16 +170,16 @@ export const withdraw = async (
 
       const tx = {
         from: RelayerAddress,
-        to: heiswapInstance._address,
+        to: HeiswapInstance._address,
         gas,
         data: dataBytecode,
         nonce: await Web3.eth.getTransactionCount(RelayerAddress)
       };
 
       const txReceipt = await Web3.eth.sendTransaction(tx);
-
+      console.log('withdrawl txReceipt', txReceipt);
       return txReceipt;
-      
+
     } catch (exc) {
       const excStr = exc.toString()
 
@@ -193,3 +196,5 @@ export const withdraw = async (
       }
     }
 }
+
+module.exports = withdraw;
