@@ -87,10 +87,11 @@ export default class App extends Component {
     this.forceUpdate();
   }
 
-  changeView(view) {
+  changeView(view, callBack) {
     console.log('Change view called: ', view);
     this.previousView = this.currentView;
     this.currentView = view;
+    this.callBack = callBack;
     this.setState({view: view});
   }
   goBack(){
@@ -220,44 +221,36 @@ export default class App extends Component {
 
   sendView() {
     return (
-      <React.Fragment>
-        <Modal isOpen={this.state.isOpen}>
-          <Send
-            changeView={this.changeView.bind(this)}
-            tokens={this.auxiliaryTokens}
-            baseToken={this.auxiliaryBaseToken}
-            account={this.account}
-            closeModel={this.closeModal}
-          />
-        </Modal>
-      </React.Fragment>
+      <div className="App">
+        <Send
+          changeView={this.changeView.bind(this)}
+          token={this.auxiliaryBaseToken}
+          context={BURNER}
+          goBack={this.goBack.bind(this)}
+        />
+      </div>
     );
   }
   receiveView() {
     return (
-      <React.Fragment>
-        <Modal isOpen={this.state.isOpen}>
-          <Receive
-            account={this.account}
-            closeModel={this.closeModal}
-          />
-        </Modal>
-      </React.Fragment>
+      <div className="App">
+        <Receive
+          context={BURNER}
+          closeModel={this.closeModal}
+          goBack={this.goBack.bind(this)}
+        />
+      </div>
     );
   }
 
   scanQRView() {
     return (
-      <React.Fragment>
-        <Modal isOpen={this.state.isOpen}>
-          <ScanQR
-            changeView={this.changeView.bind(this)}
-            closeModel={this.closeModal}
-            goBack={this.goBack.bind(this)}
-
-          />
-        </Modal>
-      </React.Fragment>
+      <div className="App">
+        <ScanQR
+          goBack={this.goBack.bind(this)}
+          callBack={this.callBack}
+        />
+      </div>
     );
   }
 

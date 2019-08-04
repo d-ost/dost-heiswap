@@ -1,16 +1,19 @@
 import React from 'react';
 import Select from 'react-select';
-import {Text, Input, Button} from 'rimble-ui';
+import {Text, Input, Button, Flex, Box, QR, Field} from 'rimble-ui';
+import Header from "./Header";
 
-export default class BurnerAction extends React.Component {
+export default class Send extends React.Component {
   constructor(props) {
     super(props);
-    this.options = [];
-    this.account = this.props.account;
-    this.selectedOption = 0;
-    this.options = this.getLatestBalance();
+    this.address = '';
+    this.amount = '0';
+    this.addressEntered.bind(this);
+    this.updateAddress.bind(this);
+    this.scan = this.scan.bind(this);
+    console.log('This in constructor:', this);
   }
-
+/*
   getLatestBalance() {
     const options = [];
     this.props.tokens.forEach((token,index)=>{
@@ -30,56 +33,84 @@ export default class BurnerAction extends React.Component {
     console.log("closeModal");
     this.props.closeModel();
   }
-  scan() {
-    console.log("closeModal");
-    this.props.changeView('scanQR');
+*/
+
+  updateAddress(result) {
+    console.log('this', this);
+    console.log('result: ', result);
+    this.address = result;
+    this.setState({address: result});
+    console.log('state.address: ', this.state.address);
   }
+  scan() {
+    console.log('scan called:', this);
+    this.props.goBack();
+    const oThis = this;
+    this.props.changeView('scanQR', (result) => {
+      oThis.setState({address: result});
+      console.log('result: ', result);
+      console.log('oThis: ', oThis);
+      oThis.updateAddress(result);
+    });
+  }
+  send(){
+    this.props.token.send(this.address , this.amount, this.props.context);
+
+  }
+
+  addressEntered(event) {
+    console.log('this: ', this);
+    console.log('AddressEntered: ', event);
+    this.address = event.target.value;
+  }
+
+  amountEntered(event) {
+    console.log('amountEntered: ', event);
+    this.amount = event.target.value;
+  }
+
+
   render(){
-    this.options = this.getLatestBalance();
-    console.log('this.tokenSymbols: ', this.tokenSymbols);
     return (
-      <div className='Send' >
-        <Button.Text
-          icononly
-          icon={"Close"}
-          color={"moon-gray"}
-          position={"absolute"}
-          top={0}
-          right={0}
-          mt={3}
-          mr={3}
-          onClick={this.closeModal.bind(this)}
+      <div style={{backgroundColor: '#ffffff'}}>
+        <Header
+          title={'Send'}
+          goBack={this.props.goBack}
         />
 
-        <Text fontWeight={'bold'}>Send to Address</Text>
-        <Select
-          value={this.selectedOption}
-          onChange={this.handleChange.bind(this)}
-          options={this.options}
-        />
-
-        <Text fontWeight={'bold'}>To address</Text>
-        <Input
-          type="text"
-          required={true}
-          placeholder="e.g. 0xAc03BB73b6a9e108530AFf4Df5077c2B3D481e5A"
-        />
-        <Text fontWeight={'bold'}>OR</Text>
-
-        <Button mainColor="#e4b030" marginRight={0} minWidth={183} onClick={this.scan.bind(this)}>
-          Scan QR Code
-        </Button>
-
-        <Text fontWeight={'bold'}>Send Amount</Text>
-        <Input
-          type="text"
-          required={true}
-          placeholder="In wei"
-        />
-
-        <Button mainColor="#e4b030" marginRight={0} minWidth={183}>
-          Send
-        </Button>
+        <Flex>
+          <Box >
+            <Field label="Send to address">
+              <Input required={true}  onChange={this.addressEntered.bind(this)} />
+            </Field>
+          </Box>
+        </Flex>
+        <Flex>
+          <Box>
+            <Text fontWeight={'bold'}>OR</Text>
+          </Box>
+        </Flex>
+        <Flex>
+          <Box>
+            <Button mainColor="#e4b030" marginRight={0} minWidth={183} onClick={this.scan}>
+              Scan QR Code
+            </Button>
+          </Box>
+        </Flex>
+        <Flex>
+          <Box>
+            <Field label="Amount in wei">
+              <Input required={true} onChange={this.amountEntered.bind(this)} />
+            </Field>
+          </Box>
+        </Flex>
+        <Flex>
+          <Box>
+            <Button mainColor="#e4b030" marginRight={0} minWidth={183}  onClick={()=>{this.send()}}>
+              Send
+            </Button>
+          </Box>
+        </Flex>
       </div>
     );
   }

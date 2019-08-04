@@ -5,9 +5,10 @@ import Utils from '../KeyManager/Utils'
 export default class BurnerAction extends React.Component {
   constructor(props) {
     super(props);
+    this.sendClicked.bind(this);
+    this.receiveClicked.bind(this);
   }
   sendClicked() {
-    this.props.openModal();
     this.props.changeView('send');
   }
   receiveClicked() {

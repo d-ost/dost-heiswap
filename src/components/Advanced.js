@@ -19,12 +19,12 @@ export default class Advanced extends React.Component {
           <Box width={1}>
             <Flex>
               <Box width={7/10}>
-                <Text color='##6b7c93' mx={1} my={1}>
+                <Text fontSize={'12px'} color='##6b7c93' mx={1} my={1}>
                   {address}
                 </Text>
               </Box>
               <Box width={3/10}>
-                <Text color='##6b7c93' mx={2} my={1} textAlign={'right'}>
+                <Text fontWeight={'bold'} fontSize={'12px'} color='##6b7c93' mx={2} my={1} textAlign={'right'}>
                   {this.props.token.balances[address]}
                 </Text>
               </Box>

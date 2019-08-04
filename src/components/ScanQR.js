@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import QrReader from 'react-qr-reader'
-import {Button} from "rimble-ui";
+import {Box, Button, Flex, QR} from "rimble-ui";
+import Header from "./Header";
 
 export default class ScanQR extends Component {
   state = {
@@ -12,9 +13,11 @@ export default class ScanQR extends Component {
       this.setState({
         result: data
       })
+      this.goBack();
     }
   }
   goBack() {
+    this.props.callBack(this.state.result);
     console.log('GoBack called');
     this.props.goBack();
   }
@@ -24,24 +27,27 @@ export default class ScanQR extends Component {
   render() {
     return (
       <div>
-        <QrReader
-          delay={300}
-          onError={this.handleError}
-          onScan={this.handleScan}
-          style={{ width: '100%' }}
+        <Header
+          title={'Scan QR'}
+          goBack={this.goBack.bind(this)}
         />
-        <p>{this.state.result}</p>
-        <Button.Text
-          icononly
-          icon={"Close"}
-          color={"moon-gray"}
-          position={"absolute"}
-          top={0}
-          right={0}
-          mt={3}
-          mr={3}
-          onClick={this.goBack.bind(this)}
-        />
+
+        <Flex>
+          <Box width={1}>
+            <QrReader
+              delay={300}
+              onError={this.handleError}
+              onScan={this.handleScan}
+              style={{ width: '100%' }}
+            />
+          </Box>
+        </Flex>
+
+        <Flex>
+          <Box width={1}>
+            <p>{this.state.result}</p>
+          </Box>
+        </Flex>
       </div>
     )
   }

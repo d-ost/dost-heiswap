@@ -118,6 +118,16 @@ export class LocalStorage {
     localStorage.setItem(BUCKET_TRANSACTION_HASH, JSON.stringify(transactions));
   }
 
+  static getPrivateKeyForBurnerAddress(address) {
+    const burnerObject = this.getFromLocalStorage(BURNER);
+    return burnerObject[address];
+  }
+
+  static getPrivateKeyForBucketAddress(address) {
+    const bucketObject = this.getFromLocalStorage(BUCKET);
+    return bucketObject[address];
+  }
+
   static getPinHash() {
     return localStorage.getItem('pin');
   }

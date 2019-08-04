@@ -1,4 +1,5 @@
 import BN from "bn.js";
+import {LocalStorage} from "../services/LocalStorage";
 
 const Web3Utils = require('web3-utils');
 
@@ -48,17 +49,60 @@ export default class BaseToken {
     return new BaseToken(symbol, web3);
   }
 
-  async send(burnerKey, receiverAddress, amount) {
-    if(this.web3.utils.isAddress(receiverAddress)) {
-      throw new Error('Invalid ');
-    }
-    const receipt = await this.web3.eth.sendTransaction({
-      from: burnerKey,
-      to: receiverAddress,
-      value: await this.web3.utils.toWei(amount.toString(), 'ether')
-    });
+  getFromAddress(amount, context) {
+    const addresses = LocalStorage.getBurnerAddresses();
+    // TODO: write the address selection logic here
+    return addresses[0]
+  };
 
-    console.log('receipt of send:- ',receipt);
+  async send(to, amount, context) {
+
+    console.log('to', to);
+    console.log('amount', amount);
+    console.log('context', context);
+
+    const fromAddress = this.getFromAddress(amount, context);
+
+    if(!Web3Utils.isAddress(to)) {
+      throw new Error('Invalid to address');
+    }
+
+    // TODO: remove the hardcoded values.
+    let gasLimit = 60000;
+
+    const tx = {
+      "from":fromAddress,
+      "to":to,
+      "value":amount,
+      "gas": gasLimit,
+      "gasPrice": Math.round(5 * 1010101010)
+    };
+
+    const privateKey = LocalStorage.getPrivateKeyForBurnerAddress(fromAddress);
+    return new Promise((resolve, reject) => {
+      let transactionHash;
+      let result;
+      this.web3.eth.accounts.signTransaction(tx, privateKey).then(signed => {
+        this.web3.eth.sendSignedTransaction(signed.rawTransaction)
+          .on('transactionHash',(hash) => {
+            transactionHash = hash;
+            console.log('transactionHash: ', transactionHash);
+            LocalStorage.storeBurnerTransaction(transactionHash,'true');
+          })
+          .on('receipt', (receipt)=>{
+            // TODO: check the status from the receipt
+            result = true;
+          }).on('error',(error)=>{
+            result = true;
+          });
+      });
+      resolve(
+        {
+          transactionHash: transactionHash,
+          result: result
+        }
+      );
+    });
   }
 
 }
