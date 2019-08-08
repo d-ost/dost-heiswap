@@ -1,5 +1,7 @@
 .App {
-  text-align: center;
+  max-width: 500px;
+  margin: auto;
+  border: 2px solid #438bad;
 }
 
 .App-logo {
@@ -23,6 +25,54 @@
   color: #61dafb;
 }
 
+.Main {
+  display: block;
+  background-color: #343a40;
+}
+
+.Card {
+  padding-top: 15px;
+  margin-top: 25px;
+  margin-right: 15px;
+  margin-left: 15px;
+  padding-bottom: 15px;
+
+}
+.BalanceCard {
+  background-color: #ffffff;
+  border-radius: 5px;
+}
+.Icon {
+  display: inline-block;
+  background-color: red;
+}
+
+.Symbol {
+  vertical-align: center;
+  background-color: green;
+}
+.Balance {
+  margin-left: auto;
+  text-align: right;
+  margin-right: 10px;
+  display: inline-block;
+  vertical-align: top;
+  alignment: right;
+  text-align: right;
+  background-color: blue;
+}
+
+.Action {
+  width: 100%;
+  display: inline-block;
+  padding-top: 15px;
+}
+
+.Send{
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

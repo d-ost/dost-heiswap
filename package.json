@@ -5,7 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.5.5",
-    "bootstrap": "^4.3.1",
+    "bn.js": "5.0.0",
     "crypto": "^1.0.1",
     "elliptic": "^6.5.0",
     "react": "^16.8.6",
@@ -18,10 +18,7 @@
     "typescript": "^3.5.3",
     "web3": "2.0.0-alpha",
     "web3-utils": "2.0.0-alpha",
-    "@types/jest": "24.0.17",
-    "@types/node": "12.7.0",
-    "@types/react": "16.8.24",
-    "@types/react-dom": "16.8.5"
+    "web3-eth-accounts": "1.2.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -50,6 +47,10 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/register": "^7.5.5",
     "babel-preset-env": "^1.7.0",
-    "babel-register": "^6.26.0"
+    "babel-register": "^6.26.0",
+    "@types/jest": "24.0.17",
+    "@types/node": "12.7.0",
+    "@types/react": "16.8.24",
+    "@types/react-dom": "16.8.5"
   }
 }
