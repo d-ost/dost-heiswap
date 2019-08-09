@@ -163,16 +163,16 @@ const withdraw = async (
     // there is no relayer required, and the faucet will in the background
     // keep funding the relayer keys whenever required.
     try {
-      const gas = await web3.eth.estimateGas({
-        to: HeiswapInstance._address,
-        data: dataBytecode
+      const gas = await Web3.eth.estimateGas({
+        to: HeiswapInstance.address,
+        data: dataByteCode
       });
 
       const tx = {
         from: RelayerAddress,
-        to: HeiswapInstance._address,
+        to: HeiswapInstance.address,
         gas,
-        data: dataBytecode,
+        data: dataByteCode,
         nonce: await Web3.eth.getTransactionCount(RelayerAddress)
       };
 
@@ -181,8 +181,8 @@ const withdraw = async (
       return txReceipt;
 
     } catch (exc) {
-      const excStr = exc.toString()
-
+      const excStr = exc.toString();
+      console.error('excStr', excStr);
       if (excStr.indexOf('Signature has been used!') !== 0) {
         throw new Error('Signature has been used.');
       } else if (excStr.indexOf('Invalid signature') !== 0) {

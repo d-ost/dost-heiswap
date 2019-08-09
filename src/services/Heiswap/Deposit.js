@@ -74,8 +74,6 @@ const deposit = async (
         }
       );
 
-    console.log('depositResult', depositResult);
-
     // get event return value
     const depositEventRetVal = depositResult.events.Deposited.returnValues;
 
