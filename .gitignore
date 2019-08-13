@@ -11,6 +11,9 @@
 # production
 /build
 
+# for testing during alpha stage, keep funded private keys ready
+/private
+
 # misc
 .DS_Store
 .env.local

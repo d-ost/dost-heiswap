@@ -38,7 +38,7 @@ class MixerBot {
       addresses[account.address] = account;
     }
 
-    const signerPrivateKey = process.env['SIGNER_PRIVATE_KEY']; //0x935a38d823dde34f5bbf75ab0f33110cdfe8d68b376e0efa03b36e060833f480
+    const signerPrivateKey = process.env['SIGNER_PRIVATE_KEY'];
     signerAccount = Account.fromPrivateKey(signerPrivateKey);
     console.log('account: ', signerAccount.address);
     this.originWeb3.eth.accounts.wallet.add(

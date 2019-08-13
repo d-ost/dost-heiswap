@@ -187,21 +187,22 @@ const withdraw = async (
     console.log('withdrawl txReceipt', txReceipt);
     return txReceipt;
 
-  } catch (exc) {
-    const excStr = exc.toString()
+    } catch (exc) {
+      const excStr = exc.toString()
+      console.error('excStr', excStr);
 
-    if (excStr.indexOf('Signature has been used!') !== 0) {
-      throw new Error('Signature has been used.');
-    } else if (excStr.indexOf('Invalid signature') !== 0) {
-      throw new Error('Invalid signature');
-    } else if (excStr.indexOf('Pool isn\'t closed') !== 0) {
-      throw new Error('Pool isn\'t closed');
-    } else if (excStr.indexOf('All ETH from current pool') !== 0) {
-      throw new Error('All ETH from current pool');
-    } else {
-      throw new Error('Unknown error on withdrawing from ring.');
+      if (excStr.indexOf('Signature has been used!') !== 0) {
+        throw new Error('Signature has been used.');
+      } else if (excStr.indexOf('Invalid signature') !== 0) {
+        throw new Error('Invalid signature');
+      } else if (excStr.indexOf('Pool isn\'t closed') !== 0) {
+        throw new Error('Pool isn\'t closed');
+      } else if (excStr.indexOf('All ETH from current pool') !== 0) {
+        throw new Error('All ETH from current pool');
+      } else {
+        throw new Error('Unknown error on withdrawing from ring.');
+      }
     }
-  }
 }
 
 export default withdraw;
