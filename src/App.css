@@ -87,3 +87,12 @@
     transform: rotate(360deg);
   }
 }
+
+/* Create Pin CSS */
+
+.CreatePin, .VerifyPin {
+  width: 50%;
+  background-color: #ffffff;
+  padding: 5%;
+}
+
