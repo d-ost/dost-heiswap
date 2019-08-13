@@ -40,7 +40,7 @@ class LocalStorage {
 
   }
 
-  storeBurnerAddress(address: string, privateKey: string) {
+  storeBurnerAddress(address: string, privateKey: string):void {
     this.refetchBurner = true;
     const burnerObject = this.getFromLocalStorage(LocalStorage.BURNER);
     burnerObject[address] = privateKey;
@@ -56,71 +56,71 @@ class LocalStorage {
     return this.bucketAddressCache;
   }
 
-  storeBucketAddress(address: string, encryptedPrivateKey: string) {
+  storeBucketAddress(address: string, encryptedPrivateKey: string):void {
     this.refetchBucket = true;
     const bucketObject = this.getFromLocalStorage(LocalStorage.BUCKET);
     bucketObject[address] = encryptedPrivateKey;
     localStorage.setItem(LocalStorage.BUCKET, JSON.stringify(bucketObject));
   }
 
-  getBurnerTransactions() {
+  getBurnerTransactions():object {
     const transactions = this.getFromLocalStorage(LocalStorage.BURNER_TRANSACTION_HASH);
     return transactions || {};
   }
 
-  getBucketTransactions() {
+  getBucketTransactions():object {
     const transactions = this.getFromLocalStorage(LocalStorage.BUCKET_TRANSACTION_HASH);
     return transactions || {};
   }
 
-  storeBurnerTransaction(transactionHash: string, transactionData: boolean) {
+  storeBurnerTransaction(transactionHash: string, transactionData: boolean):void {
     const transactions = this.getFromLocalStorage(LocalStorage.BURNER_TRANSACTION_HASH);
     transactions[transactionHash] = transactionData;
     localStorage.setItem(LocalStorage.BURNER_TRANSACTION_HASH, JSON.stringify(transactions));
   }
 
-  burnBurnerAddress(address: string) {
+  burnBurnerAddress(address: string):void {
     this.refetchBurner = true;
     const burnerObject = this.getFromLocalStorage(LocalStorage.BURNER);
     delete burnerObject[address];
     localStorage.setItem(LocalStorage.BURNER, JSON.stringify(burnerObject));
   }
 
-  burnBucketAddress(address: string) {
+  burnBucketAddress(address: string): void {
     this.refetchBucket = true;
     const bucketObject = this.getFromLocalStorage(LocalStorage.BUCKET);
     delete bucketObject[address];
     localStorage.setItem(LocalStorage.BUCKET, JSON.stringify(bucketObject));
   }
 
-  deleteBurnerTransaction(transactionHash: string) {
+  deleteBurnerTransaction(transactionHash: string):void {
     const transactions = this.getFromLocalStorage(LocalStorage.BURNER_TRANSACTION_HASH);
     delete transactions[transactionHash];
     localStorage.setItem(LocalStorage.BURNER_TRANSACTION_HASH, JSON.stringify(transactions));
   }
 
-  deleteBucketTransaction(transactionHash: string) {
+  deleteBucketTransaction(transactionHash: string): void{
     const transactions = this.getFromLocalStorage(LocalStorage.BUCKET_TRANSACTION_HASH);
     delete transactions[transactionHash];
     localStorage.setItem(LocalStorage.BUCKET_TRANSACTION_HASH, JSON.stringify(transactions));
   }
 
-  getPrivateKeyForBurnerAddress(address: string) {
+  getPrivateKeyForBurnerAddress(address: string):string {
     const burnerObject = this.getFromLocalStorage(LocalStorage.BURNER);
     return burnerObject[address];
   }
 
-  getPrivateKeyForBucketAddress(address: string) {
+  getPrivateKeyForBucketAddress(address: string):string {
     const bucketObject = this.getFromLocalStorage(LocalStorage.BUCKET);
     return bucketObject[address];
   }
 
-  getPinHash() {
+  getPinHash():string| null {
     return localStorage.getItem('pin');
   }
 
-  deletePinHash() {
-    return localStorage.removeItem('pin');
+  deletePinHash():void {
+     localStorage.removeItem('pin');
   }
 }
 

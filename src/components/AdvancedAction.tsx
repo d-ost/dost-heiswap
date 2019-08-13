@@ -1,5 +1,9 @@
 import React from 'react';
-import {Box, Button, Card, Flex} from 'rimble-ui';
+import {Box, Card, Flex} from 'rimble-ui';
+import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 interface Props {
   openModal: Function;
@@ -29,26 +33,27 @@ export default class AdvancedAction extends React.Component<Props, State> {
 
   render() {
     return (
-      <div style={{width: '100%'}}>
-        <Flex>
-          <Box width={1 / 2}>
-            <Button mainColor="#e4b030" ml={0} mt={2} minWidth='98%'
-                    onClick={() => {
-                      this.topUpClicked()
-                    }}>
+
+      <Container>
+        <Row>
+          <Col xs={6}>
+            <Button onClick={() => {
+              this.topUpClicked()
+            }}>
               Top up
             </Button>
-          </Box>
-          <Box width={1 / 2}>
-            <Button mainColor="#e4b030" mt={2} ml={1} minWidth='98%'
-                    onClick={() => {
-                      this.advancedClicked()
-                    }}>
+          </Col>
+          <Col xs={6}>
+            <Button
+              variant={"primary"}
+              onClick={() => {
+                this.advancedClicked()
+              }}>
               Advanced
             </Button>
-          </Box>
-        </Flex>
-      </div>
+          </Col>
+        </Row>
+      </Container>
     );
   }
 }

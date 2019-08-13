@@ -46,7 +46,7 @@ class MixerBot {
     );
   }
 
-  start() {
+  start():void {
     interval = setInterval(this.perform.bind(this), 6000);
     // const mode = process.env["BOT_MODE"];
     // if (mode === 'deposit') {
@@ -56,7 +56,7 @@ class MixerBot {
     // }
   }
 
-  perform() {
+  perform():void {
     const randomNumber = Math.floor(Math.random() * 3);
     if (randomNumber == 0) {
       this.deposit();
@@ -65,7 +65,7 @@ class MixerBot {
     }
   }
 
-  deposit() {
+  deposit():void {
     console.log('trying to deposit');
     const address = Object.keys(addresses)[0];
     console.log('signerAccountAddress', signerAccount.address);
@@ -80,7 +80,7 @@ class MixerBot {
       });
   }
 
-  withdraw() {
+  withdraw():void {
     console.log('trying to withdraw');
     const address = Object.keys(addresses)[0];
     const tokenKeys = Object.keys(tokens);

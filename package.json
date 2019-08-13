@@ -6,9 +6,11 @@
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "bn.js": "5.0.0",
+    "bootstrap": "^4.3.1",
     "crypto": "^1.0.1",
     "elliptic": "^6.5.0",
     "react": "^16.8.6",
+    "react-bootstrap": "^1.0.0-beta.10",
     "react-dom": "^16.8.6",
     "react-qr-reader": "2.2.1",
     "react-scripts": "3.0.1",
@@ -17,8 +19,8 @@
     "styled-components": "4.3.2",
     "typescript": "^3.5.3",
     "web3": "2.0.0-alpha",
-    "web3-utils": "2.0.0-alpha",
-    "web3-eth-accounts": "1.2.1"
+    "web3-eth-accounts": "1.2.1",
+    "web3-utils": "2.0.0-alpha"
   },
   "scripts": {
     "start": "react-scripts start",

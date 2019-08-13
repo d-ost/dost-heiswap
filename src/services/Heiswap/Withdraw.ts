@@ -8,6 +8,8 @@ import {append0x} from './Utils/Helper';
 import Web3 from "web3";
 import {Contract} from 'web3-eth-contract';
 import {HeiswapToken} from "./Deposit";
+import {TransactionReceipt} from 'web3-core';
+
 const BN = require("bn.js");
 
 // BigNumber 0
@@ -36,7 +38,7 @@ const withdraw = async (
   heiswapInstance: Contract,
   heiswapToken: HeiswapToken,
   relayerAddress: string,
-) => {
+):Promise<TransactionReceipt> => {
 
   // TODO: assume ring has closed;
   // should this be an async function that just waits until

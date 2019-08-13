@@ -17,6 +17,7 @@ import BurnerAction from "./components/BurnerAction";
 import Receive from "./components/Receive";
 import AdvancedAction from "./components/AdvancedAction";
 import Saving from "./components/Saving";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 
 const originTokens = config.getOriginTokenAddresses(),

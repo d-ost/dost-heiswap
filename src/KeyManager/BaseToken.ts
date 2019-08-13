@@ -21,7 +21,7 @@ export default class BaseToken {
     this.getBalance.bind(this);
   }
 
-  async getBalances(addresses, context) {
+  async getBalances(addresses, context):Promise<void> {
     const allBalanceRequest = addresses.map((address) =>
       this.getBalance(address)
     );
@@ -45,13 +45,16 @@ export default class BaseToken {
     return new BaseToken(symbol, web3);
   }
 
-  getFromAddress(amount, context) {
+  getFromAddress(amount, context):string {
     const addresses = localStorage.getBurnerAddresses();
     // TODO: write the address selection logic here
     return addresses[0]
   };
 
-  async send(to, amount, context) {
+  async send(to, amount, context):Promise<{
+    transactionHash:string;
+    result:boolean;
+  }> {
     const fromAddress = this.getFromAddress(amount, context);
 
     if (!Web3Utils.isAddress(to)) {

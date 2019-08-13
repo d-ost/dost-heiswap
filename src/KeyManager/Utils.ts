@@ -2,11 +2,11 @@ const Web3Utils = require('web3-utils');
 
 export default class Utils {
 
-  static isValidAddress(address: string) {
+  static isValidAddress(address: string):boolean {
     return Web3Utils.isAddress(address);
   }
 
-  static getImagePathForSymbol(symbol: string) {
+  static getImagePathForSymbol(symbol: string):string {
     console.log('symbol------>: ', symbol);
     if (symbol) {
       symbol = symbol.toLowerCase();
