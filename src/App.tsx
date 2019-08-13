@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import './App.css';
 import "bootstrap/dist/css/bootstrap.min.css";
+import {BrowserRouter as Router, Route} from 'react-router-dom'
+import Main from "./components/v2/Main";
+import Send from "./components/v2/Send";
 
 interface Props {
 
@@ -30,11 +33,13 @@ export default class App extends Component<Props, State> {
 
   render() {
 
-    return <div className="App">
-      <div className="Card">
-        <h1>Dost app</h1>
-      </div>
-    </div>
+    return (
+      <Router>
+        <Route exact path="/" component={Main}/>
+        <Route exact path="/send" component={Send}/>
+      </Router>
+    );
+
   }
 
 }
