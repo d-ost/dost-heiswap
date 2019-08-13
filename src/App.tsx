@@ -34,10 +34,12 @@ export default class App extends Component<Props, State> {
   render() {
 
     return (
-      <Router>
-        <Route exact path="/" component={Main}/>
-        <Route exact path="/send" component={Send}/>
-      </Router>
+      <div className="CardContainer">
+        <Router>
+          <Route exact path="/" component={Main}/>
+          <Route exact path="/send" component={Send}/>
+        </Router>
+      </div>
     );
 
   }
