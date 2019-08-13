@@ -1,0 +1,41 @@
+{
+  "domains": [
+    "localhost",
+    "dost.cash"
+  ],
+  "links": {
+    "code": "https://github.com/d-ost/dost-heiswap",
+    "about": "https://dost.cash"
+  },
+  "auxiliaryChain": {
+    "name": "Mosaic-1405",
+    "chainID": 1405,
+    "origin": "goerli",
+    "RPCURL": "https://mosaicdao.org/aux/1405",
+    "anchorAddress": "0x2Bbe4DFb364e76dA987Ac5754bB87b476cC6D80B",
+    "ostCogatewayAddress": "0x5efaE177C9f37E6DA82e807530EA550AA5F0AFdd",
+    "ostERC20Address": "0x3b588816D166A7aac3A68B0769B0E0168A6797a3",
+    "wethERC20Address": "0xBB5676d85d28DA039F982C07E4217fB0FDB2c2ef",
+    "wethGatewayAddress": "0x962e1404D6957d8fF56F8fE79a3fC2B670C3d578",
+    "heiswapAddress": "0x6f3024f722a9f5680fd0ada93f0cb61853eced36",
+    "explorer": {
+      "name": "",
+      "URL": ""
+    }
+  },
+  "originChain": {
+    "name": "goerli",
+    "chainID": 5,
+    "RPCURL": "https://mosaicdao.org/origin/goerli",
+    "anchorAddress": "0x4fDF26dc9a99D11FfB39a2d88a7E39E49544602a",
+    "ostGatewayAddress": "0x6649c6FF3629aE875b91B6C1551139c9feaA2514",
+    "ostERC20Address": "0xd426b22f3960d01189a3d548b45a7202489ff4de",
+    "wethERC20Address": "0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6",
+    "wethGatewayAddress": "0x6649c6FF3629aE875b91B6C1551139c9feaA2514",
+    "stakePoolAddress": "0xeaa192d486ac5243886a28001e27a68cae5fde4b",
+    "explorer": {
+      "name": "Goerli Etherscan",
+      "URL": "https://goerli.etherscan.io/"
+    }
+  }
+}
