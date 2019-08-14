@@ -10,16 +10,16 @@ interface Props {
 }
 
 interface State {
-
+  redirectURL?: string
 }
 
 export default class Main extends Component<Props, State> {
   constructor(props) {
     super(props);
-
-    this.state = {}
+    this.state = {};
+    this.handleSettingsBtnClick = this.handleSettingsBtnClick.bind(this);
+    this.handleAccountDetailBtnClick = this.handleAccountDetailBtnClick.bind(this);
   }
-
 
   componentDidMount() {
   }
@@ -33,18 +33,23 @@ export default class Main extends Component<Props, State> {
   handleSettingsBtnClick(e) {
     e.preventDefault();
     console.log('redirecting to settings page');
-    return <Redirect to='/setting' />
+    this.setState({
+      redirectURL: '/setting'
+    });
   }
 
   handleAccountDetailBtnClick(e) {
     e.preventDefault();
     console.log('redirecting to create-pin page');
-    return <Redirect to='/create-pin' />
+    this.setState({
+      redirectURL: '/create-pin'
+    });
   }
 
   render() {
     return (
-      <div className="Home">
+      this.state.redirectURL ? <Redirect to={this.state.redirectURL} />
+      : <div className="Home">
         <div className="SettingsBtn" onClick={this.handleSettingsBtnClick}>
           <IoMdSettings />
         </div>
