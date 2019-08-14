@@ -90,7 +90,7 @@
 
 /* Create Pin CSS */
 
-.CreatePin, .VerifyPin {
+.CreatePin, .VerifyPin, .Saving {
   width: 50%;
   background-color: #ffffff;
   padding: 5%;
