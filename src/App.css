@@ -88,6 +88,13 @@
   }
 }
 
+/* Home Page CSS */
+.Home {
+  width: 50%;
+  background-color: #ffffff;
+  padding: 5%;
+}
+
 /* Create Pin CSS */
 
 .CreatePin, .VerifyPin, .Saving {

@@ -8,6 +8,7 @@ import CreatePin from "./components/v2/CreatePin";
 import VerifyPin from "./components/v2/VerifyPin";
 import Scanner from "./components/v2/Scanner";
 import Saving from "./components/v2/Saving";
+import Setting from "./components/v2/Setting";
 
 interface Props {
 
@@ -46,6 +47,7 @@ export default class App extends Component<Props, State> {
           <Route exact path="/verify-pin" component={VerifyPin}/>
           <Route path= "/scanner" component={Scanner}/>
           <Route exact path="/saving" component={Saving}/>
+          <Route exact path="/setting" component={Setting}/>
         </Router>
       </div>
     );
