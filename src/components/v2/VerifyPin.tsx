@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import Form from "react-bootstrap/es/Form";
 import Button from "react-bootstrap/es/Button";
+import Pin from "../../viewModels/Pin";
 
 interface Props {
 
@@ -20,7 +21,7 @@ export default class VerifyPin extends Component<Props, State> {
 
     this.state = {
       pin: '',
-      errors: {pin: 'false'},
+      errors: {pin: 'no-error'},
     };
     this.handlePinChange = this.handlePinChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -34,28 +35,23 @@ export default class VerifyPin extends Component<Props, State> {
 
   clearValidationErrors() {
     this.setState({
-      errors: {pin: 'false'},
+      errors: {pin: 'no-error'},
     });
-  }
-
-  validatePin() {
-    console.log('validating pin...');
-    if(this.state.pin.length < this.PIN_MINIMUM_LENGTH) {
-      let errors = this.state.errors;
-      errors.pin = `Pin length should be greater or equal to ${this.PIN_MINIMUM_LENGTH}`;
-      this.setState({
-        errors: errors,
-      });
-    }
   }
 
   handleSubmit(e) {
     e.preventDefault();
     this.clearValidationErrors();
-    this.validatePin();
+
     const { pin } = this.state;
-    // Return if errors else store the pin
-    console.log(`pin: ${pin}`);
+    const pinInstance = new Pin(pin);
+    const errors = pinInstance.verifyPin();
+    if( errors.pin !== 'no-error') {
+      this.setState({
+        errors: errors,
+      });
+    }
+    console.log(`pin verified!!!`);
   }
 
   componentDidMount() {
@@ -80,10 +76,10 @@ export default class VerifyPin extends Component<Props, State> {
               minLength={6}
               required={true}
               onChange={this.handlePinChange}
-              isInvalid={this.state.errors.pin !== 'false'}
+              isInvalid={this.state.errors.pin !== 'no-error'}
             />
             <Form.Control.Feedback type="invalid">
-              {this.state.errors.pin !== 'false' && this.state.errors.pin}
+              {this.state.errors.pin !== 'no-error' && this.state.errors.pin}
             </Form.Control.Feedback>
           </Form.Group>
 

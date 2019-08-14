@@ -95,6 +95,23 @@
   padding: 5%;
 }
 
+/* Saving Pin CSS */
+
+.saving {
+  width: 50%;
+  background-color: #ffffff;
+  padding: 3%;
+}
+
+.header {
+  font-size: x-large;
+  font-weight: normal;
+  padding-bottom: 1%;
+}
+
+.lockIcon {
+  font-size: x-large;
+}
 /* Create Pin CSS */
 
 .CreatePin, .VerifyPin, .Saving {

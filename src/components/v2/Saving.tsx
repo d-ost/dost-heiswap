@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import Table from "react-bootstrap/es/Table";
+import { MdLockOpen, MdLockOutline } from 'react-icons/md';
+import { Row, Col, Container } from "react-bootstrap";
 
 interface Props {
 
@@ -28,39 +29,34 @@ export default class CreatePin extends Component<Props, State> {
   render() {
 
     return (
-      <div className='Saving'>
-        <Table responsive borderless striped hover size="md">
-          <thead>
-          <tr>
-            <th>Token</th>
-            <th>Burner Balance</th>
-            <th>Bucket Balance</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td>OST</td>
-            <td>10</td>
-            <td>100</td>
-          </tr>
-          <tr>
-            <td>WETH</td>
-            <td>20</td>
-            <td>200</td>
-          </tr>
-          <tr>
-            <td>DAI</td>
-            <td>30</td>
-            <td>300</td>
-          </tr>
-          <tr>
-            <td>USDC</td>
-            <td>40</td>
-            <td>400</td>
-          </tr>
-          </tbody>
-        </Table>
-      </div>
+      <Container className='saving'>
+        <h4>Your Saving Page</h4>
+        <Row className='header'>
+          <Col>Token</Col>
+          <Col><MdLockOpen /></Col>
+          <Col><MdLockOutline /></Col>
+        </Row>
+        <Row>
+          <Col>OST</Col>
+          <Col>10</Col>
+          <Col>100</Col>
+        </Row>
+        <Row>
+          <Col>WETH</Col>
+          <Col>20</Col>
+          <Col>200</Col>
+        </Row>
+        <Row>
+          <Col>DAI</Col>
+          <Col>30</Col>
+          <Col>300</Col>
+        </Row>
+        <Row>
+          <Col>USDC</Col>
+          <Col>40</Col>
+          <Col>400</Col>
+        </Row>
+      </Container>
     )
   }
 
