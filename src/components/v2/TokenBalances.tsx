@@ -23,15 +23,16 @@ export default class TokenBalances extends React.Component<Props, State> {
   render() {
     const tokens = Token.getAll();
     return (
-      <Table className="TokenBalances" responsive borderless striped hover size="md">
-        <thead>
-        <tr>
-          <th>Token</th>
-          <th>Burner Key(s) Balance</th>
-          <th hidden={!this.props.showBucketKeyBalances}>Bucket Key(s) Balance</th>
-        </tr>
-        </thead>
-        <tbody>
+      <div style={{backgroundColor:'white'}}>
+        <Table className="TokenBalances" responsive borderless striped hover size="md">
+          <thead>
+          <tr>
+            <th>Token</th>
+            <th>Balance</th>
+            <th hidden={!this.props.showBucketKeyBalances}>Bucket Key(s) Balance</th>
+          </tr>
+          </thead>
+          <tbody>
           {tokens.map((value, index) => {
             return <TokenBalance
               context={this.props.context}
@@ -39,8 +40,9 @@ export default class TokenBalances extends React.Component<Props, State> {
               showBucketKeyBalances={this.props.showBucketKeyBalances}
             />
           })}
-        </tbody>
-      </Table>
+          </tbody>
+        </Table>
+      </div>
     );
   }
 }

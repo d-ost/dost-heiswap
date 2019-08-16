@@ -29,6 +29,12 @@ export default class Token {
         'Simple Token',
         false,
         '0xeaa192d486ac5243886a28001e27a68cae5fde4b'
+      ),
+      new Token(
+        'wEth',
+        'Wrapped Eth',
+        false,
+        '0xeaa192d486ac5243886a28001e27a68cae5fde4b'
       )
     ];
   }

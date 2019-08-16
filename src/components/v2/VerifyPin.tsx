@@ -2,9 +2,10 @@ import React, {Component} from 'react';
 import Form from "react-bootstrap/es/Form";
 import Button from "react-bootstrap/es/Button";
 import Pin from "../../viewModels/Pin";
+import {Routes} from "./Routes";
 
 interface Props {
-
+  onValidationSuccess?: any;
 }
 
 interface State {
@@ -50,8 +51,11 @@ export default class VerifyPin extends Component<Props, State> {
       this.setState({
         errors: errors,
       });
+    } else {
+      console.log(`pin verified!!!`);
+      this.props.onValidationSuccess();
     }
-    console.log(`pin verified!!!`);
+
   }
 
   componentDidMount() {

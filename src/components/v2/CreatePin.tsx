@@ -2,9 +2,12 @@ import React, {Component} from 'react';
 import Form from "react-bootstrap/es/Form";
 import Button from "react-bootstrap/es/Button";
 import Pin from "../../viewModels/Pin";
+import NavigationBarWBB from "./NavigationBarWBB";
+import Modal from "react-bootstrap/es/Modal";
+import {Routes} from "./Routes";
 
 interface Props {
-
+  onValidationSuccess?:any;
 }
 
 interface State {
@@ -14,7 +17,7 @@ interface State {
 }
 
 export default class CreatePin extends Component<Props, State> {
-  
+
   constructor(props) {
     super(props);
 
@@ -57,8 +60,10 @@ export default class CreatePin extends Component<Props, State> {
       this.setState({
         errors: errors,
       });
+    } else {
+      pinInstance.savePin();
+      this.props.onValidationSuccess();
     }
-    pinInstance.savePin();
   }
 
   componentDidMount() {
@@ -70,9 +75,7 @@ export default class CreatePin extends Component<Props, State> {
   componentWillUnmount() {
   }
 
-
   render() {
-
     return (
       <div className='CreatePin'>
         <Form>
