@@ -1,22 +1,25 @@
 import React, {Component} from 'react';
-import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
+import { Redirect } from 'react-router';
+import Button from "react-bootstrap/es/Button";
+import { IoMdSettings } from 'react-icons/io';
+import { MdAccountCircle } from 'react-icons/md';
+import TokenBalances from './TokenBalances';
 
 interface Props {
-
+  context: string
 }
 
 interface State {
-
+  redirectURL?: string
 }
 
 export default class Main extends Component<Props, State> {
   constructor(props) {
     super(props);
-
-    this.state = {}
+    this.state = {};
+    this.handleSettingsBtnClick = this.handleSettingsBtnClick.bind(this);
+    this.handleAccountDetailBtnClick = this.handleAccountDetailBtnClick.bind(this);
   }
-
 
   componentDidMount() {
   }
@@ -27,21 +30,38 @@ export default class Main extends Component<Props, State> {
   componentWillUnmount() {
   }
 
+  handleSettingsBtnClick(e) {
+    e.preventDefault();
+    console.log('redirecting to settings page');
+    this.setState({
+      redirectURL: '/setting'
+    });
+  }
+
+  handleAccountDetailBtnClick(e) {
+    e.preventDefault();
+    console.log('redirecting to create-pin page');
+    this.setState({
+      redirectURL: '/create-pin'
+    });
+  }
 
   render() {
-
     return (
-      <Card style={{width: '18rem'}}>
-        <Card.Body>
-          <Card.Title>Card Title</Card.Title>
-          <Card.Text>
-            Some quick example text to build on the card title and make up the
-            bulk of
-            the card's content.
-          </Card.Text>
-          <Button variant="primary">Go somewhere</Button>
-        </Card.Body>
-      </Card>
+      this.state.redirectURL ? <Redirect to={this.state.redirectURL} />
+      : <div className="Home">
+        <div className="SettingsBtn" onClick={this.handleSettingsBtnClick}>
+          <IoMdSettings />
+        </div>
+        <div className="AccountDetailBtn" onClick={this.handleAccountDetailBtnClick}>
+          <MdAccountCircle />
+        </div>
+        <TokenBalances
+          context={this.props.context}
+          showBucketKeyBalances={ false }
+        />
+        <Button variant="light">Receive</Button>
+      </div>
     );
   }
 
