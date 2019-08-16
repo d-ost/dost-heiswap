@@ -17,12 +17,17 @@
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
     "react-select": "3.0.4",
+    "react-i18next": "10.12.1",
+    "i18next": "17.0.11",
+    "i18next-browser-languagedetector": "3.0.3",
     "rimble-ui": "0.9.6",
     "styled-components": "4.3.2",
     "typescript": "^3.5.3",
     "web3": "2.0.0-alpha",
     "web3-eth-accounts": "1.2.1",
-    "web3-utils": "2.0.0-alpha"
+    "web3-utils": "2.0.0-alpha",
+    "@walletconnect/browser": "1.0.0-beta.32",
+    "@walletconnect/qrcode-modal": "1.0.0-beta.32"
   },
   "scripts": {
     "start": "react-scripts start",

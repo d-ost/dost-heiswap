@@ -1,6 +1,8 @@
 // Copyright 2019 LeapDAO.org MIT
 // github.com/leapdao/plasma-burner-wallet
 
+import {ReserveType} from "../models/SelectReserveModel";
+
 class LocalStorage {
 
   static BURNER: string = 'burner';
@@ -47,19 +49,30 @@ class LocalStorage {
     localStorage.setItem(LocalStorage.BURNER, JSON.stringify(burnerObject));
   }
 
-  getBucketAddresses():string[] {
-    if (this.refetchBucket) {
-      const bucketObject = this.getFromLocalStorage(LocalStorage.BUCKET);
-      this.bucketAddressCache = Object.keys(bucketObject);
-      this.refetchBucket = false;
-    }
-    return this.bucketAddressCache;
+  getBucketAddresses():object {
+    const bucketObject = this.getFromLocalStorage(LocalStorage.BUCKET);
+    return bucketObject;
   }
 
-  storeBucketAddress(address: string, encryptedPrivateKey: string):void {
-    this.refetchBucket = true;
+  storeBucketAddress(
+    address: string,
+    type: ReserveType,
+    privateKey?: string,
+    expirationTime?: string
+  ):void {
     const bucketObject = this.getFromLocalStorage(LocalStorage.BUCKET);
-    bucketObject[address] = encryptedPrivateKey;
+    bucketObject[address] = {
+      address,
+      type,
+      privateKey,
+      expirationTime,
+    };
+    localStorage.setItem(LocalStorage.BUCKET, JSON.stringify(bucketObject));
+  }
+
+  deleteBucketAddress(address:string) {
+    const bucketObject = this.getFromLocalStorage(LocalStorage.BUCKET);
+    delete bucketObject[address];
     localStorage.setItem(LocalStorage.BUCKET, JSON.stringify(bucketObject));
   }
 
