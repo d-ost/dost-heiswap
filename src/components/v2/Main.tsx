@@ -62,29 +62,40 @@ export default class Main extends Component<Props, State> {
 
         <Footer>
           <Row style={{margin:'10px'}}>
-            <Col style={{paddingRight:'5px', paddingLeft:'0px'}}>
+            <Col style={{paddingRight:'1px', paddingLeft:'0px'}}>
               <Button style={{
+                fontWeight:'bolder',
                 display:'inline',
                 width:'100%',
-                backgroundColor: 'white',
+                backgroundColor: '#34445b',
                 borderWidth:'0px',
-                color:'black',
+                color:'white',
                 height:'55px',
                 boxShadow: '0 5px 15px rgba(0,0,0,.15)',
+                borderTopLeftRadius:'15px',
+                borderTopRightRadius: '0px',
+                borderBottomRightRadius: '0px',
+                borderBottomLeftRadius: '15px',
+                overflow: 'hidden',
               }}>
                 Receive
               </Button>
             </Col>
-            <Col style={{paddingLeft:'5px', paddingRight:'0px'}}>
+            <Col style={{paddingLeft:'1px', paddingRight:'0px'}}>
               <Button
                 style={{
+                  fontWeight:'bolder',
                   display:'inline',
                   width:'100%',
                   borderWidth:'0px',
-                  backgroundColor: 'white',
-                  color:'black',
+                  backgroundColor: '#34445b',
+                  color:'white',
                   height:'55px',
                   boxShadow: '0 5px 15px rgba(0,0,0,.15)',
+                  borderTopLeftRadius:'0px',
+                  borderTopRightRadius: '15px',
+                  borderBottomRightRadius: '15px',
+                  borderBottomLeftRadius: '0px',
                 }}>
                 Send
               </Button>

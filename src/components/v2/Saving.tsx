@@ -55,14 +55,16 @@ export default class CreatePin extends Component<Props, State> {
               <Button
                 onClick={()=>{this.props.history.push(Routes.SelectReserve);}}
                 style={{
-                display:'inline',
-                width:'100%',
-                backgroundColor: 'white',
-                borderWidth:'0px',
-                color:'black',
-                height:'55px',
-                boxShadow: '0 5px 15px rgba(0,0,0,.15)',
-              }}>
+                  fontWeight:'bolder',
+                  display:'inline',
+                  width:'100%',
+                  backgroundColor: '#34445b',
+                  color:'white',
+                  borderWidth:'0px',
+                  height:'55px',
+                  boxShadow: '0 5px 15px rgba(0,0,0,.15)',
+                  borderRadius:'15px',
+                }}>
                 Add Reserve
               </Button>
             </Col>

@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import Navbar from "react-bootstrap/es/Navbar";
 import Container from "react-bootstrap/es/Container";
 import NavbarBrand from "react-bootstrap/es/NavbarBrand";
+import Row from "react-bootstrap/es/Row";
 
 interface Props {
 
@@ -35,8 +36,16 @@ export default class Footer extends Component<Props, State> {
         display: 'table',
         marginRight: 'auto',
         marginLeft: 'auto',
+        backgroundColor: "#F8F8F8",
+        borderTop: "1px solid #E7E7E7",
+        boxShadow: '0 5px 15px rgba(0,0,0,.25)',
       }}>
         {this.props.children}
+        <Row style={{margin:'10px'}}>
+          <div style={{textAlign:'center', width:'100%', color:'#438cad'}}>
+            ⚠️ This product is currently in development. Use at your own risk! ⚠️
+          </div>
+        </Row>
       </div>
     );
 /*

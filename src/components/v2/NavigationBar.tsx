@@ -53,7 +53,7 @@ export default class NavigationBar extends Component<Props, State> {
   }
   render() {
     return (
-      <div style={{maxWidth:'48rem', width:'100%', backgroundColor:'#e7f6f7'}}>
+      <div style={{maxWidth:'48rem', width:'100%', backgroundColor:'#e7f6f7', boxShadow: '0 5px 15px rgba(0,0,0,.25)'}}>
         <div className="fixed-top" style={{
           width:'100%',
           maxWidth:'48rem',
@@ -69,7 +69,13 @@ export default class NavigationBar extends Component<Props, State> {
             }}>
             <a className="navbar-brand" href="/">
               <img src={dostLogo} height='30' width='30' alt=""/>
-              <span style={{marginLeft:'15px'}}>dOST</span>
+              <span style={{
+                marginLeft:'15px',
+                fontWeight:'bolder',
+                color:'#34445b'
+              }}>
+                d-OST Wallet
+              </span>
             </a>
             <div className="SettingsBtn">
               <img src={profileIcon} height='35px' width='35px' style={{marginRight:'10px'}} alt="" onClick={this.handleAccountDetailBtnClick}/>

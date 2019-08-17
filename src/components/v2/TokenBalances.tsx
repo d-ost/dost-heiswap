@@ -42,16 +42,16 @@ export default class TokenBalances extends React.Component<Props, State> {
               borderBottomStyle:'solid'
             }}>
             <ListGroup variant="flush">
-              <ListGroup.Item>
-                <Row style={{paddingRight:'5px', paddingLeft:'5px', paddingTop:'15px', paddingBottom:'15px'}}>
-                  <Col xs={5} style={{padding:'0'}}>
-                    <div style={{paddingRight:'10px', paddingLeft:'15px', fontWeight:'bolder'}}> Tokens </div>
+              <ListGroup.Item style={{padding:'0px'}}>
+                <Row style={{backgroundColor:'#34445b'}}>
+                  <Col xs={5} >
+                    <div style={{fontWeight:'bolder', height: '60px', color:'white', padding: '20px', paddingLeft: '40px'}}> Tokens </div>
                   </Col>
-                  <Col style={{padding:'0',textAlign:'right'}}>
-                    <span style={{paddingRight:'10px',fontWeight:'bolder'}}> Burner </span>
+                  <Col style={{textAlign:'right'}}>
+                    <div style={{fontWeight:'bolder', height: '60px', color:'white', paddingRight: '20px', paddingTop: '20px'}}> Burner </div>
                   </Col>
-                  <Col style={{padding:'0',textAlign:'right', display:this.props.showBucketKeyBalances?'block':'none'}}>
-                    <div style={{paddingRight:'10px',fontWeight:'bolder'}}> Bucket </div>
+                  <Col style={{textAlign:'right', display:this.props.showBucketKeyBalances?'block':'none',  height: '60px'}}>
+                    <div style={{fontWeight:'bolder', color:'white', padding: '20px'}}> Bucket </div>
                   </Col>
                 </Row>
               </ListGroup.Item>

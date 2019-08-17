@@ -162,11 +162,11 @@ export default class Send extends Component<Props, State> {
                 <Row style={{borderBottomColor:'red', borderBottomWidth:'10px'}}>
                   <Col xs={5} style={{padding:'0'}}>
                     <div style={{paddingRight:'10px', paddingLeft:'10px'}}>
-                      <span style={{marginLeft:'15px'}}>{b.chain}</span>
+                      <span style={{marginLeft:'15px', color:'#34445b'}}>{b.chain}</span>
                     </div>
                   </Col>
                   <Col style={{padding:'0',textAlign:'right'}}>
-                    <span style={{paddingRight:'15px'}}> {b.amount} </span>
+                    <span style={{paddingRight:'15px', color:'#34445b'}}> {b.amount} </span>
                   </Col>
                 </Row>
               </div>
@@ -195,7 +195,7 @@ export default class Send extends Component<Props, State> {
           <div style={{paddingLeft:'10px', paddingRight:'10px', paddingTop:'30px', paddingBottom:'20px'}}>
             <InputGroup className="mb-3">
               <InputGroup.Prepend>
-                <InputGroup.Text id="basic-addon1" style={{backgroundColor: 'rgb(231, 246, 247)',  borderColor:'rgb(231, 246, 247)'}}>To</InputGroup.Text>
+                <InputGroup.Text id="basic-addon1" style={{backgroundColor: 'rgb(231, 246, 247)', borderColor:'rgb(231, 246, 247)', color:'#34445b'}}>To</InputGroup.Text>
               </InputGroup.Prepend>
               <FormControl
                 style={{borderColor:'rgb(231, 246, 247)'}}
@@ -208,7 +208,7 @@ export default class Send extends Component<Props, State> {
 
             <InputGroup className="mb-3">
               <InputGroup.Prepend>
-                <InputGroup.Text id="basic-addon1" style={{backgroundColor: 'rgb(231, 246, 247)', borderColor:'rgb(231, 246, 247)'}}>Amount</InputGroup.Text>
+                <InputGroup.Text id="basic-addon1" style={{backgroundColor: 'rgb(231, 246, 247)', borderColor:'rgb(231, 246, 247)', color:'#34445b'}}>Amount</InputGroup.Text>
               </InputGroup.Prepend>
               <FormControl
                 style={{borderColor:'rgb(231, 246, 247)'}}
@@ -223,32 +223,42 @@ export default class Send extends Component<Props, State> {
 
         <Footer>
           <Row style={{margin:'10px'}}>
-            <Col style={{paddingRight:'5px', paddingLeft:'0px'}}>
+            <Col style={{paddingRight:'1px', paddingLeft:'0px'}}>
               <Button
                 onClick={()=>{this.setState({modalShow: true})}}
                 style={{
-                display:'inline',
-                width:'100%',
-                backgroundColor: 'white',
-                borderWidth:'0px',
-                color:'black',
-                height:'55px',
-                boxShadow: '0 5px 15px rgba(0,0,0,.15)',
-              }}>
+                  fontWeight:'bolder',
+                  display:'inline',
+                  width:'100%',
+                  backgroundColor: '#34445b',
+                  borderWidth:'0px',
+                  color:'white',
+                  height:'55px',
+                  boxShadow: '0 5px 15px rgba(0,0,0,.15)',
+                  borderTopLeftRadius:'15px',
+                  borderTopRightRadius: '0px',
+                  borderBottomRightRadius: '0px',
+                  borderBottomLeftRadius: '15px',
+                }}>
                 Scan
               </Button>
             </Col>
-            <Col style={{paddingLeft:'5px', paddingRight:'0px'}}>
+            <Col style={{paddingLeft:'1px', paddingRight:'0px'}}>
               <Button
                 onClick={this.handleSubmit}
                 style={{
+                  fontWeight:'bolder',
                   display:'inline',
                   width:'100%',
                   borderWidth:'0px',
-                  backgroundColor: 'white',
-                  color:'black',
+                  backgroundColor: '#34445b',
+                  color:'white',
                   height:'55px',
                   boxShadow: '0 5px 15px rgba(0,0,0,.15)',
+                  borderTopLeftRadius:'0px',
+                  borderTopRightRadius: '15px',
+                  borderBottomRightRadius: '15px',
+                  borderBottomLeftRadius: '0px',
                 }}>
                 Submit
               </Button>
