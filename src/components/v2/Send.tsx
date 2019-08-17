@@ -9,6 +9,11 @@ import {FormControl} from "react-bootstrap";
 import {Link} from 'react-router-dom'
 import queryString from "query-string";
 import * as Web3Utils from 'web3-utils';
+import NavigationBarWBB from "./NavigationBarWBB";
+import TokenBalance from "./TokenBalance";
+import Token from "../../viewModels/Token";
+import ModelContainer from "./ModelContainer";
+import Scanner from "./Scanner";
 
 interface Balance {
   chain: string;
@@ -16,14 +21,16 @@ interface Balance {
 }
 interface Props {
   location: any;
+  context?: any;
 }
 
 interface State {
   beneficiary: string;
-  token: string;
+  token: Token;
   balances: Balance[];
   amount: string;
-  error: string
+  error: string;
+  modalShow: boolean;
 }
 
 const ColoredLine = ({color, height}) => (
@@ -39,9 +46,11 @@ const ColoredLine = ({color, height}) => (
 export default class Send extends Component<Props, State> {
   constructor(props) {
     super(props);
+    console.log('this.props.location.state: ', this.props.location.state);
+    console.log('this.state: ', this.state);
     this.state = {
       beneficiary: '',
-      token: 'OST',//this.props.token;
+      token: this.props.location.state.token,//this.props.token;
       balances: [
         {
           chain: 'Plasma',
@@ -58,6 +67,7 @@ export default class Send extends Component<Props, State> {
       ],
       amount: '',
       error: '',
+      modalShow: false,
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -112,46 +122,49 @@ export default class Send extends Component<Props, State> {
     console.log('amount  ', amount);
     console.log('beneficiary  ', beneficiary);
   }
+
+  closeModal() {
+    this.setState({modalShow: false});
+  }
   render() {
 
+    console.log('-----> State: ', this.state);
     const totalBalance = this.state.balances
       .map(b => Web3Utils.toBN(b.amount))
       .reduce((acc, amount) => acc.add(amount)).toString(10);
 
     return (
-      <Card style={{width: '50%'}}>
-        <Card.Body>
+      <NavigationBarWBB {...this.props} title='Send'>
+        <div style={{width: '100%', backgroundColor:'white'}}>
           {this.state.error.length > 0 ?
             <Alert variant="danger">
               {this.state.error}
             </Alert> : ''
           }
-          <Row>
-            <Col><h1>Send</h1></Col>
-          </Row>
-          <ColoredLine color="blue" height="10"/>
-          <Row>
-            <Col>
-              {this.state.token}
-            </Col>
-            <Col>
-              {totalBalance}
-            </Col>
-          </Row>
-          <ColoredLine color="black" height="2"/>
+          <div style={{padding:'10px', borderBottomWidth:'1px', borderBottomStyle:'solid', borderBottomColor:'rgb(231, 246, 247)'}}>
+            <TokenBalance
+              onClick={()=>{}}
+              context={this.props.context}
+              token={this.state.token}
+              showBucketKeyBalances={false}
+            />
+          </div>
           {this.state.balances.map(b =>
-            <Row key={b.chain}>
-              <Col>
-                {b.chain}
-              </Col>
-              <Col>
-                {b.amount}
-              </Col>
-            </Row>
+            <div style={{marginLeft:'10px', marginRight:'10px', padding:'10px', borderBottomWidth:'1px', borderBottomStyle:'solid', borderBottomColor:'rgb(231, 246, 247)'}}>
+              <Row style={{borderBottomColor:'red', borderBottomWidth:'10px'}}>
+                <Col xs={5} style={{padding:'0'}}>
+                  <div style={{paddingRight:'10px', paddingLeft:'10px'}}>
+                    <span style={{marginLeft:'15px'}}>{b.chain}</span>
+                  </div>
+                </Col>
+                <Col style={{padding:'0',textAlign:'right'}}>
+                  <span style={{paddingRight:'15px'}}> {b.amount} </span>
+                </Col>
+              </Row>
+            </div>
           )}
 
-          <ColoredLine color="black" height="2"/>
-          <Row>
+          <div style={{paddingLeft:'10px', paddingRight:'10px', paddingTop:'30px', paddingBottom:'20px'}}>
             <InputGroup className="mb-3">
               <InputGroup.Prepend>
                 <InputGroup.Text id="basic-addon1">To</InputGroup.Text>
@@ -163,15 +176,10 @@ export default class Send extends Component<Props, State> {
                 onChange={this.handleBeneficiaryChange}
               />
               <InputGroup.Append>
-                <Link
-                  to="/scanner?redirectURL=/send&key=beneficiary">
-                  <Button variant="dark">Scan</Button>
-                </Link>
+                <Button variant="dark" onClick={()=>{this.setState({modalShow: true})}}>Scan</Button>
               </InputGroup.Append>
             </InputGroup>
-          </Row>
 
-          <Row>
             <InputGroup className="mb-3">
               <InputGroup.Prepend>
                 <InputGroup.Text id="basic-addon1">Amount</InputGroup.Text>
@@ -183,15 +191,24 @@ export default class Send extends Component<Props, State> {
                 type="number"
               />
             </InputGroup>
-          </Row>
-          <Row>
-            <Col>
-              <Button variant="dark"
-                      onClick={this.handleSubmit}>Submit</Button>
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
+            <Row>
+              <Col>
+                <Button variant="dark"
+                        onClick={this.handleSubmit}>Submit</Button>
+              </Col>
+            </Row>
+          </div>
+        </div>
+
+        <ModelContainer
+          show={this.state.modalShow}
+          onHide={() => this.closeModal()}
+          title='Scan'
+        >
+          <Scanner onScan={(address) => {this.setState({beneficiary:address}); this.closeModal();}} />
+        </ModelContainer>
+
+      </NavigationBarWBB>
     )
   }
 

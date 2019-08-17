@@ -7,6 +7,7 @@ import ModelContainer from "./ModelContainer";
 import CreatePin from "./CreatePin";
 import VerifyPin from "./VerifyPin";
 import {Routes} from "./Routes";
+import Token from "../../viewModels/Token";
 
 
 interface Props {
@@ -53,6 +54,14 @@ export default class Main extends Component<Props, State> {
   closeModal() {
     this.setState({modalShow: false});
   }
+  tokenClicked(token:Token) {
+    console.log('Token clicked: ', token);
+
+    this.props.history.push({
+      pathname: Routes.Send,
+      state: { token: token }
+    });
+  }
   render() {
     return (
       <NavigationBar>
@@ -76,10 +85,13 @@ export default class Main extends Component<Props, State> {
           }}>
             <p style={{marginBottom:'10px'}}>Hello xyz</p>
           </div>
-          <TokenBalances
-            context={this.props.context}
-            showBucketKeyBalances={ false }
-          />
+          <div style={{marginLeft:'1px', marginRight:'1px'}}>
+            <TokenBalances
+              onClick={(token:Token)=>(this.tokenClicked(token))}
+              context={this.props.context}
+              showBucketKeyBalances={ false }
+            />
+          </div>
           <div style={{
             display: 'table',
             marginRight: 'auto',

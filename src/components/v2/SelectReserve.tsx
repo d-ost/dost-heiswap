@@ -2,6 +2,9 @@ import React, {Component} from 'react';
 import Card from "react-bootstrap/Card";
 import { SelectReserveModel, ReserveType, ReserveAccount } from "../../models/SelectReserveModel";
 import i18n  from "../../i18n";
+import NavigationBarWBB from "./NavigationBarWBB";
+import Button from "react-bootstrap/es/Button";
+import {Routes} from "./Routes";
 
 interface Props {}
 interface State {}
@@ -27,13 +30,10 @@ export default class SelectReserve extends Component<Props, State> {
 
   render() {
     return (
-      <Card style={{ width: '36rem' }}>
-        <Card.Body>
-          <Card.Title>{i18n.t('connect_reserve')}</Card.Title>
-          {this.getConnectedOptions()}
-          {this.getConnectableOptions()}
-        </Card.Body>
-      </Card>
+      <NavigationBarWBB {...this.props} title='Select Reserve'>
+        {this.getConnectedOptions()}
+        {this.getConnectableOptions()}
+      </NavigationBarWBB>
     )
   }
 
@@ -82,22 +82,31 @@ export default class SelectReserve extends Component<Props, State> {
     }
 
     return (
-    <div className="card" style={{marginBottom: '10px'}}>
-      <div className="card-body mb-1">
-        <h5 className="card-title">{reserveAccount.title}</h5>
-        <p className="text-left">{reserveAccount.description}</p>
-        <p className="text-left" style={{display: displayStyleForAccount}}>
-          <span style={{fontWeight: 'bolder'}}>Connected account:</span><br/>
-          <span style={{fontFamily: 'Courier New'}}>{reserveAccount.account}</span>
-        </p>
-        <button type="button"
-                style={{width: '100%'}}
-                className={connectButtonClass}
-                onClick={action.bind(this) as any}>
-          {connectButtonDisplayText}
-        </button>
+      <div className="card" style={{margin: '10px'}}>
+        <div className="card-body mb-1">
+          <h5 className="card-title">{reserveAccount.title}</h5>
+          <p className="text-left">{reserveAccount.description}</p>
+          <p className="text-left" style={{display: displayStyleForAccount}}>
+            <span style={{fontWeight: 'bolder'}}>Connected account:</span><br/>
+            <span style={{fontFamily: 'Courier New'}}>{reserveAccount.account}</span>
+          </p>
+
+          <div style={{
+            display: 'table',
+            marginRight: 'auto',
+            marginLeft: 'auto',
+            marginBottom: '10px',
+            marginTop: '10px',
+          }}>
+            <button type="button"
+                    style={{width: '150px'}}
+                    className={connectButtonClass}
+                    onClick={action.bind(this) as any}>
+              {connectButtonDisplayText}
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
     );
   }
 
