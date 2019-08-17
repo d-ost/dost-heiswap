@@ -4,6 +4,9 @@ import TokenBalances from "./TokenBalances";
 import Token from "../../viewModels/Token";
 import Button from "react-bootstrap/es/Button";
 import {Routes} from "./Routes";
+import Row from "react-bootstrap/es/Row";
+import Col from "react-bootstrap/es/Col";
+import Footer from "./Footer";
 
 interface Props {
   context?:any
@@ -45,15 +48,26 @@ export default class CreatePin extends Component<Props, State> {
             showBucketKeyBalances={ true }
           />
         </div>
-        <div style={{
-          display: 'table',
-          marginRight: 'auto',
-          marginLeft: 'auto',
-          marginBottom: '10px',
-          marginTop: '10px',
-        }}>
-          <Button variant="light" onClick={()=>{this.props.history.push(Routes.SelectReserve);}}>Add Reserve</Button>
-        </div>
+
+        <Footer>
+          <Row style={{margin:'10px'}}>
+            <Col style={{paddingRight:'5px', paddingLeft:'0px'}}>
+              <Button
+                onClick={()=>{this.props.history.push(Routes.SelectReserve);}}
+                style={{
+                display:'inline',
+                width:'100%',
+                backgroundColor: 'white',
+                borderWidth:'0px',
+                color:'black',
+                height:'55px',
+                boxShadow: '0 5px 15px rgba(0,0,0,.15)',
+              }}>
+                Add Reserve
+              </Button>
+            </Col>
+          </Row>
+        </Footer>
       </NavigationBarWBB>
     )
   }

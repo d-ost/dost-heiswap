@@ -34,13 +34,26 @@ export default class NavigationBarWBB extends Component<Props, State> {
   render() {
     return (
       <div style={{maxWidth:'48rem', width:'100%', backgroundColor:'#e7f6f7'}}>
-        <nav className="navbar navbar-light bg-light">
-          <a className="navbar-brand" onClick={()=>{this.goBack()}}>
-            <img src={backButton} height='30' width='30' alt=""/>
-          </a>
-          <span style={{marginLeft:'auto', marginRight:'auto', paddingRight:'15'}}>{this.props.title}</span>
-        </nav>
-        {this.props.children}
+        <div className="fixed-top" style={{
+          width:'100%',
+          maxWidth:'48rem',
+          display: 'table',
+          marginRight: 'auto',
+          marginLeft: 'auto',
+        }}>
+          <div className="navbar navbar-light" style={{
+            backgroundColor: 'white',
+            boxShadow: '0 5px 15px rgba(0,0,0,.25)',
+          }}>
+            <a className="navbar-brand" onClick={()=>{this.goBack()}}>
+              <img src={backButton} height='30' width='30' alt=""/>
+            </a>
+            <span style={{marginLeft:'auto', marginRight:'auto', paddingRight:'15'}}>{this.props.title}</span>
+          </div>
+        </div>
+        <div style={{marginTop:'70px'}}>
+          {this.props.children}
+        </div>
       </div>
     )
   }

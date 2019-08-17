@@ -8,6 +8,9 @@ import CreatePin from "./CreatePin";
 import VerifyPin from "./VerifyPin";
 import {Routes} from "./Routes";
 import Token from "../../viewModels/Token";
+import Footer from "./Footer";
+import Row from "react-bootstrap/es/Row";
+import Col from "react-bootstrap/es/Col";
 
 
 interface Props {
@@ -25,9 +28,6 @@ interface State {
 export default class Main extends Component<Props, State> {
   constructor(props) {
     super(props);
-    this.state = {modalShow: false};
-    //this.handleSettingsBtnClick = this.handleSettingsBtnClick.bind(this);
-    this.handleAccountDetailBtnClick = this.handleAccountDetailBtnClick.bind(this);
   }
 
   componentDidMount() {
@@ -39,21 +39,6 @@ export default class Main extends Component<Props, State> {
   componentWillUnmount() {
   }
 
-
-  handleAccountDetailBtnClick(e) {
-    e.preventDefault();
-    console.log('redirecting to create-pin page');
-    //this.props.history.push(Routes.CreatePin);
-    this.setState({modalShow: true});
-  }
-
-  getPinVerificationView() {
-    //return (<CreatePin history={this.props.history}/>);
-    return (<VerifyPin onValidationSuccess={()=>{this.props.history.push(Routes.Savings)}}/>);
-  }
-  closeModal() {
-    this.setState({modalShow: false});
-  }
   tokenClicked(token:Token) {
     console.log('Token clicked: ', token);
 
@@ -64,9 +49,56 @@ export default class Main extends Component<Props, State> {
   }
   render() {
     return (
-      <NavigationBar>
+      <NavigationBar {...this.props} >
         <div>
-          <div className="AccountDetailBtn"
+          <div style={{marginLeft:'1px', marginRight:'1px', paddingBottom: '65px'}}>
+            <TokenBalances
+              onClick={(token:Token)=>(this.tokenClicked(token))}
+              context={this.props.context}
+              showBucketKeyBalances={ false }
+            />
+          </div>
+        </div>
+
+        <Footer>
+          <Row style={{margin:'10px'}}>
+            <Col style={{paddingRight:'5px', paddingLeft:'0px'}}>
+              <Button style={{
+                display:'inline',
+                width:'100%',
+                backgroundColor: 'white',
+                borderWidth:'0px',
+                color:'black',
+                height:'55px',
+                boxShadow: '0 5px 15px rgba(0,0,0,.15)',
+              }}>
+                Receive
+              </Button>
+            </Col>
+            <Col style={{paddingLeft:'5px', paddingRight:'0px'}}>
+              <Button
+                style={{
+                  display:'inline',
+                  width:'100%',
+                  borderWidth:'0px',
+                  backgroundColor: 'white',
+                  color:'black',
+                  height:'55px',
+                  boxShadow: '0 5px 15px rgba(0,0,0,.15)',
+                }}>
+                Send
+              </Button>
+            </Col>
+          </Row>
+        </Footer>
+      </NavigationBar>
+    );
+  }
+
+}
+
+/*
+<div className="AccountDetailBtn"
                style={{
                  width:100,
                  height:100,
@@ -85,34 +117,4 @@ export default class Main extends Component<Props, State> {
           }}>
             <p style={{marginBottom:'10px'}}>Hello xyz</p>
           </div>
-          <div style={{marginLeft:'1px', marginRight:'1px'}}>
-            <TokenBalances
-              onClick={(token:Token)=>(this.tokenClicked(token))}
-              context={this.props.context}
-              showBucketKeyBalances={ false }
-            />
-          </div>
-          <div style={{
-            display: 'table',
-            marginRight: 'auto',
-            marginLeft: 'auto',
-            marginBottom: '10px',
-            marginTop: '10px',
-          }}>
-            <Button variant="light" >Receive</Button>
-          </div>
-
-        </div>
-
-        <ModelContainer
-          show={this.state.modalShow}
-          onHide={() => this.closeModal()}
-          title='Create Pin'
-         >
-          {this.getPinVerificationView()}
-        </ModelContainer>
-      </NavigationBar>
-    );
-  }
-
-}
+ */

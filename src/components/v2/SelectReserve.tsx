@@ -82,30 +82,38 @@ export default class SelectReserve extends Component<Props, State> {
     }
 
     return (
-      <div className="card" style={{margin: '10px'}}>
-        <div className="card-body mb-1">
+      <div className="card" style={{
+        margin: '10px',
+        boxShadow: '0 5px 15px rgba(0,0,0,.15)',
+        borderRadius:'15px',
+        borderWidth:'0px',
+        overflow: 'hidden',
+        backgroundColor:`rgba(255, 255, 255, ${reserveAccount.supportedByBrowser?1.0:0.5})`
+      }}>
+        <div className="card-body mb-1" style={{paddingBottom: '0px'}}>
           <h5 className="card-title">{reserveAccount.title}</h5>
           <p className="text-left">{reserveAccount.description}</p>
           <p className="text-left" style={{display: displayStyleForAccount}}>
             <span style={{fontWeight: 'bolder'}}>Connected account:</span><br/>
             <span style={{fontFamily: 'Courier New'}}>{reserveAccount.account}</span>
           </p>
-
-          <div style={{
-            display: 'table',
-            marginRight: 'auto',
-            marginLeft: 'auto',
-            marginBottom: '10px',
-            marginTop: '10px',
-          }}>
-            <button type="button"
-                    style={{width: '150px'}}
-                    className={connectButtonClass}
-                    onClick={action.bind(this) as any}>
-              {connectButtonDisplayText}
-            </button>
-          </div>
         </div>
+        <button type="button"
+                style={{
+                  display:`${reserveAccount.supportedByBrowser?'block':'none'}`,
+                  paddingTop: '10px',
+                  paddingBottom:'13px',
+                  width: '100%',
+                  backgroundColor:'white',
+                  borderWidth:'0px',
+                  color:`${isAccountAvailable?'red':'black'}`,
+                  borderTopWidth:'1px',
+                  borderTopColor:'rgb(231, 246, 247)',
+                  borderTopStyle:'solid'}}
+                className={connectButtonClass}
+                onClick={action.bind(this) as any}>
+          {connectButtonDisplayText}
+        </button>
       </div>
     );
   }
