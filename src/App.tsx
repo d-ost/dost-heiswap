@@ -53,7 +53,7 @@ export default class App extends Component<Props, State> {
           <Route exact path="/verify-pin" component={VerifyPin}/>
           <Route path= "/scanner" component={Scanner}/>
           <Route exact path="/saving" component={Saving}/>
-          <Route exact path="/setting" component={Setting}/>
+          <Route exact path="/settings" component={Setting}/>
         </Router>
     );
   }

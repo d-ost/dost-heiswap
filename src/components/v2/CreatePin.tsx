@@ -2,12 +2,12 @@ import React, {Component} from 'react';
 import Form from "react-bootstrap/es/Form";
 import Button from "react-bootstrap/es/Button";
 import Pin from "../../viewModels/Pin";
-import NavigationBarWBB from "./NavigationBarWBB";
-import Modal from "react-bootstrap/es/Modal";
-import {Routes} from "./Routes";
+import Row from "react-bootstrap/es/Row";
+import Col from "react-bootstrap/Col";
 
 interface Props {
   onValidationSuccess?:any;
+  onHide?:any;
 }
 
 interface State {
@@ -29,6 +29,7 @@ export default class CreatePin extends Component<Props, State> {
     this.handlePinChange = this.handlePinChange.bind(this);
     this.handleConfirmPinChange = this.handleConfirmPinChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
   }
 
   handlePinChange(e) {
@@ -65,6 +66,10 @@ export default class CreatePin extends Component<Props, State> {
       this.props.onValidationSuccess();
     }
   }
+  handleCancel(e) {
+    e.preventDefault();
+    this.props.onHide();
+  }
 
   componentDidMount() {
   }
@@ -76,6 +81,95 @@ export default class CreatePin extends Component<Props, State> {
   }
 
   render() {
+
+    return (
+      <div>
+        <Row style={{margin:'0px',backgroundColor:'#34445b'}}>
+          <div style={{fontWeight:'bolder', height: '60px', color:'white', padding: '20px'}}> Create Pin </div>
+        </Row>
+        <Row>
+          <div style={{padding:'30px', width:'100%'}}>
+            <Form>
+              <Form.Group controlId="formPin">
+                <Form.Label className='pin-label' style={{color:'#438cad'}}>Create your pin</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Enter pin"
+                  required={true}
+                  onChange={this.handlePinChange}
+                  isInvalid={this.state.errors.pin !== 'no-error'}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {this.state.errors.pin !== 'no-error' && this.state.errors.pin}
+                </Form.Control.Feedback>
+              </Form.Group>
+
+              <Form.Group controlId="formConfirmPin">
+                <Form.Label className='pin-label' style={{color:'#438cad'}}>Confirm pin</Form.Label>
+                <Form.Control
+                  type="password"
+                  placeholder="Re-enter pin"
+                  required={true}
+                  onChange={this.handleConfirmPinChange}
+                  isInvalid={this.state.errors.confirmPin !== 'no-error'}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {this.state.errors.confirmPin !== 'no-error' && this.state.errors.confirmPin}
+                </Form.Control.Feedback>
+              </Form.Group>
+
+              <Row style={{margin:'10px'}}>
+                <Col style={{paddingRight:'1px', paddingLeft:'0px'}}>
+                  <Button
+                    onClick={this.handleCancel}
+                    style={{
+                      fontWeight:'bolder',
+                      display:'inline',
+                      width:'100%',
+                      backgroundColor: '#34445b',
+                      borderWidth:'0px',
+                      color:'white',
+                      height:'55px',
+                      boxShadow: '0 5px 15px rgba(0,0,0,.15)',
+                      borderTopLeftRadius:'15px',
+                      borderTopRightRadius: '0px',
+                      borderBottomRightRadius: '0px',
+                      borderBottomLeftRadius: '15px',
+                    }}>
+                    Cancel
+                  </Button>
+                </Col>
+                <Col style={{paddingLeft:'1px', paddingRight:'0px'}}>
+                  <Button
+                    onClick={this.handleSubmit}
+                    style={{
+                      fontWeight:'bolder',
+                      display:'inline',
+                      width:'100%',
+                      borderWidth:'0px',
+                      backgroundColor: '#34445b',
+                      color:'white',
+                      height:'55px',
+                      boxShadow: '0 5px 15px rgba(0,0,0,.15)',
+                      borderTopLeftRadius:'0px',
+                      borderTopRightRadius: '15px',
+                      borderBottomRightRadius: '15px',
+                      borderBottomLeftRadius: '0px',
+                    }}>
+                    Create
+                  </Button>
+                </Col>
+              </Row>
+            </Form>
+          </div>
+        </Row>
+        <Row>
+        </Row>
+      </div>
+
+    )
+
+    /*
     return (
       <div className='CreatePin'>
         <Form>
@@ -113,6 +207,8 @@ export default class CreatePin extends Component<Props, State> {
         </Form>
       </div>
     )
+
+     */
   }
 
 }

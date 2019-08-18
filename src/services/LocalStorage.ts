@@ -128,6 +128,9 @@ class LocalStorage {
     return bucketObject[address];
   }
 
+  storePinHash(pinHash: string):void {
+    localStorage.setItem('pin', pinHash);
+  }
   getPinHash():string| null {
     return localStorage.getItem('pin');
   }

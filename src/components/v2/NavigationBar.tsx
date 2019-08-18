@@ -5,6 +5,8 @@ import profileIcon from '../../images/profileicon.png';
 import {Routes} from "./Routes";
 import ModelContainer from "./ModelContainer";
 import VerifyPin from "./VerifyPin";
+import CreatePin from "./CreatePin";
+import Pin from "../../viewModels/Pin";
 
 interface Props {
   history?: any;
@@ -34,7 +36,8 @@ export default class NavigationBar extends Component<Props, State> {
   handleSettingsBtnClick(e) {
     e.preventDefault();
     console.log('redirecting to settings page');
-    (this.props as any).history.push(Routes.Settings);
+    //(this.props as any).history.push(Routes.Settings);
+    this.props.history.push(Routes.Settings);
   }
 
   handleAccountDetailBtnClick(e) {
@@ -45,8 +48,21 @@ export default class NavigationBar extends Component<Props, State> {
   }
 
   getPinVerificationView() {
-    //return (<CreatePin history={this.props.history}/>);
-    return (<VerifyPin onValidationSuccess={()=>{this.props.history.push(Routes.Savings)}}/>);
+    const pinInstance = new Pin();
+    console.log('pinInstance.isPinCreated(): ', pinInstance.isPinCreated());
+    if (pinInstance.isPinCreated()) {
+      return (
+        <VerifyPin
+          onValidationSuccess={()=>{this.props.history.push(Routes.Savings)}}
+          onHide={() => this.closeModal()}
+        />
+      );
+    } else {
+      return (<CreatePin
+        onHide={() => this.closeModal()}
+        onValidationSuccess={()=>{this.props.history.push(Routes.Savings)}}
+      />);
+    }
   }
   closeModal() {
     this.setState({modalShow: false});

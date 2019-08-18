@@ -26,17 +26,8 @@ export default class ModelContainer extends Component<Props, State> {
   render(){
 
     return (
-      <Modal
-        {...this.props}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>
-            {this.props.title}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {this.props.children}
-        </Modal.Body>
+      <Modal {...this.props}>
+        {this.props.children}
       </Modal>
     );
   }
