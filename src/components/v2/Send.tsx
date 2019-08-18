@@ -16,6 +16,8 @@ import ModelContainer from "./ModelContainer";
 import Scanner from "./Scanner";
 import Footer from "./Footer";
 import Modal from "react-bootstrap/es/Modal";
+import Accordion from "react-bootstrap/es/Accordion";
+import useAccordionToggle from "react-bootstrap/es/useAccordionToggle";
 
 interface Balance {
   chain: string;
@@ -33,6 +35,7 @@ interface State {
   amount: string;
   error: string;
   modalShow: boolean;
+  accordianActionKey: string;
 }
 
 const ColoredLine = ({color, height}) => (
@@ -70,11 +73,14 @@ export default class Send extends Component<Props, State> {
       amount: '',
       error: '',
       modalShow: false,
+      accordianActionKey: '0'
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleAmountChange = this.handleAmountChange.bind(this);
     this.handleBeneficiaryChange = this.handleBeneficiaryChange.bind(this);
+    this.changeToken = this.changeToken.bind(this);
+    this.selectTokens = this.selectTokens.bind(this);
   }
 
   componentDidMount() {
@@ -125,6 +131,10 @@ export default class Send extends Component<Props, State> {
     console.log('beneficiary  ', beneficiary);
   }
 
+  changeToken(token:Token) {
+    this.setState({token: token, accordianActionKey: '0'});
+  }
+
   closeModal() {
     this.setState({modalShow: false});
   }
@@ -151,12 +161,22 @@ export default class Send extends Component<Props, State> {
               </Alert> : ''
             }
             <div style={{padding:'0px', borderBottomWidth:'1px', borderBottomStyle:'solid', borderBottomColor:'rgb(231, 246, 247)'}}>
-              <TokenBalance
-                onClick={()=>{}}
-                context={this.props.context}
-                token={this.state.token}
-                showBucketKeyBalances={false}
-              />
+              <Accordion activeKey={this.state.accordianActionKey}>
+                <this.selectTokens eventKey="1">
+                  <TokenBalance
+                    onClick={()=>{}}
+                    context={this.props.context}
+                    token={this.state.token}
+                    showBucketKeyBalances={false}
+                  />
+                </this.selectTokens>
+                <Accordion.Collapse eventKey="0">
+                  <div></div>
+                </Accordion.Collapse>
+                <Accordion.Collapse eventKey="1">
+                  <Card.Body style={{padding:'0px'}}>{this.tokenOptions()}</Card.Body>
+                </Accordion.Collapse>
+              </Accordion>
             </div>
             {this.state.balances.map(b =>
               <div style={{marginLeft:'10px', marginRight:'10px', padding:'10px', borderBottomWidth:'1px', borderBottomStyle:'solid', borderBottomColor:'rgb(231, 246, 247)'}}>
@@ -282,4 +302,80 @@ export default class Send extends Component<Props, State> {
     )
   }
 
+  tokenOptions() {
+    const tokens = Token.getAll();
+    return(
+      <div style={{width: '100%'}}>
+        <div style={{width: '100%', height:'20px', WebkitBoxShadow:'inset 0 10px 10px -5px rgba(0,0,0,0.15)'}}></div>
+        <div style={{ paddingLeft: '20px', paddingRight: '20px'}}>
+          <div style={{borderBottomWidth:'1px',
+            borderBottomColor:'rgb(231, 246, 247)',
+            borderBottomStyle:'solid'}}>
+            <p style={{padding: '10px', color:'#34445b', fontWeight: 'bolder'}}>Select Token</p>
+          </div>
+          {tokens.map((value, index) => {
+            if (this.state.token.symbol !== value.symbol) {
+              return <div
+                style={{
+                  borderBottomWidth:'1px',
+                  borderBottomColor:'rgb(231, 246, 247)',
+                  borderBottomStyle:'solid'
+                }}>
+                <TokenBalance
+                  onClick={(selectedToken: Token)=>{this.changeToken(selectedToken)}}
+                  context={this.props.context}
+                  token={value}
+                  showBucketKeyBalances={false}
+                />
+              </div>
+            } else {
+              return (
+                <div></div>
+              );
+            }
+          })}
+        </div>
+        <div style={{width: '100%', height:'20px', WebkitBoxShadow:'inset 0 -10px 10px -5px rgba(0,0,0,0.15)'}}></div>
+      </div>
+    );
+  }
+  selectTokens({ children, eventKey }) {
+    const toggle = useAccordionToggle(eventKey, () =>{
+      console.log('hello the control is here', this.state);
+      this.setState({accordianActionKey: '1'})
+    });
+    return (
+      <div
+        onClick={toggle}
+        style={{
+          padding:'0px',
+          borderBottomWidth:'1px',
+          borderBottomStyle:'solid',
+          borderBottomColor:'rgb(231, 246, 247)'
+        }}>
+        {children}
+      </div>
+    );
+  }
+
 }
+/*
+<div>
+          <p style={{padding: '10px'}}>Select Token</p>
+        </div>
+        {tokens.map((value, index) => {
+          return <div
+            style={{
+              borderBottomWidth:'1px',
+              borderBottomColor:'rgb(231, 246, 247)',
+              borderBottomStyle:'solid'
+            }}>
+            <TokenBalance
+              onClick={()=>{}}
+              context={this.props.context}
+              token={value}
+              showBucketKeyBalances={false}
+            />
+          </div>
+        })}
+ */
