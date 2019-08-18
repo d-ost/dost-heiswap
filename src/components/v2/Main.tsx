@@ -11,6 +11,10 @@ import Token from "../../viewModels/Token";
 import Footer from "./Footer";
 import Row from "react-bootstrap/es/Row";
 import Col from "react-bootstrap/es/Col";
+import Modal from "react-bootstrap/es/Modal";
+import Scanner from "./Scanner";
+import { QR } from 'rimble-ui';
+import Receive from "./Receive";
 
 
 interface Props {
@@ -21,13 +25,20 @@ interface Props {
 }
 
 interface State {
-  redirectURL?: string,
   modalShow: boolean;
+  address: string;
 }
 
 export default class Main extends Component<Props, State> {
   constructor(props) {
     super(props);
+    // Fixme: remove hardcoded address
+    this.state = {
+      modalShow: false,
+      address: '0xf4bbddd76488bd10f92d4aa8f6502ea1e01cff34'
+    };
+
+    this.handleReceive = this.handleReceive.bind(this);
   }
 
   componentDidMount() {
@@ -47,6 +58,16 @@ export default class Main extends Component<Props, State> {
       state: { token: token }
     });
   }
+
+  closeModal() {
+    this.setState({modalShow: false});
+  }
+  handleReceive(e) {
+    e.preventDefault();
+    console.log('Show QR');
+    this.setState({modalShow: true});
+  }
+
   render() {
     return (
       <NavigationBar {...this.props} >
@@ -59,11 +80,19 @@ export default class Main extends Component<Props, State> {
             />
           </div>
         </div>
+        <Modal show={this.state.modalShow} onHide={() => this.closeModal()}>
+          <Receive
+            address={this.state.address}
+            onHide={() => this.closeModal()}/>
+
+        </Modal>
 
         <Footer>
           <Row style={{margin:'10px'}}>
             <Col style={{paddingRight:'1px', paddingLeft:'0px'}}>
-              <Button style={{
+              <Button
+                onClick={this.handleReceive}
+                style={{
                 fontWeight:'bolder',
                 display:'inline',
                 width:'100%',

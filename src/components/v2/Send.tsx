@@ -15,6 +15,7 @@ import Token from "../../viewModels/Token";
 import ModelContainer from "./ModelContainer";
 import Scanner from "./Scanner";
 import Footer from "./Footer";
+import Modal from "react-bootstrap/es/Modal";
 
 interface Balance {
   chain: string;
@@ -173,13 +174,19 @@ export default class Send extends Component<Props, State> {
             )}
           </div>
 
-          <ModelContainer
+          <Modal
             show={this.state.modalShow}
             onHide={() => this.closeModal()}
-            title='Scan'
           >
-            <Scanner onScan={(address) => {this.setState({beneficiary:address}); this.closeModal();}} />
-          </ModelContainer>
+            <Modal.Header closeButton>
+              <Modal.Title>
+                'Scan'
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Scanner onScan={(address) => {this.setState({beneficiary:address}); this.closeModal();}} />
+            </Modal.Body>
+          </Modal>
         </div>
 
 
