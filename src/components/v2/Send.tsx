@@ -53,9 +53,10 @@ export default class Send extends Component<Props, State> {
     super(props);
     console.log('this.props.location.state: ', this.props.location.state);
     console.log('this.state: ', this.state);
+    const tokens = Token.getAll();
     this.state = {
-      beneficiary: '',
-      token: this.props.location.state.token,//this.props.token;
+      beneficiary: this.props.location.state.beneficiary || '',
+      token: this.props.location.state.token || tokens[0],
       balances: [
         {
           chain: 'Plasma',
@@ -342,7 +343,7 @@ export default class Send extends Component<Props, State> {
   selectTokens({ children, eventKey }) {
     const toggle = useAccordionToggle(eventKey, () =>{
       console.log('hello the control is here', this.state);
-      this.setState({accordianActionKey: '1'})
+      this.setState({accordianActionKey: this.state.accordianActionKey === '1'?'0':'1'})
     });
     return (
       <div

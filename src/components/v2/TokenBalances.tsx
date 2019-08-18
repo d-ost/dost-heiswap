@@ -45,13 +45,34 @@ export default class TokenBalances extends React.Component<Props, State> {
               <ListGroup.Item style={{padding:'0px'}}>
                 <Row style={{backgroundColor:'#34445b'}}>
                   <Col xs={5} >
-                    <div style={{fontWeight:'bolder', height: '60px', color:'white', padding: '20px', paddingLeft: '40px'}}> Tokens </div>
+                    <div style={{
+                      fontWeight:'bolder',
+                      height: '60px',
+                      color:'white',
+                      paddingTop: '20px',
+                      paddingBottom: '20px',
+                      paddingRight: '0px',
+                      paddingLeft: '40px'
+                    }}> Tokens </div>
                   </Col>
                   <Col style={{textAlign:'right'}}>
-                    <div style={{fontWeight:'bolder', height: '60px', color:'white', paddingRight: '20px', paddingTop: '20px'}}> Burner </div>
+                    <div style={{
+                      fontWeight:'bolder',
+                      height: '60px',
+                      color:'white',
+                      paddingRight: '20px',
+                      paddingTop: '20px'
+                    }}> Balance </div>
                   </Col>
                   <Col style={{textAlign:'right', display:this.props.showBucketKeyBalances?'block':'none',  height: '60px'}}>
-                    <div style={{fontWeight:'bolder', color:'white', padding: '20px'}}> Bucket </div>
+                    <div style={{
+                      fontWeight:'bolder',
+                      color:'white',
+                      paddingTop: '20px',
+                      paddingBottom: '20px',
+                      paddingRight: '20px',
+                      paddingLeft: '0px'
+                    }}> Reserve </div>
                   </Col>
                 </Row>
               </ListGroup.Item>

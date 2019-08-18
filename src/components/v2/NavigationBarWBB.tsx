@@ -44,6 +44,7 @@ export default class NavigationBarWBB extends Component<Props, State> {
           <div className="navbar navbar-light" style={{
             backgroundColor: 'white',
             boxShadow: '0 5px 15px rgba(0,0,0,.25)',
+            paddingRight:'45px'
           }}>
             <a className="navbar-brand" onClick={()=>{this.goBack()}}>
               <img src={backButton} height='30' width='30' alt=""/>

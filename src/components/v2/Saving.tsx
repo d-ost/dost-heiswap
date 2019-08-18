@@ -33,6 +33,7 @@ export default class CreatePin extends Component<Props, State> {
   }
 
   tokenClicked(token:Token) {
+    this.props.history.push(Routes.Withdraw);
     console.log('Token clicked: ', token);
   }
 

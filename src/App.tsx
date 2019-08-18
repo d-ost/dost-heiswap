@@ -11,6 +11,7 @@ import VerifyPin from "./components/v2/VerifyPin";
 import Scanner from "./components/v2/Scanner";
 import Saving from "./components/v2/Saving";
 import Setting from "./components/v2/Setting";
+import Withdraw from "./components/v2/Withdraw";
 
 declare global {
   interface Window { web3: Web3; }
@@ -51,9 +52,10 @@ export default class App extends Component<Props, State> {
           <Route exact path="/selectreserve" component={SelectReserve}/>
           <Route exact path="/create-pin" component={CreatePin}/>
           <Route exact path="/verify-pin" component={VerifyPin}/>
-          <Route path= "/scanner" component={Scanner}/>
+          <Route exact path= "/scanner" component={Scanner}/>
           <Route exact path="/saving" component={Saving}/>
           <Route exact path="/settings" component={Setting}/>
+          <Route exact path="/withdraw" component={Withdraw}/>
         </Router>
     );
   }

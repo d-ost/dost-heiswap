@@ -5,4 +5,5 @@ export class Routes {
   static readonly Savings = '/Saving';
   static readonly Send = '/Send';
   static readonly SelectReserve = '/SelectReserve';
+  static readonly Withdraw = '/Withdraw';
 }

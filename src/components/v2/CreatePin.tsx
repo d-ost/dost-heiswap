@@ -168,47 +168,6 @@ export default class CreatePin extends Component<Props, State> {
       </div>
 
     )
-
-    /*
-    return (
-      <div className='CreatePin'>
-        <Form>
-          <Form.Group controlId="formPin">
-            <Form.Label className='pin-label'>Create your Pin</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Enter your Pin"
-              required={true}
-              onChange={this.handlePinChange}
-              isInvalid={this.state.errors.pin !== 'no-error'}
-            />
-            <Form.Control.Feedback type="invalid">
-              {this.state.errors.pin !== 'no-error' && this.state.errors.pin}
-            </Form.Control.Feedback>
-          </Form.Group>
-
-          <Form.Group controlId="formConfirmPin">
-            <Form.Label className='pin-label'>Confirm Pin</Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Confirm your Pin"
-              required={true}
-              onChange={this.handleConfirmPinChange}
-              isInvalid={this.state.errors.confirmPin !== 'no-error'}
-            />
-            <Form.Control.Feedback type="invalid">
-              {this.state.errors.confirmPin !== 'no-error' && this.state.errors.confirmPin}
-            </Form.Control.Feedback>
-          </Form.Group>
-
-          <Button variant="primary" onClick={this.handleSubmit}>
-            Create Pin
-          </Button>
-        </Form>
-      </div>
-    )
-
-     */
   }
 
 }

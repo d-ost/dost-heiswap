@@ -26,6 +26,7 @@ interface Props {
 
 interface State {
   modalShow: boolean;
+  showScanner: boolean;
   address: string;
 }
 
@@ -35,10 +36,13 @@ export default class Main extends Component<Props, State> {
     // Fixme: remove hardcoded address
     this.state = {
       modalShow: false,
+      showScanner: false,
       address: '0xf4bbddd76488bd10f92d4aa8f6502ea1e01cff34'
     };
 
     this.handleReceive = this.handleReceive.bind(this);
+    this.closeScanner = this.closeScanner.bind(this);
+    this.handleSend = this.handleSend.bind(this);
   }
 
   componentDidMount() {
@@ -62,11 +66,26 @@ export default class Main extends Component<Props, State> {
   closeModal() {
     this.setState({modalShow: false});
   }
+  closeScanner() {
+    this.setState({showScanner: false});
+  }
+  handleScannerResult(address) {
+    this.props.history.push({
+      pathname: Routes.Send,
+      state: { beneficiary: address }
+    });
+  }
   handleReceive(e) {
     e.preventDefault();
     console.log('Show QR');
     this.setState({modalShow: true});
   }
+  handleSend(e) {
+    e.preventDefault();
+    console.log('Show scanner');
+    this.setState({showScanner: true});
+  }
+
 
   render() {
     return (
@@ -84,7 +103,11 @@ export default class Main extends Component<Props, State> {
           <Receive
             address={this.state.address}
             onHide={() => this.closeModal()}/>
-
+        </Modal>
+        <Modal show={this.state.showScanner} onHide={() => this.closeModal()}>
+          <Scanner
+            onScan={(address) => this.handleScannerResult(address)}
+            onHide={() => this.closeScanner()}/>
         </Modal>
 
         <Footer>
@@ -112,6 +135,7 @@ export default class Main extends Component<Props, State> {
             </Col>
             <Col style={{paddingLeft:'1px', paddingRight:'0px'}}>
               <Button
+                onClick={this.handleSend}
                 style={{
                   fontWeight:'bolder',
                   display:'inline',
