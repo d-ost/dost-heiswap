@@ -195,18 +195,10 @@ export default class Send extends Component<Props, State> {
             )}
           </div>
 
-          <Modal
-            show={this.state.modalShow}
-            onHide={() => this.closeModal()}
-          >
-            <Modal.Header closeButton>
-              <Modal.Title>
-                'Scan'
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <Scanner onScan={(address) => {this.setState({beneficiary:address}); this.closeModal();}} />
-            </Modal.Body>
+          <Modal show={this.state.modalShow} onHide={() => this.closeModal()}>
+            <Scanner
+              onScan={(address) => {this.setState({beneficiary:address}); this.closeModal();}}
+              onHide={() => this.closeModal()}/>
           </Modal>
         </div>
 
