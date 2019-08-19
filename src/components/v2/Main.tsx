@@ -1,24 +1,48 @@
 import React, {Component} from 'react';
-import { Redirect } from 'react-router';
 import Button from "react-bootstrap/es/Button";
-import { IoMdSettings } from 'react-icons/io';
-import { MdAccountCircle } from 'react-icons/md';
 import TokenBalances from './TokenBalances';
+import defaultProfileImage from "../../images/default_profile.png";
+import NavigationBar from "./NavigationBar";
+import ModelContainer from "./ModelContainer";
+import CreatePin from "./CreatePin";
+import VerifyPin from "./VerifyPin";
+import {Routes} from "./Routes";
+import Token from "../../viewModels/Token";
+import Footer from "./Footer";
+import Row from "react-bootstrap/es/Row";
+import Col from "react-bootstrap/es/Col";
+import Modal from "react-bootstrap/es/Modal";
+import Scanner from "./Scanner";
+import { QR } from 'rimble-ui';
+import Receive from "./Receive";
+
 
 interface Props {
   context: string
+  history: any;
+  onHide?:any;
+  title?:any;
 }
 
 interface State {
-  redirectURL?: string
+  modalShow: boolean;
+  showScanner: boolean;
+  address: string;
 }
 
 export default class Main extends Component<Props, State> {
   constructor(props) {
     super(props);
-    this.state = {};
-    this.handleSettingsBtnClick = this.handleSettingsBtnClick.bind(this);
-    this.handleAccountDetailBtnClick = this.handleAccountDetailBtnClick.bind(this);
+    // Fixme: remove hardcoded address
+    this.state = {
+      modalShow: false,
+      showScanner: false,
+      address: '0xf4bbddd76488bd10f92d4aa8f6502ea1e01cff34'
+    };
+
+    this.handleReceive = this.handleReceive.bind(this);
+    this.closeScanner = this.closeScanner.bind(this);
+    this.handleSend = this.handleSend.bind(this);
   }
 
   componentDidMount() {
@@ -30,39 +54,131 @@ export default class Main extends Component<Props, State> {
   componentWillUnmount() {
   }
 
-  handleSettingsBtnClick(e) {
-    e.preventDefault();
-    console.log('redirecting to settings page');
-    this.setState({
-      redirectURL: '/setting'
+  tokenClicked(token:Token) {
+    console.log('Token clicked: ', token);
+
+    this.props.history.push({
+      pathname: Routes.Send,
+      state: { token: token }
     });
   }
 
-  handleAccountDetailBtnClick(e) {
-    e.preventDefault();
-    console.log('redirecting to create-pin page');
-    this.setState({
-      redirectURL: '/create-pin'
+  closeModal() {
+    this.setState({modalShow: false});
+  }
+  closeScanner() {
+    this.setState({showScanner: false});
+  }
+  handleScannerResult(address) {
+    this.props.history.push({
+      pathname: Routes.Send,
+      state: { beneficiary: address }
     });
   }
+  handleReceive(e) {
+    e.preventDefault();
+    console.log('Show QR');
+    this.setState({modalShow: true});
+  }
+  handleSend(e) {
+    e.preventDefault();
+    console.log('Show scanner');
+    this.setState({showScanner: true});
+  }
+
 
   render() {
     return (
-      this.state.redirectURL ? <Redirect to={this.state.redirectURL} />
-      : <div className="Home">
-        <div className="SettingsBtn" onClick={this.handleSettingsBtnClick}>
-          <IoMdSettings />
+      <NavigationBar {...this.props} >
+        <div>
+          <div style={{marginLeft:'1px', marginRight:'1px', paddingBottom: '65px'}}>
+            <TokenBalances
+              onClick={(token:Token)=>(this.tokenClicked(token))}
+              context={this.props.context}
+              showBucketKeyBalances={ false }
+            />
+          </div>
         </div>
-        <div className="AccountDetailBtn" onClick={this.handleAccountDetailBtnClick}>
-          <MdAccountCircle />
-        </div>
-        <TokenBalances
-          context={this.props.context}
-          showBucketKeyBalances={ false }
-        />
-        <Button variant="light">Receive</Button>
-      </div>
+        <Modal show={this.state.modalShow} onHide={() => this.closeModal()}>
+          <Receive
+            address={this.state.address}
+            onHide={() => this.closeModal()}/>
+        </Modal>
+        <Modal show={this.state.showScanner} onHide={() => this.closeModal()}>
+          <Scanner
+            onScan={(address) => this.handleScannerResult(address)}
+            onHide={() => this.closeScanner()}/>
+        </Modal>
+
+        <Footer>
+          <Row style={{margin:'10px'}}>
+            <Col style={{paddingRight:'1px', paddingLeft:'0px'}}>
+              <Button
+                onClick={this.handleReceive}
+                style={{
+                fontWeight:'bolder',
+                display:'inline',
+                width:'100%',
+                backgroundColor: '#34445b',
+                borderWidth:'0px',
+                color:'white',
+                height:'55px',
+                boxShadow: '0 5px 15px rgba(0,0,0,.15)',
+                borderTopLeftRadius:'15px',
+                borderTopRightRadius: '0px',
+                borderBottomRightRadius: '0px',
+                borderBottomLeftRadius: '15px',
+                overflow: 'hidden',
+              }}>
+                Receive
+              </Button>
+            </Col>
+            <Col style={{paddingLeft:'1px', paddingRight:'0px'}}>
+              <Button
+                onClick={this.handleSend}
+                style={{
+                  fontWeight:'bolder',
+                  display:'inline',
+                  width:'100%',
+                  borderWidth:'0px',
+                  backgroundColor: '#34445b',
+                  color:'white',
+                  height:'55px',
+                  boxShadow: '0 5px 15px rgba(0,0,0,.15)',
+                  borderTopLeftRadius:'0px',
+                  borderTopRightRadius: '15px',
+                  borderBottomRightRadius: '15px',
+                  borderBottomLeftRadius: '0px',
+                }}>
+                Send
+              </Button>
+            </Col>
+          </Row>
+        </Footer>
+      </NavigationBar>
     );
   }
 
 }
+
+/*
+<div className="AccountDetailBtn"
+               style={{
+                 width:100,
+                 height:100,
+                 backgroundColor:"blue",display: 'table',
+                 marginRight: 'auto',
+                 marginLeft: 'auto',
+                 marginTop: '10px',
+               }}
+               onClick={this.handleAccountDetailBtnClick}>
+            <img src={defaultProfileImage} height='100%' width='100%' alt=""/>
+          </div>
+          <div style={{
+            display: 'table',
+            marginRight: 'auto',
+            marginLeft: 'auto',
+          }}>
+            <p style={{marginBottom:'10px'}}>Hello xyz</p>
+          </div>
+ */

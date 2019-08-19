@@ -1,5 +1,6 @@
 .App {
   max-width: 500px;
+  height: 100%;
   margin: auto;
   border: 2px solid #438bad;
 }
@@ -115,7 +116,7 @@
 /* Create Pin CSS */
 
 .CreatePin, .VerifyPin, .Saving {
-  width: 50%;
+  width: 100%;
   background-color: #ffffff;
   padding: 5%;
 }

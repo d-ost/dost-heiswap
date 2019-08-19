@@ -23,16 +23,16 @@ export class Account {
     return account;
   }
 
-  static getBucketAddress(): string[] {
-    return localStorage.getBucketAddresses();
-  }
+  // static getBucketAddress(): string[] {
+  //   return localStorage.getBucketAddresses();
+  // }
 
-  static createNewBucketKey(pin): Web3Account {
-    const account = Account.new();
-    const encryptedKey = Account.encrypt(JSON.stringify(account.privateKey), pin);
-    localStorage.storeBucketAddress(account.address, encryptedKey.toString());
-    return account;
-  }
+  // static createNewBucketKey(pin): Web3Account {
+  //   const account = Account.new();
+  //   const encryptedKey = Account.encrypt(JSON.stringify(account.privateKey), pin);
+  //   localStorage.storeBucketAddress(account.address, encryptedKey.toString());
+  //   return account;
+  // }
 
   static encrypt(text, key): string {
     return new Web3('').eth.accounts.encrypt(text, key).toString();

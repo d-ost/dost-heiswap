@@ -1,9 +1,16 @@
 import React, {Component} from 'react';
-import { MdLockOpen, MdLockOutline } from 'react-icons/md';
-import { Row, Col, Container } from "react-bootstrap";
+import NavigationBarWBB from "./NavigationBarWBB";
+import TokenBalances from "./TokenBalances";
+import Token from "../../viewModels/Token";
+import Button from "react-bootstrap/es/Button";
+import {Routes} from "./Routes";
+import Row from "react-bootstrap/es/Row";
+import Col from "react-bootstrap/es/Col";
+import Footer from "./Footer";
 
 interface Props {
-
+  context?:any
+  history:any;
 }
 
 interface State {
@@ -25,38 +32,46 @@ export default class CreatePin extends Component<Props, State> {
   componentWillUnmount() {
   }
 
+  tokenClicked(token:Token) {
+    this.props.history.push(Routes.Withdraw);
+    console.log('Token clicked: ', token);
+  }
+
 
   render() {
 
     return (
-      <Container className='saving'>
-        <h4>Your Saving Page</h4>
-        <Row className='header'>
-          <Col>Token</Col>
-          <Col><MdLockOpen /></Col>
-          <Col><MdLockOutline /></Col>
-        </Row>
-        <Row>
-          <Col>OST</Col>
-          <Col>10</Col>
-          <Col>100</Col>
-        </Row>
-        <Row>
-          <Col>WETH</Col>
-          <Col>20</Col>
-          <Col>200</Col>
-        </Row>
-        <Row>
-          <Col>DAI</Col>
-          <Col>30</Col>
-          <Col>300</Col>
-        </Row>
-        <Row>
-          <Col>USDC</Col>
-          <Col>40</Col>
-          <Col>400</Col>
-        </Row>
-      </Container>
+      <NavigationBarWBB {...this.props} title='Savings'>
+        <div style={{marginLeft:'1px', marginRight:'1px'}}>
+          <TokenBalances
+            onClick={(token:Token)=>{this.tokenClicked(token)}}
+            context={this.props.context}
+            showBucketKeyBalances={ true }
+          />
+        </div>
+
+        <Footer>
+          <Row style={{margin:'10px'}}>
+            <Col style={{paddingRight:'5px', paddingLeft:'0px'}}>
+              <Button
+                onClick={()=>{this.props.history.push(Routes.SelectReserve);}}
+                style={{
+                  fontWeight:'bolder',
+                  display:'inline',
+                  width:'100%',
+                  backgroundColor: '#34445b',
+                  color:'white',
+                  borderWidth:'0px',
+                  height:'55px',
+                  boxShadow: '0 5px 15px rgba(0,0,0,.15)',
+                  borderRadius:'15px',
+                }}>
+                Add Reserve
+              </Button>
+            </Col>
+          </Row>
+        </Footer>
+      </NavigationBarWBB>
     )
   }
 

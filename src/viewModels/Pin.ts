@@ -1,9 +1,11 @@
+import LocalStorage from "../services/LocalStorage";
+
 export default class Pin {
 
-  pin: string;
+  pin?: string;
 
   constructor(
-    pin: string,
+    pin?: string,
   ) {
     this.pin = pin;
   }
@@ -11,7 +13,7 @@ export default class Pin {
   validatePinCreation(confirmPin) {
     let errors = {pin: 'no-error', confirmPin: 'no-error'};
     const pin_minimum_size = Pin.get_minimum_size();
-    if(this.pin.length < pin_minimum_size) {
+    if(this.pin!.length < pin_minimum_size) {
       errors.pin = `Pin size should be greater or equal to ${pin_minimum_size}`;
     }
 
@@ -28,12 +30,14 @@ export default class Pin {
   savePin(){
     // Save pin in local storage
     console.log(`pin: ${this.pin}`);
+    // FIXME: hash the pun
+    LocalStorage.storePinHash(this.pin!);
   }
 
   verifyPin() {
     let errors = {pin: 'no-error'};
     const pin_minimum_size = Pin.get_minimum_size();
-    if(this.pin.length < pin_minimum_size) {
+    if(this.pin!.length < pin_minimum_size) {
       errors.pin = `Pin size should be greater or equal to ${pin_minimum_size}`;
     }
     return errors;
@@ -42,5 +46,11 @@ export default class Pin {
   static get_minimum_size() {
     return 6;
   }
+
+  isPinCreated():boolean {
+    console.log('LocalStorage.getPinHash(): ', LocalStorage.getPinHash());
+    return (LocalStorage.getPinHash() !== undefined && LocalStorage.getPinHash() !== null)
+  }
+
 
 }

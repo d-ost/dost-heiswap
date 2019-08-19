@@ -1,0 +1,11 @@
+{
+  "no_option_available": "There are no options available.",
+  "something_went_wrong": "Something went wrong.",
+  "dost": "dOST",
+  "dost_description": "dOST usage description",
+  "metamask": "Metamask",
+  "metamask_description": "You can add your metamask account as reserve",
+  "wallet_connect": "Wallet connect",
+  "wallet_connect_description": "Wallet connect usage description",
+  "connect_reserve": "Connect reserve key"
+}
