@@ -1,17 +1,24 @@
 import React, {Component} from 'react';
 import Card from "react-bootstrap/Card";
-import { SelectReserveModel, ReserveType, ReserveAccount } from "../../models/SelectReserveModel";
-import i18n  from "../../i18n";
+import selectReserverModel, {
+  ReserveAccount,
+  ReserveType
+} from "../../models/SelectReserveModel";
+import i18n from "../../i18n";
 import NavigationBarWBB from "./NavigationBarWBB";
-import Button from "react-bootstrap/es/Button";
-import {Routes} from "./Routes";
+import {connect} from "react-redux";
+import {connectToReserve, disconnectToReserve} from "../../redux/actions";
 
-interface Props {}
+interface Props {
+  reserves: ReserveAccount[];
+  connectToReserve: Function;
+  disconnectToReserve: Function;
+}
 interface State {}
 
-export default class SelectReserve extends Component<Props, State> {
+class SelectReserve extends Component<Props, State> {
 
-  private viewModel?: SelectReserveModel;
+  private viewModel;
 
   constructor(props) {
     super(props);
@@ -20,7 +27,7 @@ export default class SelectReserve extends Component<Props, State> {
   }
 
   componentDidMount() {
-    this.viewModel = new SelectReserveModel();
+    this.viewModel = selectReserverModel
     this.setState({});
   }
 
@@ -39,16 +46,12 @@ export default class SelectReserve extends Component<Props, State> {
 
   private getConnectedOptions() {
     let options:any = [];
-    if (!this.viewModel) {
-      options.push( this.getNoOptionView());
-    } else {
-      let supportedOptions: ReserveAccount[] = this.viewModel!.getReserveAccountList();
+    let supportedOptions: ReserveAccount[] = [...this.props.reserves];
       supportedOptions.forEach((option: ReserveAccount)=>{
         options.push(this.getConnectView(option));
       });
       if (options.length === 0) {
         options.push( this.getNoOptionView());
-      }
     }
     return options;
   }
@@ -70,15 +73,15 @@ export default class SelectReserve extends Component<Props, State> {
     const displayStyleForAccount = isAccountAvailable?'inline' : 'none';
     let action = ()=>{};
     switch (reserveAccount.type) {
-      case ReserveType.Dost:
-        action = this.dOSTButtonClicked;
-        break;
+      // case ReserveType.Dost:
+      //   action = this.dOSTButtonClicked;
+      //   break;
       case ReserveType.Metamask:
         action = isAccountAvailable?this.metamaskDisconnect:this.metamaskConnect;
         break;
-      case ReserveType.WalletConnect:
-        action = this.walletConnectButtonClicked;
-        break;
+      // case ReserveType.WalletConnect:
+      //   action = this.walletConnectButtonClicked;
+      //   break;
     }
 
     return (
@@ -118,26 +121,60 @@ export default class SelectReserve extends Component<Props, State> {
     );
   }
 
-  // Click handlers
-  public dOSTButtonClicked() {
-    console.log('dOSTButtonClicked');
-  }
-  public async metamaskConnect() {
-    console.log('metamaskConnect');
-    let connectedAddress = await this.viewModel!.connectWithMetamask();
-    this.setState({});
 
-    console.log('connectedAddress: ', connectedAddress);
+  public async metamaskConnect() {
+    let connectedAddress = await this.viewModel!.connectWithMetamask();
+    let allReserves = [...this.props.reserves];
+    let reserveAccounts = allReserves.filter(r => r.type === ReserveType.Metamask);
+    if (reserveAccounts.length > 0) {
+      const metaMaskReserve = reserveAccounts[0];
+      metaMaskReserve.account = connectedAddress;
+      this.props.connectToReserve(
+        metaMaskReserve,
+      );
+    }
   }
   public metamaskDisconnect() {
     console.log('metamaskDisconnect');
     this.viewModel!.disconnectMetamask();
-    this.setState({});
-  }
-  public async walletConnectButtonClicked() {
-    console.log('walletConnectButtonClicked');
-    let connectedAddress = await this.viewModel!.connectWithWalletConnect();
-    this.setState({});
+    let allReserves = [...this.props.reserves];
+    let reserveAccounts = allReserves.filter(r => r.type === ReserveType.Metamask);
+    if (reserveAccounts.length > 0) {
+      const metaMaskReserve = reserveAccounts[0];
+      metaMaskReserve.account = undefined;
+      this.props.disconnectToReserve(
+        metaMaskReserve,
+      );
+
+    }
   }
 
+  // // Click handlers
+  // public dOSTButtonClicked() {
+  //   console.log('dOSTButtonClicked');
+  // }
+  // public async walletConnectButtonClicked() {
+  //   console.log('walletConnectButtonClicked');
+  //   let connectedAddress = await this.viewModel!.connectWithWalletConnect();
+  //   this.setState({});
+  // }
+
 }
+
+const mapStateToProps = state => {
+
+  console.log('state  ', state);
+  return {
+    reserves: state.reserves.reserves,
+  }
+};
+
+const mapDispatchToProps = {
+  connectToReserve,
+  disconnectToReserve
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(SelectReserve);
