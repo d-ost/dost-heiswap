@@ -3,7 +3,7 @@ import WalletConnect from "../services/WalletConnect";
 import LocalStorage from "../services/LocalStorage";
 import i18n from "../i18n";
 
-enum ReserveType {
+export enum ReserveType {
   None,
   Metamask,
   Dost,
@@ -67,24 +67,24 @@ class SelectReserveModel {
     } else {
       unSupportedOptions.push(metamaskReserveAccount)
     }
-
-    // Fixme: This is not yet integrated.
-    supportedOptions.push({
-      type: ReserveType.Dost,
-      account: undefined,
-      title: i18n.t('dost'),
-      description: i18n.t('dost_description'),
-      supportedByBrowser: true,
-    });
-
-    // Fixme: This is not yet integrated.
-    supportedOptions.push({
-      type: ReserveType.WalletConnect,
-      account: undefined,
-      title: i18n.t('wallet_connect'),
-      description: i18n.t('wallet_connect_description'),
-      supportedByBrowser: true,
-    });
+    //
+    // // Fixme: This is not yet integrated.
+    // supportedOptions.push({
+    //   type: ReserveType.Dost,
+    //   account: undefined,
+    //   title: i18n.t('dost'),
+    //   description: i18n.t('dost_description'),
+    //   supportedByBrowser: true,
+    // });
+    //
+    // // Fixme: This is not yet integrated.
+    // supportedOptions.push({
+    //   type: ReserveType.WalletConnect,
+    //   account: undefined,
+    //   title: i18n.t('wallet_connect'),
+    //   description: i18n.t('wallet_connect_description'),
+    //   supportedByBrowser: true,
+    // });
 
     return connectedOptions.concat(supportedOptions).concat(unSupportedOptions);
   }
@@ -114,7 +114,5 @@ class SelectReserveModel {
   }
 }
 
-export {
-  ReserveType,
-  SelectReserveModel,
-}
+export default new SelectReserveModel();
+
