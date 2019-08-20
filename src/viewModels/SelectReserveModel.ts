@@ -4,10 +4,10 @@ import LocalStorage from "../services/LocalStorage";
 import i18n from "../i18n";
 
 export enum ReserveType {
-  None,
-  Metamask,
-  Dost,
-  WalletConnect,
+  None='None',
+  Metamask='Metamask',
+  Dost='Dost',
+  WalletConnect='WalletConnect',
 }
 
 export interface ReserveAccount {
@@ -53,7 +53,7 @@ class SelectReserveModel {
     const metamaskReserveAccount = {
       type: ReserveType.Metamask,
       account: this.metamaskAccount,
-      title: i18n.t('metamask'),
+      title: i18n.t('Metamask'),
       description: i18n.t('metamask_description'),
       supportedByBrowser: isMetamaskSupportedByBrowser,
     };
