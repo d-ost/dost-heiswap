@@ -1,3 +1,4 @@
+import Web3 from "web3";
 import Metamask from "../services/Metamask";
 import WalletConnect from "../services/WalletConnect";
 import LocalStorage from "../services/LocalStorage";
@@ -16,6 +17,7 @@ export interface ReserveAccount {
   title: string;
   description: string;
   supportedByBrowser: boolean;
+  web3: Web3;
 }
 
 class SelectReserveModel {
@@ -56,6 +58,7 @@ class SelectReserveModel {
       title: i18n.t('Metamask'),
       description: i18n.t('metamask_description'),
       supportedByBrowser: isMetamaskSupportedByBrowser,
+      web3: window.web3,
     };
     if (this.metamask.isMetamaskSupported()) {
       if (this.metamaskAccount) {

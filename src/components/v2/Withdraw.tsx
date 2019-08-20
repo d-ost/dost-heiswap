@@ -10,15 +10,18 @@ import Col from "react-bootstrap/es/Col";
 import Utils from "../../KeyManager/Utils";
 import InputGroup from "react-bootstrap/InputGroup";
 import {FormControl} from "react-bootstrap";
-import {ReserveAccount} from "../../models/SelectReserveModel";
+import {ReserveAccount} from "../../viewModels/SelectReserveModel";
 import Form from 'react-bootstrap/Form'
 import {Routes} from "./Routes";
 import Button from "react-bootstrap/es/Button";
+import {addAccount} from "../../redux/actions";
+import Account, {AccountType} from "../../viewModels/Account";
 
 interface Props {
   selectedToken: Token;
   reserves: ReserveAccount[],
   history: any,
+  addAccount: Function;
 }
 
 interface State {
@@ -34,7 +37,7 @@ class Withdraw extends Component<Props, State> {
     super(props);
     this.state = {
       error: '',
-      amount: '1000000000000000000',
+      amount: '',
       reserve: '',
       pendingTopup: false,
     }
@@ -48,6 +51,13 @@ class Withdraw extends Component<Props, State> {
     this.setState({
       reserve: this.props.reserves[0].type
     });
+    const reserveAccount = this.props.reserves[0]
+    if (reserveAccount && reserveAccount.account) {
+      reserveAccount.web3.eth.getBalance(reserveAccount.account!).then((balance) => {
+        this.setState({amount: balance})
+      });
+    }
+
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -56,18 +66,20 @@ class Withdraw extends Component<Props, State> {
   componentWillUnmount() {
   }
 
-  handleAmountChange(e) {
+  async handleAmountChange(e) {
     this.setState({
       amount: e.target.value
     });
   }
 
-  handleReserveChange(e) {
-    console.log('reserve change  ', e.target.value);
+  async handleReserveChange(e) {
 
     this.setState({
       reserve: e.target.value
     });
+    const reserveAccount = this.props.reserves.filter(res => res.type === this.state.reserve)[0];
+    const balance = await reserveAccount.web3.eth.getBalance(reserveAccount.account!);
+    this.setState({amount: balance})
   }
 
   async handleTopup() {
@@ -87,19 +99,24 @@ class Withdraw extends Component<Props, State> {
     } else this.setState({
       error: '',
     });
-    let account = window.web3.eth.accounts.create();
+
     const reserveAccount = this.props.reserves.filter(res => res.type === this.state.reserve)[0];
+    let burnerAccount = reserveAccount.web3.eth.accounts.create(reserveAccount.web3.utils.randomHex(32));
     this.setState({
       pendingTopup: true
     });
-    window.web3.eth.sendTransaction({
+    reserveAccount.web3.eth.sendTransaction({
       from: reserveAccount.account,
-      to: account.address,
+      to: burnerAccount.address,
       value: this.state.amount,
     }).on('transactionHash', (transactionHash) => {
       console.log('transactionHash  ', transactionHash);
       this.setState({
         pendingTopup: false,
+      });
+      this.props.addAccount({
+        token: this.props.selectedToken,
+        account: new Account(AccountType.burner, burnerAccount.address, burnerAccount.privateKey),
       });
       this.props.history.push(Routes.Savings);
     })
@@ -260,7 +277,9 @@ const mapStateToProps = state => {
   }
 };
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  addAccount,
+};
 
 export default connect(
   mapStateToProps,
