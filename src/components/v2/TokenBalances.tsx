@@ -11,6 +11,7 @@ interface Props {
   context: string;
   showBucketKeyBalances: boolean;
   onClick: any;
+  tokens: Token[];
 }
 
 interface State {
@@ -26,7 +27,7 @@ export default class TokenBalances extends React.Component<Props, State> {
   componentWillMount(): void {}
 
   render() {
-    const tokens = Token.getAll();
+    const tokens = this.props.tokens;
     return (
       <div style={{padding:'10px', paddingBottom:'10px'}}>
         <Container style={{

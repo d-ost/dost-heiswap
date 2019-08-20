@@ -7,17 +7,21 @@ import {Routes} from "./Routes";
 import Row from "react-bootstrap/es/Row";
 import Col from "react-bootstrap/es/Col";
 import Footer from "./Footer";
+import {selectToken} from "../../redux/actions";
+import {connect} from "react-redux";
 
 interface Props {
   context?:any
   history:any;
+  tokens:Token[];
+  selectToken: Function;
 }
 
 interface State {
 
 }
 
-export default class CreatePin extends Component<Props, State> {
+class Saving extends Component<Props, State> {
 
   constructor(props) {
     super(props);
@@ -33,8 +37,9 @@ export default class CreatePin extends Component<Props, State> {
   }
 
   tokenClicked(token:Token) {
+    this.props.selectToken(token);
     this.props.history.push(Routes.Withdraw);
-    console.log('Token clicked: ', token);
+
   }
 
 
@@ -46,6 +51,7 @@ export default class CreatePin extends Component<Props, State> {
           <TokenBalances
             onClick={(token:Token)=>{this.tokenClicked(token)}}
             context={this.props.context}
+            tokens ={this.props.tokens}
             showBucketKeyBalances={ true }
           />
         </div>
@@ -76,3 +82,20 @@ export default class CreatePin extends Component<Props, State> {
   }
 
 }
+
+const mapStateToProps = state => {
+
+  return {
+    tokens: state.token.tokens,
+  }
+};
+
+const mapDispatchToProps = {
+  selectToken,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Saving);
+

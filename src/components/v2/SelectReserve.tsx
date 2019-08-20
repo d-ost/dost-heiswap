@@ -28,7 +28,6 @@ class SelectReserve extends Component<Props, State> {
 
   componentDidMount() {
     this.viewModel = selectReserverModel
-    this.setState({});
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {}

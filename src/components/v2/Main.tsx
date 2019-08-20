@@ -15,13 +15,15 @@ import Modal from "react-bootstrap/es/Modal";
 import Scanner from "./Scanner";
 import { QR } from 'rimble-ui';
 import Receive from "./Receive";
-
+import {selectToken} from "../../redux/actions";
+import {connect} from "react-redux";
 
 interface Props {
   context: string
   history: any;
   onHide?:any;
   title?:any;
+  tokens:Token[]
 }
 
 interface State {
@@ -30,7 +32,7 @@ interface State {
   address: string;
 }
 
-export default class Main extends Component<Props, State> {
+class Main extends Component<Props, State> {
   constructor(props) {
     super(props);
     // Fixme: remove hardcoded address
@@ -93,6 +95,7 @@ export default class Main extends Component<Props, State> {
         <div>
           <div style={{marginLeft:'1px', marginRight:'1px', paddingBottom: '65px'}}>
             <TokenBalances
+              tokens={this.props.tokens}
               onClick={(token:Token)=>(this.tokenClicked(token))}
               context={this.props.context}
               showBucketKeyBalances={ false }
@@ -160,6 +163,24 @@ export default class Main extends Component<Props, State> {
   }
 
 }
+
+
+const mapStateToProps = state => {
+   console.log('state  ', state);
+  return {
+    tokens: state.token.tokens,
+  }
+};
+
+const mapDispatchToProps = {
+  //selectToken,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Main);
+
 
 /*
 <div className="AccountDetailBtn"
