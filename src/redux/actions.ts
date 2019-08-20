@@ -1,7 +1,9 @@
 import {
   CONNECT_RESERVE,
   DISCONNECT_RESERVE,
-  SELECT_TOKEN
+  SELECT_TOKEN,
+  ADD_ACCOUNT,
+  REMOVE_ACCOUNT,
 } from "./actionTypes";
 
 export const connectToReserve = content => ({
@@ -16,5 +18,15 @@ export const disconnectToReserve = content => ({
 
 export const selectToken = content => ({
   type: SELECT_TOKEN,
+  payload: content,
+});
+
+export const addAccount = content => ({
+  type: ADD_ACCOUNT,
+  payload: content,
+});
+
+export const removeAccount = content => ({
+  type: REMOVE_ACCOUNT,
   payload: content,
 });

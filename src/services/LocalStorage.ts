@@ -1,7 +1,7 @@
 // Copyright 2019 LeapDAO.org MIT
 // github.com/leapdao/plasma-burner-wallet
 
-import {ReserveType} from "../models/SelectReserveModel";
+import {ReserveType} from "../viewModels/SelectReserveModel";
 
 class LocalStorage {
 

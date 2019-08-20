@@ -1,5 +1,5 @@
 import {CONNECT_RESERVE, DISCONNECT_RESERVE} from "../actionTypes";
-import selectReserveModel, {ReserveAccount} from "../../models/SelectReserveModel";
+import selectReserveModel, {ReserveAccount} from "../../viewModels/SelectReserveModel";
 
 
 interface State {

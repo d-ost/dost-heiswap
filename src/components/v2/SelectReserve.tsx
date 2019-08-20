@@ -3,18 +3,28 @@ import Card from "react-bootstrap/Card";
 import selectReserverModel, {
   ReserveAccount,
   ReserveType
-} from "../../models/SelectReserveModel";
+} from "../../viewModels/SelectReserveModel";
 import i18n from "../../i18n";
 import NavigationBarWBB from "./NavigationBarWBB";
 import {connect} from "react-redux";
-import {connectToReserve, disconnectToReserve} from "../../redux/actions";
+import {
+  connectToReserve,
+  disconnectToReserve,
+  addAccount,
+  removeAccount,
+} from "../../redux/actions";
+import Account, {AccountType} from "../../viewModels/Account";
 
 interface Props {
   reserves: ReserveAccount[];
   connectToReserve: Function;
   disconnectToReserve: Function;
+  addAccount: Function;
+  removeAccount: Function;
 }
-interface State {}
+
+interface State {
+}
 
 class SelectReserve extends Component<Props, State> {
 
@@ -30,9 +40,11 @@ class SelectReserve extends Component<Props, State> {
     this.viewModel = selectReserverModel
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {}
+  componentDidUpdate(prevProps, prevState, snapshot) {
+  }
 
-  componentWillUnmount() {}
+  componentWillUnmount() {
+  }
 
   render() {
     return (
@@ -44,13 +56,13 @@ class SelectReserve extends Component<Props, State> {
   }
 
   private getConnectedOptions() {
-    let options:any = [];
+    let options: any = [];
     let supportedOptions: ReserveAccount[] = [...this.props.reserves];
-      supportedOptions.forEach((option: ReserveAccount)=>{
-        options.push(this.getConnectView(option));
-      });
-      if (options.length === 0) {
-        options.push( this.getNoOptionView());
+    supportedOptions.forEach((option: ReserveAccount) => {
+      options.push(this.getConnectView(option));
+    });
+    if (options.length === 0) {
+      options.push(this.getNoOptionView());
     }
     return options;
   }
@@ -58,6 +70,7 @@ class SelectReserve extends Component<Props, State> {
   private getConnectableOptions() {
     return [];
   }
+
   private getNoOptionView() {
     return (
       <Card.Text>
@@ -65,18 +78,20 @@ class SelectReserve extends Component<Props, State> {
       </Card.Text>
     );
   }
-  private getConnectView(reserveAccount: ReserveAccount){
-    const isAccountAvailable = reserveAccount.account!==undefined;
-    const connectButtonClass = isAccountAvailable?'btn btn-danger' : 'btn btn-primary';
-    const connectButtonDisplayText = isAccountAvailable?'Disconnect' : 'Connect';
-    const displayStyleForAccount = isAccountAvailable?'inline' : 'none';
-    let action = ()=>{};
+
+  private getConnectView(reserveAccount: ReserveAccount) {
+    const isAccountAvailable = reserveAccount.account !== undefined;
+    const connectButtonClass = isAccountAvailable ? 'btn btn-danger' : 'btn btn-primary';
+    const connectButtonDisplayText = isAccountAvailable ? 'Disconnect' : 'Connect';
+    const displayStyleForAccount = isAccountAvailable ? 'inline' : 'none';
+    let action = () => {
+    };
     switch (reserveAccount.type) {
       // case ReserveType.Dost:
       //   action = this.dOSTButtonClicked;
       //   break;
       case ReserveType.Metamask:
-        action = isAccountAvailable?this.metamaskDisconnect:this.metamaskConnect;
+        action = isAccountAvailable ? this.metamaskDisconnect : this.metamaskConnect;
         break;
       // case ReserveType.WalletConnect:
       //   action = this.walletConnectButtonClicked;
@@ -87,10 +102,10 @@ class SelectReserve extends Component<Props, State> {
       <div className="card" style={{
         margin: '10px',
         boxShadow: '0 5px 15px rgba(0,0,0,.15)',
-        borderRadius:'15px',
-        borderWidth:'0px',
+        borderRadius: '15px',
+        borderWidth: '0px',
         overflow: 'hidden',
-        backgroundColor:`rgba(255, 255, 255, ${reserveAccount.supportedByBrowser?1.0:0.5})`
+        backgroundColor: `rgba(255, 255, 255, ${reserveAccount.supportedByBrowser ? 1.0 : 0.5})`
       }}>
         <div className="card-body mb-1" style={{paddingBottom: '0px'}}>
           <h5 className="card-title">{reserveAccount.title}</h5>
@@ -102,16 +117,17 @@ class SelectReserve extends Component<Props, State> {
         </div>
         <button type="button"
                 style={{
-                  display:`${reserveAccount.supportedByBrowser?'block':'none'}`,
+                  display: `${reserveAccount.supportedByBrowser ? 'block' : 'none'}`,
                   paddingTop: '10px',
-                  paddingBottom:'13px',
+                  paddingBottom: '13px',
                   width: '100%',
-                  backgroundColor:'white',
-                  borderWidth:'0px',
-                  color:`${isAccountAvailable?'red':'black'}`,
-                  borderTopWidth:'1px',
-                  borderTopColor:'rgb(231, 246, 247)',
-                  borderTopStyle:'solid'}}
+                  backgroundColor: 'white',
+                  borderWidth: '0px',
+                  color: `${isAccountAvailable ? 'red' : 'black'}`,
+                  borderTopWidth: '1px',
+                  borderTopColor: 'rgb(231, 246, 247)',
+                  borderTopStyle: 'solid'
+                }}
                 className={connectButtonClass}
                 onClick={action.bind(this) as any}>
           {connectButtonDisplayText}
@@ -132,20 +148,32 @@ class SelectReserve extends Component<Props, State> {
         metaMaskReserve,
       );
     }
+    const account = new Account(AccountType.bucket, connectedAddress);
+    this.props.addAccount({
+      token: undefined,
+      account: account,
+    });
   }
+
   public metamaskDisconnect() {
     console.log('metamaskDisconnect');
     this.viewModel!.disconnectMetamask();
     let allReserves = [...this.props.reserves];
+    let disconnectedAddress;
     let reserveAccounts = allReserves.filter(r => r.type === ReserveType.Metamask);
     if (reserveAccounts.length > 0) {
       const metaMaskReserve = reserveAccounts[0];
+      disconnectedAddress = reserveAccounts[0].account;
       metaMaskReserve.account = undefined;
       this.props.disconnectToReserve(
         metaMaskReserve,
       );
-
     }
+    const account = new Account(AccountType.bucket, disconnectedAddress);
+    this.props.removeAccount({
+      token: undefined,
+      account: account,
+    });
   }
 
   // // Click handlers
@@ -170,7 +198,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   connectToReserve,
-  disconnectToReserve
+  disconnectToReserve,
+  addAccount,
+  removeAccount,
 };
 
 export default connect(
