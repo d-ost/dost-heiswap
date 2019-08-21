@@ -1,4 +1,4 @@
-import Account from "./Account";
+import Account, {AccountType} from "./Account";
 
 export default class Token {
 
@@ -21,6 +21,39 @@ export default class Token {
     this.accounts = [];
   }
 
+  addAccount(account: Account) {
+    this.accounts.push(account);
+  }
+
+  removeAccount(account: Account) {
+    for(let index = 0; index < this.accounts.length; index += 1) {
+      if( this.accounts[index].match(account) ) {
+        // Remove account
+        this.accounts.splice(index, 1);
+        break;
+      }
+    }
+  }
+
+  match(token): boolean {
+    return this.symbol === token.symbol;
+  }
+
+
+  getBurnerBalance(): string {
+    return this.accounts
+      .filter(account => account.accountType === AccountType.burner)
+      .map(account => account.balance)
+      .reduce((accumulator, balance) => balance.add(accumulator)).toString(10);
+  }
+
+  getBucketBalance(): string {
+    return this.accounts
+      .filter(account => account.accountType === AccountType.bucket)
+      .map(account => account.balance)
+      .reduce((accumulator, balance) => balance.add(accumulator)).toString(10);
+  }
+
   static getAll() {
     return [
       new Token(
@@ -41,24 +74,6 @@ export default class Token {
         '0xeaa192d486ac5243886a28001e27a68cae5fde4b'
       )
     ];
-  }
-
-  addAccount(account: Account) {
-    this.accounts.push(account);
-  }
-
-  removeAccount(account: Account) {
-    for(let index = 0; index < this.accounts.length; index += 1) {
-      if( this.accounts[index].match(account) ) {
-        // Remove account
-        this.accounts.splice(index, 1);
-        break;
-      }
-    }
-  }
-
-  match(token): boolean {
-    return this.symbol === token.symbol;
   }
 
   /**
@@ -97,5 +112,6 @@ export default class Token {
     });
     return updatedTokens;
   }
+
 
 }
