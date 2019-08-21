@@ -156,7 +156,6 @@ class SelectReserve extends Component<Props, State> {
   }
 
   public metamaskDisconnect() {
-    console.log('metamaskDisconnect');
     this.viewModel!.disconnectMetamask();
     let allReserves = [...this.props.reserves];
     let disconnectedAddress;
@@ -175,17 +174,6 @@ class SelectReserve extends Component<Props, State> {
       account: account,
     });
   }
-
-  // // Click handlers
-  // public dOSTButtonClicked() {
-  //   console.log('dOSTButtonClicked');
-  // }
-  // public async walletConnectButtonClicked() {
-  //   console.log('walletConnectButtonClicked');
-  //   let connectedAddress = await this.viewModel!.connectWithWalletConnect();
-  //   this.setState({});
-  // }
-
 }
 
 const mapStateToProps = state => {

@@ -31,7 +31,7 @@ interface State {
   pendingTopup: boolean;
 }
 
-class Withdraw extends Component<Props, State> {
+class Topup extends Component<Props, State> {
 
   constructor(props) {
     super(props);
@@ -40,23 +40,23 @@ class Withdraw extends Component<Props, State> {
       amount: '',
       reserve: '',
       pendingTopup: false,
-    }
+    };
     this.handleAmountChange = this.handleAmountChange.bind(this);
     this.handleReserveChange = this.handleReserveChange.bind(this);
     this.handleTopup = this.handleTopup.bind(this);
   }
 
+  componentWillMount(): void {
+
+  }
+
   componentDidMount() {
+
     console.log(this.props)
     this.setState({
       reserve: this.props.reserves[0].type
     });
-    const reserveAccount = this.props.reserves[0]
-    if (reserveAccount && reserveAccount.account) {
-      reserveAccount.web3.eth.getBalance(reserveAccount.account!).then((balance) => {
-        this.setState({amount: balance})
-      });
-    }
+    this.setState({amount: this.props.selectedToken.getBucketBalance()})
 
   }
 
@@ -129,6 +129,11 @@ class Withdraw extends Component<Props, State> {
   }
 
   render() {
+
+    if (!this.props.selectedToken) {
+      this.props.history.push(Routes.Main);
+      return (null);
+    }
     const imageName = Utils.getImagePathForSymbol(this.props.selectedToken.symbol);
     const image = require(`../../images/${imageName}`);
     const reserves = this.props.reserves.filter(res => res.account && res.account.length > 0);
@@ -284,6 +289,6 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(Withdraw);
+)(Topup);
 
 

@@ -38,7 +38,7 @@ class Saving extends Component<Props, State> {
 
   tokenClicked(token:Token) {
     this.props.selectToken(token);
-    this.props.history.push(Routes.Withdraw);
+    this.props.history.push(Routes.Topup);
 
   }
 

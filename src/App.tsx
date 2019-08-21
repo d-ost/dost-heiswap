@@ -11,7 +11,7 @@ import VerifyPin from "./components/v2/VerifyPin";
 import Scanner from "./components/v2/Scanner";
 import Saving from "./components/v2/Saving";
 import Setting from "./components/v2/Setting";
-import Withdraw from "./components/v2/Withdraw";
+import Topup from "./components/v2/Topup";
 import BalanceTracker from "./components/v2/BalanceTracker";
 
 declare global {
@@ -60,7 +60,7 @@ export default class App extends Component<Props, State> {
         <Route exact path="/scanner" component={Scanner}/>
         <Route exact path="/saving" component={Saving}/>
         <Route exact path="/settings" component={Setting}/>
-        <Route exact path="/withdraw" component={Withdraw}/>
+        <Route exact path="/topup" component={Topup}/>
       </Router>
     );
   }
