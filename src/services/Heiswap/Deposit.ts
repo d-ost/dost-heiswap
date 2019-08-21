@@ -1,46 +1,46 @@
-import {bn128, h1, serialize} from '../../utils/AltBn128.js';
 import crypto from 'crypto'
 import Web3 from "web3";
 import {Contract} from 'web3-eth-contract';
 
+import AltBn128 from '../../utils/AltBn128';
+
 export interface HeiswapToken {
-  heiTargetOstAmount: string;
+  heiTargetAmount: string;
   heiTargetAddress: string;
-  heiRingIndexFinal?: string;
   heiRingIndexEst: string;
   heiStealthSecretKey: string;
-  heiStealthPublicKey: string;
+  heiStealthPublicKey: Array<string>;
   heiRandomSecretKey: string;
   txHash?: string;
+  heiRingIndexFinal?: string;
 }
 
-//fixme [sarvesh] Revisit this logic
 const deposit = async (
   web3: Web3,
   heiswapInstance: Contract,
   fromAddress: string,
-  targetOstAmount: string,
+  targetAmount: string,
   targetAddress: string,
 ): Promise<HeiswapToken> => {
 
   // generate random secret key
   const randomSecretKey = crypto.randomBytes(32).toString('hex');
   // calculate pseudo stealth address
-  const stealthSecretKey = h1(serialize(
+  const stealthSecretKey = AltBn128.h1(AltBn128.serialize(
     [randomSecretKey, targetAddress]));
 
   // ring might close before our transaction
   // is included, then we are in a later ring
   const currentRingIndex = await heiswapInstance
     .methods
-    .getCurrentRingIdx(targetOstAmount)
+    .getCurrentRingIdx(targetAmount)
     .call();
 
   // Append "0x" in front of it, web3 requires it
-  const stealthPublicKey = bn128.ecMulG(stealthSecretKey).map(x => '0x' + x.toString(16));
+  const stealthPublicKey = AltBn128.ecMulG(stealthSecretKey).map(x => '0x' + x.toString(16));
 
   let heiswapToken: HeiswapToken = {
-    heiTargetOstAmount: targetOstAmount,
+    heiTargetAmount: targetAmount,
     heiTargetAddress: targetAddress,
     heiRingIndexFinal: undefined,
     heiRingIndexEst: currentRingIndex,
@@ -51,27 +51,33 @@ const deposit = async (
   };
 
   try {
-    const gasPrice = '0x3B9ACA00';
 
-    const depositResult = await heiswapInstance
+    const dataByteCode = heiswapInstance
       .methods
       .deposit(stealthPublicKey)
-      .send(
-        {
-          from: fromAddress,
-          value: web3.utils.toWei(targetOstAmount, 'ether'),
-          gasLimit: '800000', //todo gas limit
-          gasPrice: gasPrice,
-          nonce: await web3.eth.getTransactionCount(fromAddress)
-        }
-      );
+      .encodeABI();
+
+    const gas = await web3.eth.estimateGas({
+      to: heiswapInstance.address,
+      data: dataByteCode
+    });
+
+    const tx = {
+      from: fromAddress,
+      value: web3.utils.toWei(targetAmount, 'ether'),
+      gasLimit: gas,
+      gasPrice: '0x3B9ACA00',
+      nonce: await web3.eth.getTransactionCount(fromAddress)
+    };
+
+    const txReceipt = await web3.eth.sendTransaction(tx);
 
     // get event return value
-    const depositEventRetVal = depositResult.events.Deposited.returnValues;
+    const depositEventRetVal = txReceipt.events!.Deposited.returnValues;
 
     // get the actual ring index
     heiswapToken.heiRingIndexFinal = depositEventRetVal.idx;
-    heiswapToken.txHash = depositResult.transactionHash;
+    heiswapToken.txHash = txReceipt.transactionHash;
   } catch (error) {
     console.log('error: ', error);
     throw new Error('Failed to deposit in ring');
