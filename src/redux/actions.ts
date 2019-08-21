@@ -4,6 +4,7 @@ import {
   SELECT_TOKEN,
   ADD_ACCOUNT,
   REMOVE_ACCOUNT,
+  UPDATE_BALANCE,
 } from "./actionTypes";
 
 export const connectToReserve = content => ({
@@ -28,5 +29,10 @@ export const addAccount = content => ({
 
 export const removeAccount = content => ({
   type: REMOVE_ACCOUNT,
+  payload: content,
+});
+
+export const updateBalance = content => ({
+  type: UPDATE_BALANCE,
   payload: content,
 });

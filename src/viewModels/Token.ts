@@ -36,6 +36,16 @@ export default class Token {
     }
   }
 
+  replaceAccount(updatedAccount: Account): Account[] {
+    const updatedAccounts = this.accounts.map((existingAccount): Account => {
+      if (existingAccount.match(updatedAccount)) {
+        return updatedAccount;
+      }
+      return existingAccount;
+    });
+    return updatedAccounts;
+  }
+
   match(token): boolean {
     return this.symbol === token.symbol;
   }
@@ -84,7 +94,7 @@ export default class Token {
    */
   static addAccountToTokens(tokens: Token[], account: Account): Token[] {
     const updatedTokens = tokens.map((t): Token => {
-      t.addAccount(account);
+      t.addAccount(account.clone());
       return t;
     });
     return updatedTokens;
@@ -104,15 +114,13 @@ export default class Token {
     return updatedTokens;
   }
 
-  static replaceToken(tokens: Token[], token: Token) {
-    const updatedTokens = tokens.map((t): Token => {
-      if (t.match(token)) {
-        return token;
+  static replaceToken(tokens: Token[], updatedToken: Token): Token[] {
+    const updatedTokens = tokens.map((existingToken): Token => {
+      if (existingToken.match(updatedToken)) {
+        return updatedToken;
       }
-      return t;
+      return existingToken;
     });
     return updatedTokens;
   }
-
-
 }

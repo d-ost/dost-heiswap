@@ -1,10 +1,12 @@
 import {
   ADD_ACCOUNT,
   REMOVE_ACCOUNT,
-  SELECT_TOKEN
+  SELECT_TOKEN,
+  UPDATE_BALANCE,
 } from "../actionTypes";
 import Token from "../../viewModels/Token";
 import Account from "../../viewModels/Account"
+import BigNumber from "bignumber.js";
 
 interface State {
   tokens: Token[],
@@ -43,7 +45,7 @@ export default function (state: State = initialState, action) {
 
     case REMOVE_ACCOUNT: {
       const token: Token = action.payload.token;
-      const account: Account = action.payload.account as Account;
+      const account: Account = action.payload.account;
       let tokens;
       if ( account.accountType === 'burner' ) {
         token.removeAccount(account);
@@ -51,6 +53,20 @@ export default function (state: State = initialState, action) {
       } else {
         tokens = Token.removeAccountFromTokens(state.tokens, account);
       }
+      return {
+        ...state,
+        tokens,
+      }
+    }
+
+    case UPDATE_BALANCE: {
+      const token: Token = action.payload.token;
+      const account: Account = action.payload.account;
+      const balance: BigNumber = action.payload.balance;
+      account.setBalance(balance);
+      const updatedAccounts = token.replaceAccount(account);
+      token.accounts = updatedAccounts;
+      const tokens = Token.replaceToken(state.tokens, token);
       return {
         ...state,
         tokens,

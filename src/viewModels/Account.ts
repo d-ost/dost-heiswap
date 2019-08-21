@@ -10,12 +10,12 @@ export default class Account {
   accountType: AccountType;
   address: string;
   balance: BigNumber;
-  privateKey?:string;
+  privateKey?: string;
 
   constructor(
     accountType: AccountType,
     address: string,
-    privateKey?:string,
+    privateKey?: string,
   ) {
     this.accountType = accountType;
     this.address = address;
@@ -29,6 +29,13 @@ export default class Account {
 
   match(account): boolean {
     return this.address === account.address;
+  }
+
+  // Needed while add account to Tokens
+  clone(): Account {
+    const account = new Account(this.accountType, this.address, this.privateKey);
+    account.setBalance(this.balance);
+    return account;
   }
 
 }

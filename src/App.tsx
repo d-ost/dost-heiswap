@@ -12,9 +12,12 @@ import Scanner from "./components/v2/Scanner";
 import Saving from "./components/v2/Saving";
 import Setting from "./components/v2/Setting";
 import Withdraw from "./components/v2/Withdraw";
+import BalanceTracker from "./components/v2/BalanceTracker";
 
 declare global {
-  interface Window { web3: Web3; }
+  interface Window {
+    web3: Web3;
+  }
 }
 
 interface Props {
@@ -46,17 +49,19 @@ export default class App extends Component<Props, State> {
   render() {
     console.log('Gere in App.tsx');
     return (
-        <Router>
-          <Route exact path="/" component={Main}/>
-          <Route exact path="/send" component={Send}/>
-          <Route exact path="/selectreserve" component={SelectReserve}/>
-          <Route exact path="/create-pin" component={CreatePin}/>
-          <Route exact path="/verify-pin" component={VerifyPin}/>
-          <Route exact path= "/scanner" component={Scanner}/>
-          <Route exact path="/saving" component={Saving}/>
-          <Route exact path="/settings" component={Setting}/>
-          <Route exact path="/withdraw" component={Withdraw}/>
-        </Router>
+
+      <Router>
+        <BalanceTracker/>
+        <Route exact path="/" component={Main}/>
+        <Route exact path="/send" component={Send}/>
+        <Route exact path="/selectreserve" component={SelectReserve}/>
+        <Route exact path="/create-pin" component={CreatePin}/>
+        <Route exact path="/verify-pin" component={VerifyPin}/>
+        <Route exact path="/scanner" component={Scanner}/>
+        <Route exact path="/saving" component={Saving}/>
+        <Route exact path="/settings" component={Setting}/>
+        <Route exact path="/withdraw" component={Withdraw}/>
+      </Router>
     );
   }
 }
