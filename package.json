@@ -7,6 +7,7 @@
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@walletconnect/browser": "1.0.0-beta.32",
     "@walletconnect/qrcode-modal": "1.0.0-beta.32",
+    "bignumber.js": "4.1.0",
     "bn.js": "5.0.0",
     "bootstrap": "^4.3.1",
     "crypto": "^1.0.1",
@@ -28,18 +29,18 @@
     "redux": "^4.0.4",
     "rimble-ui": "0.9.6",
     "styled-components": "4.3.2",
+    "ts-node": "^8.3.0",
     "typescript": "^3.5.3",
     "web3": "2.0.0-alpha",
     "web3-eth-accounts": "1.2.1",
-    "web3-utils": "2.0.0-alpha",
-    "bignumber.js": "4.1.0"
+    "web3-utils": "2.0.0-alpha"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "bot": "node src/Bots/MixerBot.js"
+    "bot": "sh ./run-mixer-bot"
   },
   "eslintConfig": {
     "extends": "react-app"
