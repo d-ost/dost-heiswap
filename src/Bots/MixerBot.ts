@@ -1,13 +1,12 @@
-'strict mode'
-import {Account} from '../KeyManager/Account';
-
-import heiswapAbi from '../contracts/Heiswap.abi';
-import config from '../config/Config'
-import depositOST from '../services/Heiswap/Deposit';
-import withdrawOST from '../services/Heiswap/Withdraw';
 import Web3 from "web3";
 import {Contract} from 'web3-eth-contract';
 
+import HeiswapAbi from '../contracts/Heiswap.abi';
+
+import Deposit from '../services/Heiswap/Deposit';
+import Withdraw from '../services/Heiswap/Withdraw';
+import {Account} from '../KeyManager/Account';
+import config from "../config/Config";
 
 const OST_AMOUNT = '1';
 
@@ -28,10 +27,11 @@ class MixerBot {
   constructor(numberOfAddress, maxTimeInterval) {
     this.numberOfAddress = numberOfAddress;
     this.maxTimeInterval = maxTimeInterval;
-
+console.log('config', config);
+    console.log('config', config.domains);
     this.originWeb3 = config.originWeb3();
     this.auxiliaryWeb3 = config.auxiliaryWeb3();
-    this.heiSwapContract = new this.originWeb3.eth.Contract(heiswapAbi as any, config.auxiliaryChain.heiswapAddress);
+    this.heiSwapContract = new this.originWeb3.eth.Contract(HeiswapAbi as any, config.auxiliaryChain.heiswapAddress);
 
     for (let i = 0; i < numberOfAddress; i++) {
       const account = Account.new();
@@ -70,7 +70,7 @@ class MixerBot {
     const address = Object.keys(addresses)[0];
     console.log('signerAccountAddress', signerAccount.address);
     console.log('targerAddress', address);
-    depositOST(this.originWeb3, this.heiSwapContract, signerAccount.address, OST_AMOUNT, address)
+    Deposit(this.originWeb3, this.heiSwapContract, signerAccount.address, OST_AMOUNT, address)
       .then((result) => {
         console.log('deposit result: ', result);
         tokens[result.txHash!] = result;
@@ -90,7 +90,7 @@ class MixerBot {
       const key = tokenKeys[index];
       const token = tokens[key];
 
-      withdrawOST(this.originWeb3, this.heiSwapContract, token, address)
+      Withdraw(this.originWeb3, this.heiSwapContract, token)
         .then((result) => {
           console.log('withdraw result: ', result);
           delete tokens[key];
