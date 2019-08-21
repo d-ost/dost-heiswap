@@ -1,13 +1,15 @@
 import React, {Component} from 'react';
 import Form from "react-bootstrap/es/Form";
 import Button from "react-bootstrap/es/Button";
-import Pin from "../../viewModels/Pin";
+import profile from "../../viewModels/Profile";
 import Row from "react-bootstrap/es/Row";
 import Col from "react-bootstrap/Col";
+import {connect} from "react-redux";
 
 interface Props {
   onValidationSuccess?: any;
   onHide?:any;
+  pinHash: string
 }
 
 interface State {
@@ -15,7 +17,7 @@ interface State {
   errors: {pin: string},
 }
 
-export default class VerifyPin extends Component<Props, State> {
+export class VerifyPin extends Component<Props, State> {
 
   PIN_MINIMUM_LENGTH = 6;
 
@@ -48,14 +50,12 @@ export default class VerifyPin extends Component<Props, State> {
     this.clearValidationErrors();
 
     const { pin } = this.state;
-    const pinInstance = new Pin(pin);
-    const errors = pinInstance.verifyPin();
+    const errors = profile.verifyPin(pin, this.props.pinHash);
     if( errors.pin !== 'no-error') {
       this.setState({
         errors: errors,
       });
     } else {
-      console.log(`pin verified!!!`);
       this.props.onValidationSuccess();
     }
 
@@ -152,3 +152,17 @@ export default class VerifyPin extends Component<Props, State> {
   }
 
 }
+
+const mapStateToProps = state => {
+  return {
+    pinHash: state.profile.pinHash
+  }
+};
+
+const mapDispatchToProps = {};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(VerifyPin);
+
