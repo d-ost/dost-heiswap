@@ -2,7 +2,7 @@ import * as web3Utils from 'web3-utils';
 
 class Profile {
 
-  validatePinCreation(pin:string, confirmPin:string) {
+  validatePinCreation(pin: string, confirmPin: string): { pin: string;} {
     let errors = {pin: 'no-error', confirmPin: 'no-error'};
     const pin_minimum_size = Profile.get_minimum_size();
     if(pin.length < pin_minimum_size) {
@@ -40,7 +40,7 @@ class Profile {
     return (sumOfAllCharCodeInPin % 64);
   }
 
-  verifyPin(pin: string, pinHash:string) {
+  verifyPin(pin: string, pinHash: string): { pin: string;} {
     let errors = {pin: 'no-error'};
     const pin_minimum_size = Profile.get_minimum_size();
     if(pin.length < pin_minimum_size) {
