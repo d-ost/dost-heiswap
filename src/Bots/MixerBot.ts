@@ -6,7 +6,8 @@ import HeiswapAbi from '../contracts/Heiswap.abi';
 import Deposit from '../services/Heiswap/Deposit';
 import Withdraw from '../services/Heiswap/Withdraw';
 import {Account} from '../KeyManager/Account';
-import config from "../config/Config";
+import config,{Config} from "../config/Config";
+import configData from '../config/config.json';
 
 const OST_AMOUNT = '1';
 
@@ -27,7 +28,10 @@ class MixerBot {
   constructor(numberOfAddress, maxTimeInterval) {
     this.numberOfAddress = numberOfAddress;
     this.maxTimeInterval = maxTimeInterval;
-console.log('config', config);
+    console.log('class Config  ', Config);
+    const configObject: Config= Config.readConfig(JSON.stringify(configData));
+    console.log('config object ', configObject);
+    console.log('config', config);
     console.log('config', config.domains);
     this.originWeb3 = config.originWeb3();
     this.auxiliaryWeb3 = config.auxiliaryWeb3();

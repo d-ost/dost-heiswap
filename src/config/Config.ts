@@ -1,11 +1,11 @@
 import Web3 from "web3";
 import configData from './config.json';
-interface Explorer {
+export interface Explorer {
   name: string;
   URL: string;
 }
 
-interface AuxiliaryChain {
+export interface AuxiliaryChain {
   name: string;
   chainID: string;
   origin: string;
@@ -19,7 +19,7 @@ interface AuxiliaryChain {
   explorer: Explorer;
 }
 
-interface OriginChain {
+export interface OriginChain {
   name: string;
   chainID: string;
   RPCURL: string;
@@ -32,12 +32,12 @@ interface OriginChain {
   explorer: Explorer;
 }
 
-interface Links {
+export interface Links {
   code: string;
   about: string;
 }
 
-class Config {
+export class Config {
   domains: string[];
   links: Links;
   originChain: OriginChain ;
@@ -90,7 +90,10 @@ class Config {
   }
 }
 
+console.log('config data ', configData);
 const config = Config.readConfig(JSON.stringify(configData));
+console.log('config print  ', config);
+console.log('config function  ', config.auxiliaryWeb3);
 export default config
 
 
