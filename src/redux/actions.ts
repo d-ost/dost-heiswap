@@ -4,7 +4,7 @@ import {
   SELECT_TOKEN,
   ADD_ACCOUNT,
   REMOVE_ACCOUNT,
-  SAVE_PIN_HASH
+  SAVE_PIN_HASH,
   UPDATE_BALANCE,
 } from "./actionTypes";
 
