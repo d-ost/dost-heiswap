@@ -5,6 +5,7 @@ import {
   ADD_ACCOUNT,
   REMOVE_ACCOUNT,
   SAVE_PIN_HASH
+  UPDATE_BALANCE,
 } from "./actionTypes";
 
 export const connectToReserve = content => ({
@@ -34,5 +35,10 @@ export const removeAccount = content => ({
 
 export const savePinHash = content => ({
   type: SAVE_PIN_HASH,
+  payload: content,
+});
+
+export const updateBalance = content => ({
+  type: UPDATE_BALANCE,
   payload: content,
 });

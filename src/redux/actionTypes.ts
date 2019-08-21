@@ -4,3 +4,4 @@ export const SELECT_TOKEN = "SELECT_TOKEN";
 export const ADD_ACCOUNT = "ADD_ACCOUNT";
 export const REMOVE_ACCOUNT = "REMOVE_ACCOUNT";
 export const SAVE_PIN_HASH = "SAVE_PIN_HASH";
+export const UPDATE_BALANCE = "UPDATE_BALANCE";
