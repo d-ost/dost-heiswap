@@ -1,13 +1,19 @@
 import React, {Component} from 'react';
 import Form from "react-bootstrap/es/Form";
 import Button from "react-bootstrap/es/Button";
-import Pin from "../../viewModels/Pin";
+import profile from "../../viewModels/Profile";
 import Row from "react-bootstrap/es/Row";
 import Col from "react-bootstrap/Col";
+
+import {connect} from "react-redux";
+import {
+  savePinHash,
+} from "../../redux/actions";
 
 interface Props {
   onValidationSuccess?:any;
   onHide?:any;
+  savePinHash: Function;
 }
 
 interface State {
@@ -16,7 +22,7 @@ interface State {
   errors: {pin: string, confirmPin: string}
 }
 
-export default class CreatePin extends Component<Props, State> {
+class CreatePin extends Component<Props, State> {
 
   constructor(props) {
     super(props);
@@ -54,15 +60,15 @@ export default class CreatePin extends Component<Props, State> {
     e.preventDefault();
     this.clearValidationErrors();
     const { pin, confirmPin } = this.state;
-    const pinInstance = new Pin(pin);
-    const errors = pinInstance.validatePinCreation(confirmPin);
+    const errors = profile.validatePinCreation(pin, confirmPin);
 
     if (errors.pin !== 'no-error' || errors.confirmPin !== 'no-error') {
       this.setState({
         errors: errors,
       });
     } else {
-      pinInstance.savePin();
+      const pinHash = profile.generatePinHash(pin);
+      this.props.savePinHash(pinHash);
       this.props.onValidationSuccess();
     }
   }
@@ -171,3 +177,16 @@ export default class CreatePin extends Component<Props, State> {
   }
 
 }
+
+const mapStateToProps = state => {
+  return {}
+};
+
+const mapDispatchToProps = {
+  savePinHash,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(CreatePin);

@@ -4,6 +4,7 @@ import {
   SELECT_TOKEN,
   ADD_ACCOUNT,
   REMOVE_ACCOUNT,
+  SAVE_PIN_HASH
 } from "./actionTypes";
 
 export const connectToReserve = content => ({
@@ -28,5 +29,10 @@ export const addAccount = content => ({
 
 export const removeAccount = content => ({
   type: REMOVE_ACCOUNT,
+  payload: content,
+});
+
+export const savePinHash = content => ({
+  type: SAVE_PIN_HASH,
   payload: content,
 });

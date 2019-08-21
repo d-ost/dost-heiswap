@@ -6,17 +6,18 @@ import {Routes} from "./Routes";
 import ModelContainer from "./ModelContainer";
 import VerifyPin from "./VerifyPin";
 import CreatePin from "./CreatePin";
-import Pin from "../../viewModels/Pin";
+import {connect} from "react-redux";
 
 interface Props {
   history?: any;
+  pinHash: string
 }
 
 interface State {
   modalShow: boolean;
 }
 
-export default class NavigationBar extends Component<Props, State> {
+class NavigationBar extends Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {modalShow: false};
@@ -48,9 +49,8 @@ export default class NavigationBar extends Component<Props, State> {
   }
 
   getPinVerificationView() {
-    const pinInstance = new Pin();
-    console.log('pinInstance.isPinCreated(): ', pinInstance.isPinCreated());
-    if (pinInstance.isPinCreated()) {
+    let isPinCreated = this.props.pinHash && this.props.pinHash.trim().length > 0;
+    if (isPinCreated) {
       return (
         <VerifyPin
           onValidationSuccess={()=>{this.props.history.push(Routes.Savings)}}
@@ -147,3 +147,16 @@ export default class NavigationBar extends Component<Props, State> {
 
    */
 }
+
+const mapStateToProps = state => {
+  return {
+    pinHash: state.profile.pinHash
+  }
+};
+
+const mapDispatchToProps = {};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(NavigationBar);
