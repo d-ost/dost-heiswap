@@ -3,8 +3,6 @@ import Utils from '../../KeyManager/Utils'
 import Token from "../../viewModels/Token";
 import Row from "react-bootstrap/es/Row";
 import Col from "react-bootstrap/es/Col";
-import Container from "react-bootstrap/es/Container";
-import dostLogo from "../../images/dost.png";
 import ListGroup from "react-bootstrap/es/ListGroup";
 
 interface Props {
@@ -15,17 +13,11 @@ interface Props {
 }
 
 interface State {
-  burnerKeysTotalBalance: string;
-  bucketKeysTotalBalance: string
 }
 
 export default class TokenBalance extends React.Component<Props, State> {
   constructor(props) {
     super(props);
-    this.state = {
-      burnerKeysTotalBalance: '0',
-      bucketKeysTotalBalance: '0'
-    }
   }
 
   componentWillMount(): void {
@@ -47,10 +39,18 @@ export default class TokenBalance extends React.Component<Props, State> {
                 </div>
               </Col>
               <Col style={{padding:'0',textAlign:'right'}}>
-                <div style={{paddingRight:'15px', paddingTop:'15px', color:'#34445b'}}> {this.state.burnerKeysTotalBalance} </div>
+                <div style={{
+                  paddingRight: '15px',
+                  paddingTop: '15px',
+                  color: '#34445b'
+                }}> {this.props.token.getBurnerBalance()} </div>
               </Col>
               <Col style={{padding:'0',textAlign:'right', display:`${this.props.showBucketKeyBalances?'block':'none'}`}}>
-                <div style={{paddingRight:'15px', paddingTop:'15px', color:'#34445b'}}> {this.state.bucketKeysTotalBalance} </div>
+                <div style={{
+                  paddingRight: '15px',
+                  paddingTop: '15px',
+                  color: '#34445b'
+                }}> {this.props.token.getBucketBalance()} </div>
               </Col>
             </Row>
           </ListGroup.Item>

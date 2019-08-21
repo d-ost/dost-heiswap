@@ -1,4 +1,5 @@
 import Account, {AccountType} from "./Account";
+import BigNumber from "bignumber.js";
 
 export default class Token {
 
@@ -44,14 +45,14 @@ export default class Token {
     return this.accounts
       .filter(account => account.accountType === AccountType.burner)
       .map(account => account.balance)
-      .reduce((accumulator, balance) => balance.add(accumulator)).toString(10);
+      .reduce((accumulator, balance) => balance.add(accumulator), new BigNumber('0')).toString(10);
   }
 
   getBucketBalance(): string {
     return this.accounts
       .filter(account => account.accountType === AccountType.bucket)
       .map(account => account.balance)
-      .reduce((accumulator, balance) => balance.add(accumulator)).toString(10);
+      .reduce((accumulator, balance) => balance.add(accumulator), new BigNumber('0')).toString(10);
   }
 
   static getAll() {
