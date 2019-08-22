@@ -13,13 +13,14 @@ export default class Token {
     symbol: string,
     name: string,
     isBaseCurrency: boolean,
-    erc20Address?: string
+    erc20Address?: string,
+    accounts?: Account[]
   ) {
     this.symbol = symbol;
     this.name = name;
     this.isBaseCurrency = isBaseCurrency;
     this.erc20Address = erc20Address;
-    this.accounts = [];
+    this.accounts = accounts || [];
   }
 
   addAccount(account: Account) {
@@ -122,5 +123,35 @@ export default class Token {
       return existingToken;
     });
     return updatedTokens;
+  }
+
+  /**
+   * It provides token object from stringified json object.
+   * @param token It contains Token data in stringified format.
+   * @returns Array of tokens.
+   */
+  static fromJSON(token: string): Token[] {
+
+    let listOfToken: Token[] = [];
+    let tokens: Token[] = Object.assign(JSON.parse(token));
+
+    for (let i = 0; i < tokens.length; i++) {
+      const accounts = tokens[i].accounts.map(a => {
+        const account = new Account(a.accountType, a.address, a.privateKey);
+        account.setBalance(new BigNumber(a.balance));
+        return account;
+      });
+      let tokenObj = new Token(
+        tokens[i].symbol,
+        tokens[i].name,
+        tokens[i].isBaseCurrency,
+        tokens[i].erc20Address,
+        accounts,
+      );
+      listOfToken.push(tokenObj);
+    }
+
+    return listOfToken;
+
   }
 }

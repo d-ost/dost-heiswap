@@ -2,6 +2,9 @@
 // github.com/leapdao/plasma-burner-wallet
 
 import {ReserveType} from "../viewModels/SelectReserveModel";
+import Token from "../viewModels/Token";
+import BigNumber from "bignumber.js";
+import Account from "../viewModels/Account";
 
 class LocalStorage {
 
@@ -137,6 +140,21 @@ class LocalStorage {
 
   deletePinHash():void {
      localStorage.removeItem('pin');
+  }
+
+  getTokens(): Token[] | null {
+    let tokenList = localStorage.getItem('tokens');
+    if (!tokenList) {
+      return null;
+    }
+
+    let listOfToken: Token[] = Token.fromJSON(tokenList);
+
+    return listOfToken;
+  }
+
+  setTokens(tokenList: Token[]) {
+    localStorage.setItem('tokens', JSON.stringify(tokenList));
   }
 }
 

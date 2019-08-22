@@ -7,6 +7,7 @@ import {
 import Token from "../../viewModels/Token";
 import Account from "../../viewModels/Account"
 import BigNumber from "bignumber.js";
+import LocalStorage from "../../services/LocalStorage";
 
 interface State {
   tokens: Token[],
@@ -14,7 +15,7 @@ interface State {
 }
 
 const initialState = {
-  tokens: Token.getAll(),
+  tokens: LocalStorage.getTokens() || Token.getAll(),
   selectedToken: undefined
 };
 export default function (state: State = initialState, action) {
@@ -36,6 +37,7 @@ export default function (state: State = initialState, action) {
         tokens = Token.replaceToken(state.tokens, token);
       } else {
         tokens = Token.addAccountToTokens(state.tokens, account);
+        LocalStorage.setTokens(tokens);
       }
       return {
         ...state,
@@ -52,6 +54,7 @@ export default function (state: State = initialState, action) {
         tokens = Token.replaceToken(state.tokens, token);
       } else {
         tokens = Token.removeAccountFromTokens(state.tokens, account);
+        LocalStorage.setTokens(tokens);
       }
       return {
         ...state,
@@ -67,6 +70,7 @@ export default function (state: State = initialState, action) {
       const updatedAccounts = token.replaceAccount(account);
       token.accounts = updatedAccounts;
       const tokens = Token.replaceToken(state.tokens, token);
+      LocalStorage.setTokens(tokens);
       return {
         ...state,
         tokens,
