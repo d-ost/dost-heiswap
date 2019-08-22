@@ -17,19 +17,21 @@ const tokens = {};
 let signerAccount;
 
 let interval;
+let index =1;
 
 class MixerBot {
   constructor(numberOfAddress, maxTimeInterval) {
     this.numberOfAddress = numberOfAddress;
     this.maxTimeInterval = maxTimeInterval;
-    web3 = new Web3('ws://34.243.117.168:51405');
-
+    web3 = new Web3('ws://34.247.83.108:51405');
+    web3.transactionConfirmationBlocks = 1;
     this.heiSwapContract = new web3.eth.Contract(heiswapAbi,config.AUX_CHAIN.HEISWAP);
 
-    for (let i=0; i<numberOfAddress; i++) {
-      const account = Account.new();
-      addresses[account.address] = account;
-    }
+    const account = Account.fromPrivateKey(process.env['RECEIVER_PRIVATE_KEY']);
+    web3.accounts.wallet.add(
+      account
+    );
+    addresses[account.address] = account;
 
     const signerPrivateKey = process.env['SIGNER_PRIVATE_KEY'];
     signerAccount = Account.fromPrivateKey(signerPrivateKey);
@@ -50,11 +52,10 @@ class MixerBot {
   }
 
   perform() {
-    const randomNumber = Math.floor(Math.random() * 3);
-    if (randomNumber==0) {
+    if (index<=NUMBER_OF_PARTICIPANTS) {
       this.deposit();
-    }
-    else if (randomNumber==1) {
+      index ++;
+    } else {
       this.withdraw();
     }
   }
