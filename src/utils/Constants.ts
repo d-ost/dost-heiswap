@@ -1,3 +1,3 @@
-export const ORIGIN_GAS_PRICE = '0x4A817C800'; // 20 Gwei
+export const ORIGIN_GAS_PRICE = '0x3B9ACA00'; // 20 Gwei
 export const AUXILIARY_GAS_PRICE = '0x3B9ACA00'; // 1 Gwei
 export const HEISWAP_GOERLI='0xFD546C315e6b09ba6E647b424Ef94CA743a74379';

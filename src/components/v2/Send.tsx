@@ -172,7 +172,7 @@ class Send extends Component<Props, State> {
       account => account.accountType === AccountType.burner
     );
     console.log('burnerAccounts:', burnerAccounts);
-    return burnerAccounts[burnerAccounts.length-1];
+    return burnerAccounts[0];
   }
 
   changeToken(token:Token) {
@@ -209,8 +209,10 @@ class Send extends Component<Props, State> {
             }
             {this.state.etherScanLink ?
               <Alert variant="success">
-                Transaction is in progress.&nbsp;
+                Transaction {this.state.etherScanLink} is in progress.&nbsp;
+                {this.state.etherScanLink.indexOf('http') !== -1 ?
                 <Alert.Link href={this.state.etherScanLink} target="_blank"> Click to Track Status</Alert.Link>
+                : ''}
               </Alert> : ''
             }
             <div style={{padding:'0px', borderBottomWidth:'1px', borderBottomStyle:'solid', borderBottomColor:'rgb(231, 246, 247)'}}>

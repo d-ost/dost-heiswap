@@ -54,7 +54,6 @@ export default class Transaction {
       amount
     );
     const web3 = window.web3;
-    console.log('Metamask web3:', web3);
 
     return new Promise(async (onResolve, onReject): Promise<void> => {
       if (!fromAccount.privateKey) {
