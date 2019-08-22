@@ -141,7 +141,7 @@ export default class Token {
         account.setBalance(new BigNumber(a.balance));
         return account;
       });
-      let tokenObj = new Token(
+      const tokenObj = new Token(
         parsedTokens[i].symbol,
         parsedTokens[i].name,
         parsedTokens[i].isBaseCurrency,
