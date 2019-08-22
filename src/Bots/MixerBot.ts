@@ -6,108 +6,106 @@ import HeiswapAbi from '../contracts/Heiswap.abi';
 import Deposit from '../services/Heiswap/Deposit';
 import Withdraw from '../services/Heiswap/Withdraw';
 import {Account} from '../KeyManager/Account';
-import config,{Config} from "../config/Config";
-import configData from '../config/config.json';
+import config from "../config/Config";
 
-const OST_AMOUNT = '1';
+export type WithDrawResponce = {success: boolean; error?: string; result?: any};
+const AMOUNT = '1';
 
-const addresses = {};
-const tokens = {};
 let signerAccount;
-
-let interval;
+let beneficiaryAccount;
+let heiswapToken;
 
 class MixerBot {
 
   originWeb3: Web3;
   auxiliaryWeb3: Web3;
-  numberOfAddress: number;
-  maxTimeInterval: number;
   heiSwapContract: Contract;
 
-  constructor(numberOfAddress, maxTimeInterval) {
-    this.numberOfAddress = numberOfAddress;
-    this.maxTimeInterval = maxTimeInterval;
-    console.log('class Config  ', Config);
-    const configObject: Config= Config.readConfig(JSON.stringify(configData));
-    console.log('config object ', configObject);
-    console.log('config', config);
-    console.log('config', config.domains);
-    this.originWeb3 = config.originWeb3();
-    this.auxiliaryWeb3 = config.auxiliaryWeb3();
-    this.heiSwapContract = new this.originWeb3.eth.Contract(HeiswapAbi as any, config.auxiliaryChain.heiswapAddress);
+  constructor() {
 
-    for (let i = 0; i < numberOfAddress; i++) {
-      const account = Account.new();
-      addresses[account.address] = account;
+    // this.originWeb3 = config.originWeb3();
+    // this.auxiliaryWeb3 = config.auxiliaryWeb3();
+    // this.heiSwapContract = new this.originWeb3.eth.Contract(HeiswapAbi as any, config.auxiliaryChain.heiswapAddress);
+
+    this.originWeb3 = new Web3(config.originChain.RPCURL);
+    this.originWeb3.transactionConfirmationBlocks = 1;
+    this.auxiliaryWeb3 = new Web3(config.auxiliaryChain.RPCURL);
+    this.auxiliaryWeb3.transactionConfirmationBlocks = 1;
+    this.heiSwapContract = new this.auxiliaryWeb3.eth.Contract(HeiswapAbi as any, config.auxiliaryChain.heiswapAddress);
+  }
+
+  async start(): Promise<any> {
+    await this.setSignerAccount();
+    await this.createBeneficiaryKey();
+    await this.deposit();
+    while (true) {
+      const withDrawResponse: WithDrawResponce = await this.withdraw();
+      if (withDrawResponse.success || !withDrawResponse.error!.includes('Ring has not yet closed.')) {
+        return withDrawResponse;
+      }
+      console.log(withDrawResponse.error, ' Waiting !!!');
+      await this.sleep(7000);
     }
+  }
 
+  async setSignerAccount(): Promise<void> {
     const signerPrivateKey = process.env['SIGNER_PRIVATE_KEY'];
+    if (!signerPrivateKey) {
+      throw Error('ENV var SIGNER_PRIVATE_KEY is not set');
+    }
     signerAccount = Account.fromPrivateKey(signerPrivateKey);
     console.log('account: ', signerAccount.address);
-    this.originWeb3.eth.accounts.wallet.add(
+    this.auxiliaryWeb3.eth.accounts.wallet.add(
       signerAccount
     );
   }
 
-  start():void {
-    interval = setInterval(this.perform.bind(this), 6000);
-    // const mode = process.env["BOT_MODE"];
-    // if (mode === 'deposit') {
-    //   this.deposit();
-    // } else if (mode === 'withdraw') {
-    //   this.withdraw();
-    // }
+  async createBeneficiaryKey(): Promise<void> {
+    beneficiaryAccount = await this.auxiliaryWeb3.eth.accounts.create();
+    this.auxiliaryWeb3.eth.accounts.wallet.add(beneficiaryAccount);
   }
 
-  perform():void {
-    const randomNumber = Math.floor(Math.random() * 3);
-    if (randomNumber == 0) {
-      this.deposit();
-    } else if (randomNumber == 1) {
-      this.withdraw();
-    }
-  }
-
-  deposit():void {
-    console.log('trying to deposit');
-    const address = Object.keys(addresses)[0];
+  deposit(): Promise<any> {
     console.log('signerAccountAddress', signerAccount.address);
-    console.log('targerAddress', address);
-    Deposit(this.originWeb3, this.heiSwapContract, signerAccount.address, OST_AMOUNT, address)
+    console.log('beneficiaryAddress', beneficiaryAccount.address);
+    return Deposit(
+      this.auxiliaryWeb3,
+      this.heiSwapContract,
+      signerAccount.address,
+      AMOUNT,
+      beneficiaryAccount.address
+    )
       .then((result) => {
         console.log('deposit result: ', result);
-        tokens[result.txHash!] = result;
+        heiswapToken = result;
       })
       .catch((e) => {
         console.log("Exception while depositing: ", e);
       });
   }
 
-  withdraw():void {
-    console.log('trying to withdraw');
-    const address = Object.keys(addresses)[0];
-    const tokenKeys = Object.keys(tokens);
-    console.log('tokenKeys.length', tokenKeys.length);
-    if (tokenKeys.length > 0) {
-      const index = Math.floor(Math.random() * tokenKeys.length);
-      const key = tokenKeys[index];
-      const token = tokens[key];
-
-      Withdraw(this.originWeb3, this.heiSwapContract, token)
-        .then((result) => {
-          console.log('withdraw result: ', result);
-          delete tokens[key];
-        })
-        .catch((e) => {
-          console.log("Exception while withdrawn: ", e);
-        });
-    }
+  withdraw(): Promise<WithDrawResponce> {
+    return Withdraw(this.auxiliaryWeb3, this.heiSwapContract, heiswapToken)
+      .then((result) => {
+        console.log('withdraw result: ', result);
+        return Promise.resolve({success: false, result: result});
+      })
+      .catch((error) => {
+        return Promise.resolve({success: false, error: error.message});
+      });
   }
+
+  sleep(interval) {
+    return new Promise((resolve, reject) => {
+      setTimeout(function () {
+        resolve();
+      }, interval);
+    });
+  };
+
 }
 
-
-const mixerBot = new MixerBot(1, 1000);
+const mixerBot = new MixerBot();
 mixerBot.start();
 
 

@@ -43,6 +43,11 @@ const withdraw = async (
   const ringIndex = heiswapToken.heiRingIndexFinal;
   const randomSecretKey = heiswapToken.heiRandomSecretKey;
 
+  console.log('targetAmount', targetAmount);
+  console.log('targetAddress', targetAddress);
+  console.log('ringIndex', ringIndex);
+  console.log('randomSecretKey', randomSecretKey);
+
   // get the ringhash from the contract because it is calculated
   // with inclusion of all the participants private keys
   const ringHash = await heiswapInstance
@@ -89,6 +94,8 @@ const withdraw = async (
     .getPublicKeys(targetAmount, ringIndex)
     .call();
 
+  console.log('publicKeys', publicKeys);
+
   // Slice public keys into an array of Points [[BN,BN]]
   const publicKeysBN = publicKeys
     .map(x => {
@@ -119,6 +126,11 @@ const withdraw = async (
   if (!canSign) {
     throw new Error("Heiswap Token refers to a ring for which it cannot sign.");
   }
+
+  console.log('messageBuf', messageBuf);
+  console.log('publicKeysBN', publicKeysBN);
+  console.log('stealthSecretKey', stealthSecretKey);
+  console.log('secretIndex', secretIndex);
 
   // sign the receiver address
   const signature = AltBn128.ringSign(

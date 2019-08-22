@@ -26,8 +26,9 @@ const deposit = async (
   // generate random secret key
   const randomSecretKey = crypto.randomBytes(32).toString('hex');
   // calculate pseudo stealth address
-  const stealthSecretKey = AltBn128.h1(AltBn128.serialize(
-    [randomSecretKey, targetAddress]));
+  const stealthSecretKey = AltBn128.h1(
+    AltBn128.serialize([randomSecretKey, targetAddress])
+  );
 
   // ring might close before our transaction
   // is included, then we are in a later ring
@@ -52,25 +53,23 @@ const deposit = async (
 
   try {
 
-    const dataByteCode = heiswapInstance
+    const rawTransaction = heiswapInstance
       .methods
-      .deposit(stealthPublicKey)
-      .encodeABI();
+      .deposit(stealthPublicKey);
 
-    const gas = await web3.eth.estimateGas({
-      to: heiswapInstance.address,
-      data: dataByteCode
-    });
-
-    const tx = {
+    const txOptions = {
       from: fromAddress,
-      value: web3.utils.toWei(targetAmount, 'ether'),
-      gasLimit: gas,
       gasPrice: '0x3B9ACA00',
-      nonce: await web3.eth.getTransactionCount(fromAddress)
+      to: heiswapInstance.address,
+      value: web3.utils.toWei(targetAmount, 'ether'),
+      gasLimit: '200000',
+      nonce: await web3.eth.getTransactionCount(fromAddress),
     };
 
-    const txReceipt = await web3.eth.sendTransaction(tx);
+    rawTransaction.gas = await rawTransaction.estimateGas(txOptions);
+
+    const txReceipt = await rawTransaction.send(txOptions);
+    console.log('Deposit Receipt', txReceipt);
 
     // get event return value
     const depositEventRetVal = txReceipt.events!.Deposited.returnValues;
