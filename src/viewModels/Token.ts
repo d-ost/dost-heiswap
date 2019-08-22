@@ -126,26 +126,26 @@ export default class Token {
   }
 
   /**
-   * It provides token object from stringified json object.
-   * @param token It contains Token data in stringified format.
+   * It provides tokens object from stringified json object.
+   * @param tokens It contains Token data in stringified format.
    * @returns Array of tokens.
    */
-  static fromJSON(token: string): Token[] {
+  static fromJSON(tokens: string): Token[] {
 
     let listOfToken: Token[] = [];
-    let tokens: Token[] = Object.assign(JSON.parse(token));
+    const parsedTokens: Token[] = Object.assign(JSON.parse(tokens));
 
-    for (let i = 0; i < tokens.length; i++) {
-      const accounts = tokens[i].accounts.map(a => {
+    for (let i = 0; i < parsedTokens.length; i++) {
+      const accounts = parsedTokens[i].accounts.map(a => {
         const account = new Account(a.accountType, a.address, a.privateKey);
         account.setBalance(new BigNumber(a.balance));
         return account;
       });
       let tokenObj = new Token(
-        tokens[i].symbol,
-        tokens[i].name,
-        tokens[i].isBaseCurrency,
-        tokens[i].erc20Address,
+        parsedTokens[i].symbol,
+        parsedTokens[i].name,
+        parsedTokens[i].isBaseCurrency,
+        parsedTokens[i].erc20Address,
         accounts,
       );
       listOfToken.push(tokenObj);

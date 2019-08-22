@@ -143,14 +143,12 @@ class LocalStorage {
   }
 
   getTokens(): Token[] | null {
-    let tokenList = localStorage.getItem('tokens');
+    const tokenList = localStorage.getItem('tokens');
     if (!tokenList) {
       return null;
     }
 
-    let listOfToken: Token[] = Token.fromJSON(tokenList);
-
-    return listOfToken;
+    return Token.fromJSON(tokenList);
   }
 
   setTokens(tokenList: Token[]) {
