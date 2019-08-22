@@ -179,19 +179,13 @@ class Topup extends Component<Props, State> {
           account: new Account(AccountType.burner, burnerAccount.address, burnerAccount.privateKey),
         });
       this.props.history.push(Routes.Savings);
-    })
-      .on('error', (error) => {
+    }).on('error', (error) => {
         console.log('error  ', error);
         this.setState({
           pendingTopup: false,
         })
       });
   }
-
-  private getBurnerAccount() {
-
-  }
-
 
   render() {
 

@@ -13,6 +13,7 @@ import Saving from "./components/v2/Saving";
 import Setting from "./components/v2/Setting";
 import Topup from "./components/v2/Topup";
 import BalanceTracker from "./components/v2/BalanceTracker";
+import {Routes} from "./components/v2/Routes";
 
 declare global {
   interface Window {
@@ -52,15 +53,15 @@ export default class App extends Component<Props, State> {
 
       <Router>
         <BalanceTracker/>
-        <Route exact path="/" component={Main}/>
-        <Route exact path="/send" component={Send}/>
-        <Route exact path="/selectreserve" component={SelectReserve}/>
-        <Route exact path="/create-pin" component={CreatePin}/>
-        <Route exact path="/verify-pin" component={VerifyPin}/>
-        <Route exact path="/scanner" component={Scanner}/>
-        <Route exact path="/saving" component={Saving}/>
-        <Route exact path="/settings" component={Setting}/>
-        <Route exact path="/topup" component={Topup}/>
+        <Route exact path={Routes.Main} component={Main}/>
+        <Route exact path={Routes.Send} component={Send}/>
+        <Route exact path={Routes.SelectReserve} component={SelectReserve}/>
+        <Route exact path={Routes.CreatePin} component={CreatePin}/>
+        <Route exact path={Routes.VerifyPin} component={VerifyPin}/>
+        <Route exact path={Routes.Scanner} component={Scanner}/>
+        <Route exact path={Routes.Savings} component={Saving}/>
+        <Route exact path={Routes.Settings} component={Setting}/>
+        <Route exact path={Routes.Topup} component={Topup}/>
       </Router>
     );
   }

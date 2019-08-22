@@ -5,6 +5,7 @@ import {ReserveType} from "../viewModels/SelectReserveModel";
 import Token from "../viewModels/Token";
 import BigNumber from "bignumber.js";
 import Account from "../viewModels/Account";
+import Transaction from "../viewModels/Transaction";
 
 class LocalStorage {
 
@@ -140,6 +141,32 @@ class LocalStorage {
 
   deletePinHash():void {
      localStorage.removeItem('pin');
+  }
+
+  getTokens(): Token[] | null {
+    const tokenList = localStorage.getItem('tokens');
+    if (!tokenList) {
+      return null;
+    }
+
+    return Token.fromJSON(tokenList);
+  }
+
+  setTokens(tokenList: Token[]) {
+    localStorage.setItem('tokens', JSON.stringify(tokenList));
+  }
+
+  getTransactions(): Transaction[] {
+    const transactions = localStorage.getItem('transactions');
+    if (!transactions) {
+      return [];
+    }
+
+    return Transaction.fromJSON(transactions);
+  }
+
+  setTransactions(transactions: Transaction[]) {
+    localStorage.setItem('transactions', JSON.stringify(transactions));
   }
 }
 
