@@ -28,7 +28,7 @@ const A = new BN(
   '5472060717959818805561601436314318772174077789324455915672259473661306552146',
   10
 );
-const G = [new BN(1, 10), new BN(2, 10)];
+const G: Point = [new BN(1, 10), new BN(2, 10)];
 
 // Convinience Numbers
 const bnOne = new BN('1', 10);
@@ -59,14 +59,14 @@ export default class AltBn128 {
   /**
    * Gets a random Scalar.
    */
-  public static randomScalar() : Scalar{
+  public static get randomScalar() : Scalar{
     return new BN(crypto.randomBytes(32), 16).toRed(AltBn128.groupReduction);
   }
 
   /**
    * Gets a random Point on curve.
    */
-  public static randomPoint(): any {
+  public static get randomPoint(): any {
     const recurse = (): any => {
       const x = new BN(crypto.randomBytes(32), 16).toRed(AltBn128.curve.red);
       const y2 = x
@@ -136,7 +136,7 @@ export default class AltBn128 {
   /**
    * ECC multiplication operation
    */
-  public static ecMul (p: Point, s: Scalar): Point {
+  public static ecMul(p: Point, s: Scalar): Point {
     const fp = AltBn128.curve.point(p[0], p[1]).mul(s);
     return [fp.getX(), fp.getY()];
   }
@@ -145,7 +145,7 @@ export default class AltBn128 {
    * ECC multiplication operation for G
    */
   public static ecMulG(s: Scalar): Point {
-    return AltBn128.ecMul(G as Point, s);
+    return AltBn128.ecMul(G, s);
   }
 
   /**
@@ -166,13 +166,13 @@ export default class AltBn128 {
     let yTilde = AltBn128.ecMul(h, secretKey);
 
     // Step 2
-    let u = AltBn128.randomScalar();
+    let u = AltBn128.randomScalar;
     c[(secretKeyIdx + 1) % keyCount] = AltBn128.h1(
       AltBn128.serialize([
         publicKeys,
         yTilde,
         message,
-        AltBn128.ecMul(G as Point, u),
+        AltBn128.ecMul(G, u),
         AltBn128.ecMul(h, u)
       ])
     );
@@ -191,9 +191,9 @@ export default class AltBn128 {
     let z1, z2;
 
     indexes.forEach(i => {
-      s[i] = AltBn128.randomScalar();
+      s[i] = AltBn128.randomScalar;
 
-      z1 = AltBn128.ecAdd(AltBn128.ecMul(G as Point, s[i]), AltBn128.ecMul(publicKeys[i], c[i]));
+      z1 = AltBn128.ecAdd(AltBn128.ecMul(G, s[i]), AltBn128.ecMul(publicKeys[i], c[i]));
       z2 = AltBn128.ecAdd(AltBn128.ecMul(h, s[i]), AltBn128.ecMul(yTilde, c[i]));
 
       c[(i + 1) % keyCount] = AltBn128.h1(
@@ -235,7 +235,7 @@ export default class AltBn128 {
     let z1, z2;
 
     for (let i = 0; i < keyCount; i++) {
-      z1 = AltBn128.ecAdd(AltBn128.ecMul(G as Point, s[i]), AltBn128.ecMul(publicKeys[i], c));
+      z1 = AltBn128.ecAdd(AltBn128.ecMul(G, s[i]), AltBn128.ecMul(publicKeys[i], c));
       z2 = AltBn128.ecAdd(AltBn128.ecMul(h, s[i]), AltBn128.ecMul(yTilde, c));
 
       if (i < keyCount - 1) {
