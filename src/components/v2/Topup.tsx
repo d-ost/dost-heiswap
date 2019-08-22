@@ -103,15 +103,14 @@ class Topup extends Component<Props, State> {
       error: '',
     });
 
-    let {burnerAccount} = this.getBurnerAccount();
     this.setState({
       pendingTopup: true
     });
 
     if (!this.state.isAnonymous) {
-      await this.topupBurnerKey(this.state.reserveAccount, burnerAccount);
+      await this.topupBurnerKey();
     } else {
-      await this.sendHeiswapTransaction(this.state.reserveAccount, burnerAccount);
+      await this.sendHeiswapTransaction();
     }
   }
 
@@ -131,7 +130,10 @@ class Topup extends Component<Props, State> {
     });
   }
 
-  private async sendHeiswapTransaction(reserveAccount: ReserveAccount, burnerAccount) {
+  private async sendHeiswapTransaction() {
+    const reserveAccount = this.state.reserveAccount;
+    // Always create a new burner key
+    let burnerAccount = reserveAccount.web3.eth.accounts.create(reserveAccount.web3.utils.randomHex(32));
     try {
       const token = await heiswap.deposit(
         reserveAccount.web3,
@@ -152,7 +154,14 @@ class Topup extends Component<Props, State> {
     }
   }
 
-  private topupBurnerKey(reserveAccount, burnerAccount) {
+  private topupBurnerKey() {
+
+    const reserveAccount = this.state.reserveAccount;
+    let burnerAccounts = this.props.selectedToken.accounts.filter(acc => acc.accountType === AccountType.burner)
+
+    let burnerAccount = burnerAccounts.length > 0 ? burnerAccounts[0]
+      : reserveAccount.web3.eth.accounts.create(reserveAccount.web3.utils.randomHex(32));
+
     reserveAccount.web3.eth.sendTransaction({
       from: reserveAccount.account,
       to: burnerAccount.address,
@@ -162,10 +171,13 @@ class Topup extends Component<Props, State> {
       this.setState({
         pendingTopup: false,
       });
-      this.props.addAccount({
-        token: this.props.selectedToken,
-        account: new Account(AccountType.burner, burnerAccount.address, burnerAccount.privateKey),
-      });
+
+      // If burner account exists already
+      if (burnerAccounts.length === 0)
+        this.props.addAccount({
+          token: this.props.selectedToken,
+          account: new Account(AccountType.burner, burnerAccount.address, burnerAccount.privateKey),
+        });
       this.props.history.push(Routes.Savings);
     })
       .on('error', (error) => {
@@ -177,12 +189,7 @@ class Topup extends Component<Props, State> {
   }
 
   private getBurnerAccount() {
-    const reserveAccount = this.state.reserveAccount;
-    let burnerAccounts = this.props.selectedToken.accounts.filter(acc => acc.accountType === AccountType.burner)
 
-    let burnerAccount = burnerAccounts.length > 0 ? burnerAccounts[0]
-      : reserveAccount.web3.eth.accounts.create(reserveAccount.web3.utils.randomHex(32));
-    return {reserveAccount, burnerAccount};
   }
 
 
