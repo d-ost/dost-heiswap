@@ -37,8 +37,8 @@ export default function (state: State = initialState, action) {
         tokens = Token.replaceToken(state.tokens, token);
       } else {
         tokens = Token.addAccountToTokens(state.tokens, account);
-        LocalStorage.setTokens(tokens);
       }
+      LocalStorage.setTokens(tokens);
       return {
         ...state,
         tokens,
@@ -54,8 +54,8 @@ export default function (state: State = initialState, action) {
         tokens = Token.replaceToken(state.tokens, token);
       } else {
         tokens = Token.removeAccountFromTokens(state.tokens, account);
-        LocalStorage.setTokens(tokens);
       }
+      LocalStorage.setTokens(tokens);
       return {
         ...state,
         tokens,
