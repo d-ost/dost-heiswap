@@ -43,7 +43,7 @@ class MixerBot {
       if (withDrawResponse.success || !withDrawResponse.error!.includes('Ring has not yet closed.')) {
         return withDrawResponse;
       }
-      console.log(withDrawResponse.error, ' Waiting !!!');
+      console.log('Waiting !!!');
       await this.sleep(7000);
     }
   }
@@ -80,17 +80,30 @@ class MixerBot {
         heiswapToken = result;
       })
       .catch((e) => {
-        console.log("Exception while depositing: ", e);
+        console.error("Exception while depositing: ", e);
       });
   }
 
-  withdraw(): Promise<WithDrawResponce> {
-    return Withdraw(this.auxiliaryWeb3, this.heiSwapContract, heiswapToken)
+  async withdraw(): Promise<WithDrawResponce> {
+
+    // this can be any string
+    // is just used by relayer to verify if was signed by beneficiaryAccount
+    const message = `Get amount from Heiswap via Relayer (Destination: ${beneficiaryAccount.address})`;
+    const signedMessage = await beneficiaryAccount.sign(message);
+
+    return Withdraw(
+      this.auxiliaryWeb3,
+      this.heiSwapContract,
+      heiswapToken,
+      message,
+      signedMessage,
+    )
       .then((result) => {
         console.log('withdraw result: ', result);
         return Promise.resolve({success: false, result: result});
       })
       .catch((error) => {
+        console.error("Exception while withdrawing: ", error);
         return Promise.resolve({success: false, error: error.message});
       });
   }

@@ -4,6 +4,7 @@
 import AltBn128 from '../../utils/AltBn128';
 
 import Web3 from "web3";
+import { Sign } from 'web3-eth-accounts';
 import {Contract} from 'web3-eth-contract';
 import axios from 'axios'
 
@@ -36,6 +37,8 @@ const withdraw = async (
   web3: Web3,
   heiswapInstance: Contract,
   heiswapToken: HeiswapToken,
+  message: string,
+  signedMessage: Sign,
 ):Promise<{ errorMessage: string, txHash: string }> => {
 
   const targetAmount = heiswapToken.heiTargetAmount;
@@ -147,13 +150,6 @@ const withdraw = async (
     append0x(signature[2][0].toString('hex')),
     append0x(signature[2][1].toString('hex'))
   ];
-
-  const message = `Get amount from Heiswap via Relayer (Destination: ${targetAddress})`;
-
-  const signedMessage = await web3.eth.accounts.sign(
-    message,
-    '',
-  );
 
   const resp = await axios.post('http://127.0.0.1:3000/', {
     message,
