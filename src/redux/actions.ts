@@ -5,7 +5,7 @@ import {
   ADD_ACCOUNT,
   REMOVE_ACCOUNT,
   SAVE_PIN_HASH,
-  UPDATE_BALANCE,
+  UPDATE_BALANCE, ADD_HEISWAP_TOKEN,
 } from "./actionTypes";
 
 export const connectToReserve = content => ({
@@ -42,3 +42,11 @@ export const updateBalance = content => ({
   type: UPDATE_BALANCE,
   payload: content,
 });
+
+export const addHeiswapToken = content => ({
+  type: ADD_HEISWAP_TOKEN,
+  payload: content,
+});
+
+
+

@@ -141,19 +141,6 @@ class LocalStorage {
   deletePinHash():void {
      localStorage.removeItem('pin');
   }
-
-  getTokens(): Token[] | null {
-    const tokenList = localStorage.getItem('tokens');
-    if (!tokenList) {
-      return null;
-    }
-
-    return Token.fromJSON(tokenList);
-  }
-
-  setTokens(tokenList: Token[]) {
-    localStorage.setItem('tokens', JSON.stringify(tokenList));
-  }
 }
 
 export default new LocalStorage();

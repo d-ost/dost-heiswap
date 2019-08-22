@@ -1,5 +1,5 @@
  import { SAVE_PIN_HASH } from '../actionTypes';
- import LocalStorage from "../../services/LocalStorage";
+ import LocalStorage from "../../services/LocalStorageV2";
 
 interface State {
   pinHash: string

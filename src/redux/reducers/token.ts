@@ -7,7 +7,7 @@ import {
 import Token from "../../viewModels/Token";
 import Account from "../../viewModels/Account"
 import BigNumber from "bignumber.js";
-import LocalStorage from "../../services/LocalStorage";
+import LocalStorage from "../../services/LocalStorageV2";
 
 interface State {
   tokens: Token[],
