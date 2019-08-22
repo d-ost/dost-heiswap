@@ -13,6 +13,9 @@ export default class Utils {
       if (symbol === 'st' || symbol === 'ost') {
         return 'ost.jpg'
       }
+      if (symbol === 'eth') {
+        return 'ethereum.png';
+      }
       if (symbol === 'weth') {
         return 'ethereum.png'
       }
