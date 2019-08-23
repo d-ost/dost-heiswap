@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {connect} from "react-redux";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
@@ -12,20 +13,29 @@ import * as Web3Utils from 'web3-utils';
 import NavigationBarWBB from "./NavigationBarWBB";
 import TokenBalance from "./TokenBalance";
 import Token from "../../viewModels/Token";
-import ModelContainer from "./ModelContainer";
 import Scanner from "./Scanner";
 import Footer from "./Footer";
 import Modal from "react-bootstrap/es/Modal";
 import Accordion from "react-bootstrap/es/Accordion";
 import useAccordionToggle from "react-bootstrap/es/useAccordionToggle";
+import Transaction, {TransactionType} from "../../viewModels/Transaction";
+import Account, {AccountType} from "../../viewModels/Account";
+import {
+  addTransaction,
+} from "../../redux/actions";
+import {Routes} from "./Routes";
+import Utils from "../../utils/Utils";
 
 interface Balance {
   chain: string;
   amount: string;
 }
 interface Props {
+  selectedToken: Token;
   location: any;
   context?: any;
+  history: any;
+  addTransaction: Function,
 }
 
 interface State {
@@ -36,6 +46,7 @@ interface State {
   error: string;
   modalShow: boolean;
   accordianActionKey: string;
+  etherScanLink: string;
 }
 
 const ColoredLine = ({color, height}) => (
@@ -48,7 +59,7 @@ const ColoredLine = ({color, height}) => (
   />
 );
 
-export default class Send extends Component<Props, State> {
+class Send extends Component<Props, State> {
   constructor(props) {
     super(props);
     console.log('this.props.location.state: ', this.props.location.state);
@@ -74,7 +85,8 @@ export default class Send extends Component<Props, State> {
       amount: '',
       error: '',
       modalShow: false,
-      accordianActionKey: '0'
+      accordianActionKey: '0',
+      etherScanLink: '',
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -114,10 +126,12 @@ export default class Send extends Component<Props, State> {
     });
   }
 
-  handleSubmit() {
-
+  async handleSubmit() {
+    // Reset etherScanLink link.
+    this.setState({
+      etherScanLink: ''
+    });
     const {amount, beneficiary} = this.state;
-    // Write send transaction logic
     if (!amount || amount.length === 0) {
       this.setState({error: `Invalid Amount ${amount}.`});
       console.log('Invalid Amount', amount);
@@ -128,8 +142,37 @@ export default class Send extends Component<Props, State> {
       this.setState({error: `Invalid beneficiary address ${beneficiary}.`})
     }
 
-    console.log('amount  ', amount);
-    console.log('beneficiary  ', beneficiary);
+    const account = this.getFundedBurnerAccount();
+    try {
+      const txHash = await Transaction.transferBaseToken(account, beneficiary, amount);
+      const etherScanLink = await Utils.getEtherScanLink(txHash);
+      this.setState({
+        etherScanLink: etherScanLink,
+      });
+      this.props.addTransaction({
+        transactionHash: txHash,
+        transactionType: TransactionType.baseTokenTransfer,
+        data: {
+          from: account,
+          to: beneficiary,
+          amount: amount,
+        },
+      });
+    } catch(err) {
+      this.setState({
+        error: 'Error sending transaction. Please check if you have sufficient funds.'
+      });
+    }
+  }
+
+  // Currently 1 burner account is supported
+  // TODO Later transactions needs to be done from multiple burner accounts
+  getFundedBurnerAccount(): Account {
+    const burnerAccounts = this.state.token.accounts.filter(
+      account => account.accountType === AccountType.burner
+    );
+    console.log('burnerAccounts:', burnerAccounts);
+    return burnerAccounts[0];
   }
 
   changeToken(token:Token) {
@@ -140,8 +183,11 @@ export default class Send extends Component<Props, State> {
     this.setState({modalShow: false});
   }
   render() {
-
-    console.log('-----> State: ', this.state);
+    console.log('this.selectedToken  ', this.props.selectedToken);
+    if (!this.props.selectedToken) {
+      this.props.history.push(Routes.Main);
+      return (null);
+    }
     const totalBalance = this.state.balances
       .map(b => Web3Utils.toBN(b.amount))
       .reduce((acc, amount) => acc.add(amount)).toString(10);
@@ -159,6 +205,14 @@ export default class Send extends Component<Props, State> {
             {this.state.error.length > 0 ?
               <Alert variant="danger">
                 {this.state.error}
+              </Alert> : ''
+            }
+            {this.state.etherScanLink ?
+              <Alert variant="success">
+                Transaction {this.state.etherScanLink} is in progress.&nbsp;
+                {this.state.etherScanLink.indexOf('http') !== -1 ?
+                <Alert.Link href={this.state.etherScanLink} target="_blank"> Click to Track Status</Alert.Link>
+                : ''}
               </Alert> : ''
             }
             <div style={{padding:'0px', borderBottomWidth:'1px', borderBottomStyle:'solid', borderBottomColor:'rgb(231, 246, 247)'}}>
@@ -179,20 +233,20 @@ export default class Send extends Component<Props, State> {
                 </Accordion.Collapse>
               </Accordion>
             </div>
-            {this.state.balances.map(b =>
-              <div style={{marginLeft:'10px', marginRight:'10px', padding:'10px', borderBottomWidth:'1px', borderBottomStyle:'solid', borderBottomColor:'rgb(231, 246, 247)'}}>
-                <Row style={{borderBottomColor:'red', borderBottomWidth:'10px'}}>
-                  <Col xs={5} style={{padding:'0'}}>
-                    <div style={{paddingRight:'10px', paddingLeft:'10px'}}>
-                      <span style={{marginLeft:'15px', color:'#34445b'}}>{b.chain}</span>
-                    </div>
-                  </Col>
-                  <Col style={{padding:'0',textAlign:'right'}}>
-                    <span style={{paddingRight:'15px', color:'#34445b'}}> {b.amount} </span>
-                  </Col>
-                </Row>
-              </div>
-            )}
+            {/*{this.state.balances.map(b =>*/}
+              {/*<div style={{marginLeft:'10px', marginRight:'10px', padding:'10px', borderBottomWidth:'1px', borderBottomStyle:'solid', borderBottomColor:'rgb(231, 246, 247)'}}>*/}
+                {/*<Row style={{borderBottomColor:'red', borderBottomWidth:'10px'}}>*/}
+                  {/*<Col xs={5} style={{padding:'0'}}>*/}
+                    {/*<div style={{paddingRight:'10px', paddingLeft:'10px'}}>*/}
+                      {/*<span style={{marginLeft:'15px', color:'#34445b'}}>{b.chain}</span>*/}
+                    {/*</div>*/}
+                  {/*</Col>*/}
+                  {/*<Col style={{padding:'0',textAlign:'right'}}>*/}
+                    {/*<span style={{paddingRight:'15px', color:'#34445b'}}> {b.amount} </span>*/}
+                  {/*</Col>*/}
+                {/*</Row>*/}
+              {/*</div>*/}
+            {/*)}*/}
           </div>
 
           <Modal show={this.state.modalShow} onHide={() => this.closeModal()}>
@@ -372,3 +426,18 @@ export default class Send extends Component<Props, State> {
           </div>
         })}
  */
+
+const mapStateToProps = state => {
+  return {
+    selectedToken: state.token.selectedToken,
+  };
+};
+
+const mapDispatchToProps = {
+  addTransaction,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Send);

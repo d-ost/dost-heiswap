@@ -13,7 +13,7 @@ import Row from "react-bootstrap/es/Row";
 import Col from "react-bootstrap/es/Col";
 import Modal from "react-bootstrap/es/Modal";
 import Scanner from "./Scanner";
-import { QR } from 'rimble-ui';
+import {QR} from 'rimble-ui';
 import Receive from "./Receive";
 import {selectToken} from "../../redux/actions";
 import {connect} from "react-redux";
@@ -21,9 +21,10 @@ import {connect} from "react-redux";
 interface Props {
   context: string
   history: any;
-  onHide?:any;
-  title?:any;
-  tokens:Token[]
+  onHide?: any;
+  title?: any;
+  tokens: Token[];
+  selectToken: Function;
 }
 
 interface State {
@@ -56,32 +57,37 @@ class Main extends Component<Props, State> {
   componentWillUnmount() {
   }
 
-  tokenClicked(token:Token) {
+  tokenClicked(token: Token) {
     console.log('Token clicked: ', token);
 
+    this.props.selectToken(token);
     this.props.history.push({
       pathname: Routes.Send,
-      state: { token: token }
+      state: {token: token}
     });
   }
 
   closeModal() {
     this.setState({modalShow: false});
   }
+
   closeScanner() {
     this.setState({showScanner: false});
   }
+
   handleScannerResult(address) {
     this.props.history.push({
       pathname: Routes.Send,
-      state: { beneficiary: address }
+      state: {beneficiary: address}
     });
   }
+
   handleReceive(e) {
     e.preventDefault();
     console.log('Show QR');
     this.setState({modalShow: true});
   }
+
   handleSend(e) {
     e.preventDefault();
     console.log('Show scanner');
@@ -93,12 +99,12 @@ class Main extends Component<Props, State> {
     return (
       <NavigationBar {...this.props} >
         <div>
-          <div style={{marginLeft:'1px', marginRight:'1px', paddingBottom: '65px'}}>
+          <div style={{marginLeft: '1px', marginRight: '1px', paddingBottom: '65px'}}>
             <TokenBalances
               tokens={this.props.tokens}
-              onClick={(token:Token)=>(this.tokenClicked(token))}
+              onClick={(token: Token) => (this.tokenClicked(token))}
               context={this.props.context}
-              showBucketKeyBalances={ false }
+              showBucketKeyBalances={false}
             />
           </div>
         </div>
@@ -114,41 +120,41 @@ class Main extends Component<Props, State> {
         </Modal>
 
         <Footer>
-          <Row style={{margin:'10px'}}>
-            <Col style={{paddingRight:'1px', paddingLeft:'0px'}}>
+          <Row style={{margin: '10px'}}>
+            <Col style={{paddingRight: '1px', paddingLeft: '0px'}}>
               <Button
                 onClick={this.handleReceive}
                 style={{
-                fontWeight:'bolder',
-                display:'inline',
-                width:'100%',
-                backgroundColor: '#34445b',
-                borderWidth:'0px',
-                color:'white',
-                height:'55px',
-                boxShadow: '0 5px 15px rgba(0,0,0,.15)',
-                borderTopLeftRadius:'15px',
-                borderTopRightRadius: '0px',
-                borderBottomRightRadius: '0px',
-                borderBottomLeftRadius: '15px',
-                overflow: 'hidden',
-              }}>
+                  fontWeight: 'bolder',
+                  display: 'inline',
+                  width: '100%',
+                  backgroundColor: '#34445b',
+                  borderWidth: '0px',
+                  color: 'white',
+                  height: '55px',
+                  boxShadow: '0 5px 15px rgba(0,0,0,.15)',
+                  borderTopLeftRadius: '15px',
+                  borderTopRightRadius: '0px',
+                  borderBottomRightRadius: '0px',
+                  borderBottomLeftRadius: '15px',
+                  overflow: 'hidden',
+                }}>
                 Receive
               </Button>
             </Col>
-            <Col style={{paddingLeft:'1px', paddingRight:'0px'}}>
+            <Col style={{paddingLeft: '1px', paddingRight: '0px'}}>
               <Button
                 onClick={this.handleSend}
                 style={{
-                  fontWeight:'bolder',
-                  display:'inline',
-                  width:'100%',
-                  borderWidth:'0px',
+                  fontWeight: 'bolder',
+                  display: 'inline',
+                  width: '100%',
+                  borderWidth: '0px',
                   backgroundColor: '#34445b',
-                  color:'white',
-                  height:'55px',
+                  color: 'white',
+                  height: '55px',
                   boxShadow: '0 5px 15px rgba(0,0,0,.15)',
-                  borderTopLeftRadius:'0px',
+                  borderTopLeftRadius: '0px',
                   borderTopRightRadius: '15px',
                   borderBottomRightRadius: '15px',
                   borderBottomLeftRadius: '0px',
@@ -166,14 +172,14 @@ class Main extends Component<Props, State> {
 
 
 const mapStateToProps = state => {
-   console.log('state  ', state);
+  console.log('state  ', state);
   return {
     tokens: state.token.tokens,
   }
 };
 
 const mapDispatchToProps = {
-  //selectToken,
+  selectToken,
 };
 
 export default connect(
