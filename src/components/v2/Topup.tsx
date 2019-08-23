@@ -141,7 +141,6 @@ class Topup extends Component<Props, State> {
 
     try {
       let networkType = await Utils.getNetworkType();
-      console.log('network typee ', networkType);
       let heiswapAddress = networkType === NetworkType.ropsten ? HEISWAP_ROPSTEN : HEISWAP_GOERLI;
       const token = await heiswap.deposit(
         reserveAccount.web3,
