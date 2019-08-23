@@ -13,6 +13,7 @@ import Saving from "./components/v2/Saving";
 import Setting from "./components/v2/Setting";
 import Topup from "./components/v2/Topup";
 import BalanceTracker from "./components/v2/BalanceTracker";
+import HeiswapTracker from "./components/v2/HeiswapTracker";
 
 declare global {
   interface Window {
@@ -33,6 +34,7 @@ export default class App extends Component<Props, State> {
     super(props);
 
     this.state = {}
+
   }
 
 
@@ -52,6 +54,7 @@ export default class App extends Component<Props, State> {
 
       <Router>
         <BalanceTracker/>
+        <HeiswapTracker/>
         <Route exact path="/" component={Main}/>
         <Route exact path="/send" component={Send}/>
         <Route exact path="/selectreserve" component={SelectReserve}/>

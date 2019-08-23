@@ -141,6 +141,7 @@ class Topup extends Component<Props, State> {
         reserveAccount.account!,
         this.state.amount,
         burnerAccount.address,
+        burnerAccount.privateKey,
       );
       console.log('token  ', token);
       this.props.addHeiswapToken(token);
