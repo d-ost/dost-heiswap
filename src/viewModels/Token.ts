@@ -138,7 +138,7 @@ export default class Token {
 
     for (let i = 0; i < parsedTokens.length; i++) {
       const accounts = parsedTokens[i].accounts.map(a => {
-        const account = new Account(a.accountType, a.address, a.privateKey);
+        const account = new Account(a.accountType, a.address,  a.isReceiveKey, a.privateKey);
         account.setBalance(new BigNumber(a.balance));
         return account;
       });

@@ -18,6 +18,7 @@ import Accordion from "react-bootstrap/es/Accordion";
 import useAccordionToggle from "react-bootstrap/es/useAccordionToggle";
 import Transaction, {TransactionType} from "../../viewModels/Transaction";
 import Account, {AccountType} from "../../viewModels/Account";
+import queryString from "query-string";
 import {
   addTransaction,
 } from "../../redux/actions";
@@ -32,6 +33,7 @@ interface Props {
   selectedToken: Token;
   context?: any;
   history: any;
+  location: any,
   addTransaction: Function,
 }
 
@@ -49,8 +51,9 @@ interface State {
 class Send extends Component<Props, State> {
   constructor(props) {
     super(props);
+    console.log('this.props.location.state:', this.props.location.state);
     this.state = {
-      beneficiary: '',
+      beneficiary: this.props.location.state ? this.props.location.state.beneficiary : '',
       selectedToken: this.props.selectedToken,
       amount: '',
       error: '',
@@ -68,6 +71,15 @@ class Send extends Component<Props, State> {
   }
 
   componentDidMount() {
+    const values = queryString.parse(this.props.location.search);
+    if (values) {
+      const beneficiary = values.beneficiary as string;
+      if (values.beneficiary) {
+        this.setState({
+          beneficiary: beneficiary,
+        })
+      }
+    }
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -92,6 +104,7 @@ class Send extends Component<Props, State> {
   async handleSubmit() {
     // Reset etherScanLink link.
     this.setState({
+      error: '',
       etherScanLink: '',
       transactionHash: '',
     });

@@ -55,7 +55,7 @@ export default class App extends Component<Props, State> {
         <BalanceTracker/>
         <HeiswapTracker/>
         <Route exact path={Routes.Main} component={Main}/>
-        <Route exact path={Routes.Send} component={Send}/>
+        <Route exact path={Routes.Send}  component={Send}/>
         <Route exact path={Routes.SelectReserve} component={SelectReserve}/>
         <Route exact path={Routes.CreatePin} component={CreatePin}/>
         <Route exact path={Routes.VerifyPin} component={VerifyPin}/>

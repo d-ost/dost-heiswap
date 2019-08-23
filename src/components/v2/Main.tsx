@@ -11,8 +11,9 @@ import Modal from "react-bootstrap/es/Modal";
 import Scanner from "./Scanner";
 import {QR} from 'rimble-ui';
 import Receive from "./Receive";
-import {selectToken} from "../../redux/actions";
+import {selectToken, addAccount} from "../../redux/actions";
 import {connect} from "react-redux";
+import {default as Account, AccountType} from "../../viewModels/Account";
 
 interface Props {
   context: string
@@ -21,6 +22,7 @@ interface Props {
   title?: any;
   tokens: Token[];
   selectToken: Function;
+  addAccount: Function;
 }
 
 interface State {
@@ -32,16 +34,16 @@ interface State {
 class Main extends Component<Props, State> {
   constructor(props) {
     super(props);
-    // Fixme: remove hardcoded address
     this.state = {
       modalShow: false,
       showScanner: false,
-      address: '0xf4bbddd76488bd10f92d4aa8f6502ea1e01cff34'
+      address: '',
     };
 
     this.handleReceive = this.handleReceive.bind(this);
     this.closeScanner = this.closeScanner.bind(this);
     this.handleSend = this.handleSend.bind(this);
+    this.handleScannerResult = this.handleScannerResult.bind(this);
   }
 
   componentDidMount() {
@@ -54,8 +56,6 @@ class Main extends Component<Props, State> {
   }
 
   tokenClicked(token: Token) {
-    console.log('Token clicked: ', token);
-
     this.props.selectToken(token);
     this.props.history.push({
       pathname: Routes.Send,
@@ -80,16 +80,48 @@ class Main extends Component<Props, State> {
 
   handleReceive(e) {
     e.preventDefault();
-    console.log('Show QR');
-    this.setState({modalShow: true});
+    // Fetch burner address to receive
+    const burnerAccount = this.getReceiveAccount();
+
+    console.log(`burner address which will receive`, burnerAccount);
+    this.setState({
+        modalShow: true,
+        address: burnerAccount.address,
+    });
+  }
+
+  /*
+   * Check if receive burner account already exist.
+   * If it's not present create new burner account with isReceiveKey = true.
+   * Add the same Receive account to all tokens.
+   * There is always same receive account in all tokens.
+   * Updated redux and localStorage accordingly.
+   *
+   * Note: On settings page, make sure on addition of new token, receive key is also added.
+   */
+  getReceiveAccount(): Account {
+    let receiveAccount;
+    const receiveAccounts = this.props.tokens[0].accounts.filter(account =>
+      (account.accountType === AccountType.burner && account.isReceiveKey === true)
+    );
+    receiveAccount = receiveAccounts[0];
+    if (!receiveAccount) {
+      const newWeb3Account = window.web3.eth.accounts.create(window.web3.utils.randomHex(32));
+      receiveAccount = new Account(AccountType.burner, newWeb3Account.address, true, newWeb3Account.privateKey);
+      for(let i=0; i< this.props.tokens.length; i += 1) {
+        this.props.addAccount({
+          token: this.props.tokens[i],
+          account: receiveAccount,
+        });
+      }
+    }
+    return receiveAccount;
   }
 
   handleSend(e) {
     e.preventDefault();
-    console.log('Show scanner');
     this.setState({showScanner: true});
   }
-
 
   render() {
     return (
@@ -176,32 +208,10 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   selectToken,
+  addAccount,
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
 )(Main);
-
-
-/*
-<div className="AccountDetailBtn"
-               style={{
-                 width:100,
-                 height:100,
-                 backgroundColor:"blue",display: 'table',
-                 marginRight: 'auto',
-                 marginLeft: 'auto',
-                 marginTop: '10px',
-               }}
-               onClick={this.handleAccountDetailBtnClick}>
-            <img src={defaultProfileImage} height='100%' width='100%' alt=""/>
-          </div>
-          <div style={{
-            display: 'table',
-            marginRight: 'auto',
-            marginLeft: 'auto',
-          }}>
-            <p style={{marginBottom:'10px'}}>Hello xyz</p>
-          </div>
- */

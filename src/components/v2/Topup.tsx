@@ -155,7 +155,12 @@ class Topup extends Component<Props, State> {
       this.props.addAccount(
         {
           token: this.props.selectedToken,
-          account: new Account(AccountType.burner, burnerAccount.address, burnerAccount.privateKey),
+          account: new Account(
+            AccountType.burner,
+            burnerAccount.address,
+            false,
+            burnerAccount.privateKey,
+          ),
         }
       );
       this.props.addHeiswapToken(token);
@@ -191,7 +196,12 @@ class Topup extends Component<Props, State> {
       if (burnerAccounts.length === 0)
         this.props.addAccount({
           token: this.props.selectedToken,
-          account: new Account(AccountType.burner, burnerAccount.address, burnerAccount.privateKey),
+          account: new Account(
+            AccountType.burner,
+            burnerAccount.address,
+            false,
+            burnerAccount.privateKey,
+          ),
         });
       this.props.history.push(Routes.Savings);
     }).on('error', (error) => {

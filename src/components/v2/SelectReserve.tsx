@@ -148,7 +148,7 @@ class SelectReserve extends Component<Props, State> {
         metaMaskReserve,
       );
     }
-    const account = new Account(AccountType.bucket, connectedAddress);
+    const account = new Account(AccountType.bucket, connectedAddress, false, undefined);
     this.props.addAccount({
       token: undefined,
       account: account,
@@ -168,7 +168,7 @@ class SelectReserve extends Component<Props, State> {
         metaMaskReserve,
       );
     }
-    const account = new Account(AccountType.bucket, disconnectedAddress);
+    const account = new Account(AccountType.bucket, disconnectedAddress, false, undefined);
     this.props.removeAccount({
       token: undefined,
       account: account,
