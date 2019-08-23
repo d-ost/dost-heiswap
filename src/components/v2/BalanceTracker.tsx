@@ -71,7 +71,6 @@ class BalanceTracker extends Component<Props, State> {
 }
 
 const mapStateToProps = state => {
-  // console.log('state  ', state);
   return {
     tokens: state.token.tokens,
   }
@@ -85,3 +84,4 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps,
 )(BalanceTracker);
+

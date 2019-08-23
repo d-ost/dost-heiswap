@@ -7,7 +7,7 @@ import {
   SAVE_PIN_HASH,
   UPDATE_BALANCE,
   ADD_TRANSACTION,
-  ADD_HEISWAP_TOKEN,
+  ADD_HEISWAP_TOKEN, CLAIM_HEISWAP,
 } from "./actionTypes";
 
 export const connectToReserve = content => ({
@@ -54,3 +54,8 @@ export const addHeiswapToken = content => ({
   type: ADD_HEISWAP_TOKEN,
   payload: content,
 });
+
+export const claimHeiswapToken = content => ({
+  type: CLAIM_HEISWAP,
+  payload: content,
+})

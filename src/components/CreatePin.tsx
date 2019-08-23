@@ -30,7 +30,6 @@ export default class CreatePin extends React.Component<Props, State> {
 
 
   storePin() {
-    console.log('in store pin',);
     if (this.validatePin() === false) {
       this.setState({shown: true});
       return;
@@ -60,16 +59,13 @@ export default class CreatePin extends React.Component<Props, State> {
 
   pinEdited(e) {
     this.setState({pin: e.target.value.toString().trim()});
-    console.log('this.pin: ', this.state.pin);
   }
 
   confirmPinEdited(e) {
     this.setState({confirmPin: e.target.value.toString().trim()});
-    console.log('this.confirmPin: ', this.state.confirmPin);
   }
 
   render() {
-    console.log('Here in render');
     let shown = {
       display: this.state.shown ? "block" : "none"
     };

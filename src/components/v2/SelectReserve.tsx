@@ -178,7 +178,6 @@ class SelectReserve extends Component<Props, State> {
 
 const mapStateToProps = state => {
 
-  console.log('state  ', state);
   return {
     reserves: state.reserves.reserves,
   }

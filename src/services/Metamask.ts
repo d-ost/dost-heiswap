@@ -21,7 +21,6 @@ class Metamask {
       }
       ethereum.enable()
         .then((accounts) => {
-          console.log('accounts: ', accounts);
           resolve(accounts[0]);
         })
         .catch((e)=>{

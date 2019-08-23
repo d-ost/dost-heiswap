@@ -25,7 +25,6 @@ export default class NavigationBarWBB extends Component<Props, State> {
   }
 
   goBack() {
-    console.log("GoBack clicked, ", this.props.history);
     this.props.history.goBack()
   }
 

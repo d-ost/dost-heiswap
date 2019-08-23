@@ -12,6 +12,7 @@ import {
   serialize
 } from '../../utils/AltBn128V2';
 import abiDecoder from 'abi-decoder';
+import {HEISWAP_RELAYER} from "../../utils/Constants";
 
 const BN = require("bn.js");
 
@@ -28,6 +29,8 @@ export interface HeiswapToken {
   heiRandomSecretKey: string;
   txHash?: string;
   heiRingIndexFinal?: string;
+  isClaimed: boolean;
+  claimTransactionHash?: string;
 }
 
 const WITHDRAWALSTATES = {
@@ -89,6 +92,7 @@ class Heiswap {
       heiRandomSecretKey: randomSecretKey,
       txHash: undefined,
       heiTargetPrivateKey: targetPrivateKey,
+      isClaimed: false
     };
 
     const dataByteCode = heiswapInstance
@@ -126,7 +130,13 @@ class Heiswap {
     web3: Web3,
     heiswapAddress: string,
     heiswapToken: HeiswapToken
-  ) {
+  ): Promise<{
+    response: {
+      errorMessage: string;
+      txHash: string;
+    },
+    heiswapToken: HeiswapToken;
+  }> {
 
     console.log('heiswapAddress  ', heiswapAddress);
     console.log('heiswapToken  ', heiswapToken);
@@ -256,9 +266,9 @@ class Heiswap {
     console.log("keyImage  ", keyImage);
     console.log("s  ", s);
 
-    const resp = await axios.post('https://relayer.heiswap.exchange', {
+    const resp = await axios.post(HEISWAP_RELAYER, {
       message,
-      signedMessage,
+      signedMessage: signedMessage.signature,
       receiver: targetAddress,
       ethAmount:targetAmount,
       ringIdx:ringIndex,
@@ -266,8 +276,12 @@ class Heiswap {
       keyImage,
       s
     });
-
-    return resp.data;
+    console.log('response data  ', resp.data);
+    if (resp.data.txHash) {
+      heiswapToken.isClaimed = true;
+      heiswapToken.claimTransactionHash = resp.data.txHash;
+    }
+    return {response: resp.data, heiswapToken};
   }
 }
 

@@ -144,6 +144,12 @@ class Topup extends Component<Props, State> {
         burnerAccount.privateKey,
       );
       console.log('token  ', token);
+      this.props.addAccount(
+        {
+          token: this.props.selectedToken,
+          account: new Account(AccountType.burner, burnerAccount.address, burnerAccount.privateKey),
+        }
+      );
       this.props.addHeiswapToken(token);
       this.props.history.push(Routes.Savings);
     } catch (e) {
@@ -363,7 +369,6 @@ class Topup extends Component<Props, State> {
 
 const mapStateToProps = state => {
 
-  console.log('state  ', state);
   return {
     selectedToken: state.token.selectedToken,
     reserves: state.reserves.reserves,

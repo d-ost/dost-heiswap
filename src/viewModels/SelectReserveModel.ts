@@ -113,7 +113,6 @@ class SelectReserveModel {
   public async connectWithWalletConnect() {
     const walletConnect = new WalletConnect();
     const result = await walletConnect.connect();
-    console.log('Result: ', result);
   }
 }
 
