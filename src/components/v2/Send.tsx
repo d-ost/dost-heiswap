@@ -7,7 +7,6 @@ import Col from "react-bootstrap/Col";
 import InputGroup from "react-bootstrap/InputGroup";
 import Alert from "react-bootstrap/Alert";
 import {FormControl} from "react-bootstrap";
-import {Link} from 'react-router-dom'
 import queryString from "query-string";
 import * as Web3Utils from 'web3-utils';
 import NavigationBarWBB from "./NavigationBarWBB";
@@ -25,6 +24,8 @@ import {
 } from "../../redux/actions";
 import {Routes} from "./Routes";
 import Utils from "../../utils/Utils";
+import {ORIGIN_GAS_PRICE} from "../../utils/Constants";
+import BigNumber from "bignumber.js";
 
 interface Balance {
   chain: string;
@@ -47,6 +48,7 @@ interface State {
   modalShow: boolean;
   accordianActionKey: string;
   etherScanLink: string;
+  transactionHash: string;
 }
 
 const ColoredLine = ({color, height}) => (
@@ -62,8 +64,6 @@ const ColoredLine = ({color, height}) => (
 class Send extends Component<Props, State> {
   constructor(props) {
     super(props);
-    console.log('this.props.location.state: ', this.props.location.state);
-    console.log('this.state: ', this.state);
     const tokens = Token.getAll();
     this.state = {
       beneficiary: this.props.location.state.beneficiary || '',
@@ -87,6 +87,7 @@ class Send extends Component<Props, State> {
       modalShow: false,
       accordianActionKey: '0',
       etherScanLink: '',
+      transactionHash: '',
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -129,7 +130,8 @@ class Send extends Component<Props, State> {
   async handleSubmit() {
     // Reset etherScanLink link.
     this.setState({
-      etherScanLink: ''
+      etherScanLink: '',
+      transactionHash: '',
     });
     const {amount, beneficiary} = this.state;
     if (!amount || amount.length === 0) {
@@ -142,11 +144,12 @@ class Send extends Component<Props, State> {
       this.setState({error: `Invalid beneficiary address ${beneficiary}.`})
     }
 
-    const account = this.getFundedBurnerAccount();
     try {
-      const txHash = await Transaction.transferBaseToken(account, beneficiary, amount);
+      const account = this.getFundedBurnerAccount(amount);
+      const txHash = await Transaction.transferBaseToken(account, beneficiary, amount, ORIGIN_GAS_PRICE);
       const etherScanLink = await Utils.getEtherScanLink(txHash);
       this.setState({
+        transactionHash: txHash,
         etherScanLink: etherScanLink,
       });
       this.props.addTransaction({
@@ -165,14 +168,29 @@ class Send extends Component<Props, State> {
     }
   }
 
-  // Currently 1 burner account is supported
-  // TODO Later transactions needs to be done from multiple burner accounts
-  getFundedBurnerAccount(): Account {
+  // Filter the account by type Burner.
+  // Loop over burner accounts.
+  // Check if burner account balance contains eth higher than (transferAmount+gasPrice*gas)
+  // if burner account balance is not sufficient => Return error
+  // else return first burner account.
+  getFundedBurnerAccount(amountToTransfer): Account {
     const burnerAccounts = this.state.token.accounts.filter(
       account => account.accountType === AccountType.burner
     );
-    console.log('burnerAccounts:', burnerAccounts);
-    return burnerAccounts[0];
+    const gasToBeUsed = Transaction.baseTokenTransferGasUsed(ORIGIN_GAS_PRICE);
+    const fundNeeded = (new BigNumber(amountToTransfer)).add(gasToBeUsed);
+    let accountToUse;
+    for (let i = 0; i < burnerAccounts.length; i += 1) {
+      if(burnerAccounts[i].balance.gt(fundNeeded)) {
+        accountToUse = burnerAccounts[i];
+        break;
+      }
+    }
+    console.log('burnerAccountToUse:', accountToUse);
+    if (!accountToUse) {
+      throw new Error('Non Availability of funded burner account.');
+    }
+    return accountToUse;
   }
 
   changeToken(token:Token) {
@@ -183,7 +201,6 @@ class Send extends Component<Props, State> {
     this.setState({modalShow: false});
   }
   render() {
-    console.log('this.selectedToken  ', this.props.selectedToken);
     if (!this.props.selectedToken) {
       this.props.history.push(Routes.Main);
       return (null);
@@ -192,6 +209,7 @@ class Send extends Component<Props, State> {
       .map(b => Web3Utils.toBN(b.amount))
       .reduce((acc, amount) => acc.add(amount)).toString(10);
 
+    const tokens = Token.getAll();
     return (
       <NavigationBarWBB {...this.props} title='Send'>
         <div style={{
@@ -209,7 +227,7 @@ class Send extends Component<Props, State> {
             }
             {this.state.etherScanLink ?
               <Alert variant="success">
-                Transaction {this.state.etherScanLink} is in progress.&nbsp;
+                Transaction {this.state.transactionHash} is in progress.&nbsp;
                 {this.state.etherScanLink.indexOf('http') !== -1 ?
                 <Alert.Link href={this.state.etherScanLink} target="_blank"> Click to Track Status</Alert.Link>
                 : ''}
@@ -228,9 +246,13 @@ class Send extends Component<Props, State> {
                 <Accordion.Collapse eventKey="0">
                   <div></div>
                 </Accordion.Collapse>
-                <Accordion.Collapse eventKey="1">
-                  <Card.Body style={{padding:'0px'}}>{this.tokenOptions()}</Card.Body>
+                {
+                  tokens.length > 1
+                 ? <Accordion.Collapse eventKey="1">
+                  <Card.Body style={{padding:'0px'}}>this.tokenOptions()</Card.Body>
                 </Accordion.Collapse>
+                 : ''
+                }
               </Accordion>
             </div>
             {/*{this.state.balances.map(b =>*/}
@@ -388,7 +410,6 @@ class Send extends Component<Props, State> {
   }
   selectTokens({ children, eventKey }) {
     const toggle = useAccordionToggle(eventKey, () =>{
-      console.log('hello the control is here', this.state);
       this.setState({accordianActionKey: this.state.accordianActionKey === '1'?'0':'1'})
     });
     return (
@@ -406,27 +427,6 @@ class Send extends Component<Props, State> {
   }
 
 }
-/*
-<div>
-          <p style={{padding: '10px'}}>Select Token</p>
-        </div>
-        {tokens.map((value, index) => {
-          return <div
-            style={{
-              borderBottomWidth:'1px',
-              borderBottomColor:'rgb(231, 246, 247)',
-              borderBottomStyle:'solid'
-            }}>
-            <TokenBalance
-              onClick={()=>{}}
-              context={this.props.context}
-              token={value}
-              showBucketKeyBalances={false}
-            />
-          </div>
-        })}
- */
-
 const mapStateToProps = state => {
   return {
     selectedToken: state.token.selectedToken,

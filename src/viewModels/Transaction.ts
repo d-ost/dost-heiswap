@@ -1,6 +1,6 @@
-import BigNumber from "bignumber.js";
 import Account from "./Account";
-import {ORIGIN_GAS_PRICE} from "../utils/Constants";
+import {BASETOKEN_TRANSFER_GAS, ORIGIN_GAS_PRICE} from "../utils/Constants";
+import BigNumber from "bignumber.js";
 
 export enum TransactionType {
   baseTokenTransfer = 'baseTokenTransfer',
@@ -46,13 +46,9 @@ export default class Transaction {
     return transactions;
   }
 
-  static transferBaseToken(fromAccount: Account, toAddress: string, amount: string):
+  static transferBaseToken(fromAccount: Account, toAddress: string, amount: string, gasPrice: string):
     Promise<string> {
-    console.log(
-      'from Address: ', fromAccount,
-      'toAddress: ', toAddress, 'amount: ',
-      amount
-    );
+    console.log('from Address: ', fromAccount, 'toAddress: ', toAddress, 'amount: ',  amount);
     const web3 = window.web3;
 
     return new Promise(async (onResolve, onReject): Promise<void> => {
@@ -66,8 +62,8 @@ export default class Transaction {
         from: fromAccount.address,
         to: toAddress,
         value: amount,
-        gas: 21000,
-        gasPrice: ORIGIN_GAS_PRICE,
+        gas: BASETOKEN_TRANSFER_GAS,
+        gasPrice: gasPrice,
       }).on('transactionHash', (transactionHash) => {
         console.log('transactionHash  ', transactionHash);
         onResolve(transactionHash);
@@ -76,6 +72,12 @@ export default class Transaction {
         onReject(error);
       });
     });
+  }
+
+  static baseTokenTransferGasUsed(gasPrice) {
+    const gasPriceBN = new BigNumber(gasPrice);
+    const gasBN = new BigNumber(BASETOKEN_TRANSFER_GAS);
+    return gasBN.mul(gasPriceBN);
   }
 
   static sendERC20Token() {

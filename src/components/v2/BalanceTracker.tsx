@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import {Component} from 'react';
 import {
   updateBalance,
 } from "../../redux/actions";
@@ -26,10 +26,10 @@ class BalanceTracker extends Component<Props, State> {
     this.updateBalance = this.updateBalance.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const waitTime = 10000;
-    console.log(`window.web3: ${window.web3}`);
     if (window.web3) {
+      await this.updateBalance();
       const setIntervalHandler = setInterval(this.updateBalance, waitTime);
       this.setState({
         setIntervalHandler: setIntervalHandler,
@@ -38,9 +38,9 @@ class BalanceTracker extends Component<Props, State> {
   }
 
   async updateBalance() {
-    console.log(`BalanceTracker::Updating balance`);
-    this.props.tokens.filter(token => token.isBaseCurrency).
-      forEach((token): void => {
+    // console.log(`BalanceTracker::Updating balance`);
+    this.props.tokens.filter(token => token.isBaseCurrency)
+      .forEach((token): void => {
       token.accounts.forEach(async (account) => {
         const balance = await this.getBalance(account.address);
         this.props.updateBalance({
@@ -71,7 +71,7 @@ class BalanceTracker extends Component<Props, State> {
 }
 
 const mapStateToProps = state => {
-  console.log('state  ', state);
+  // console.log('state  ', state);
   return {
     tokens: state.token.tokens,
   }

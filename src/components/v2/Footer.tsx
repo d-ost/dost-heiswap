@@ -1,7 +1,4 @@
 import React, {Component} from 'react'
-import Navbar from "react-bootstrap/es/Navbar";
-import Container from "react-bootstrap/es/Container";
-import NavbarBrand from "react-bootstrap/es/NavbarBrand";
 import Row from "react-bootstrap/es/Row";
 
 interface Props {

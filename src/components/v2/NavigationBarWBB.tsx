@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import backButton from "../../images/back_button.png";
-import {Routes} from "./Routes";
 
 interface Props {
   history?: any;
@@ -13,7 +12,6 @@ interface State {
 
 export default class NavigationBarWBB extends Component<Props, State> {
   constructor(props) {
-    console.log('props: ', props);
     super(props);
   }
 

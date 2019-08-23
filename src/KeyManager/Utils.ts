@@ -7,7 +7,6 @@ export default class Utils {
   }
 
   static getImagePathForSymbol(symbol: string):string {
-    console.log('symbol------>: ', symbol);
     if (symbol) {
       symbol = symbol.toLowerCase();
       if (symbol === 'st' || symbol === 'ost') {

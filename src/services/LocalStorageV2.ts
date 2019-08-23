@@ -6,10 +6,6 @@ import {HeiswapToken} from "./Heiswap/Heiswap";
 
 class LocalStorage {
 
-
-  constructor() {
-  }
-
   getFromLocalStorage(key: string): any {
     const burnerJSON = localStorage.getItem(key);
     let burnerObject = {};

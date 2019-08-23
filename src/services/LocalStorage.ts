@@ -3,8 +3,6 @@
 
 import {ReserveType} from "../viewModels/SelectReserveModel";
 import Token from "../viewModels/Token";
-import BigNumber from "bignumber.js";
-import Account from "../viewModels/Account";
 import Transaction from "../viewModels/Transaction";
 
 class LocalStorage {

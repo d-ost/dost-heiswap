@@ -49,7 +49,6 @@ export default class App extends Component<Props, State> {
 
 
   render() {
-    console.log('Gere in App.tsx');
     return (
 
       <Router>

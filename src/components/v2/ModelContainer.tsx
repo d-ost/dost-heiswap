@@ -1,5 +1,4 @@
 import Modal from "react-bootstrap/es/Modal";
-import Button from "react-bootstrap/es/Button";
 import React, {Component} from "react";
 
 interface Props {

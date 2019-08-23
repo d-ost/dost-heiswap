@@ -1,11 +1,7 @@
 import React, {Component} from 'react';
 import Button from "react-bootstrap/es/Button";
 import TokenBalances from './TokenBalances';
-import defaultProfileImage from "../../images/default_profile.png";
 import NavigationBar from "./NavigationBar";
-import ModelContainer from "./ModelContainer";
-import CreatePin from "./CreatePin";
-import VerifyPin from "./VerifyPin";
 import {Routes} from "./Routes";
 import Token from "../../viewModels/Token";
 import Footer from "./Footer";

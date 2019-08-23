@@ -92,12 +92,12 @@ class Topup extends Component<Props, State> {
     if (!amount || amount.length === 0 || amount === '0') {
       this.setState({
         error: 'Please enter valid amount.',
-      })
+      });
       return;
     } else if (!reserve || reserve.length === 0) {
       this.setState({
         error: 'Please select a reserve.',
-      })
+      });
       return;
     } else this.setState({
       error: '',

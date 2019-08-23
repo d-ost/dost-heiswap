@@ -26,8 +26,8 @@ export default class Utils {
       case NetworkType.mainnet:
         url = `https://etherscan.io/tx/${txHash}`;
         break;
-      case NetworkType.mainnet:
-        url = txHash;
+      case NetworkType.private:
+        url = `https://goerli.etherscan.io/tx/${txHash}`;
         break;
       default:
         url = txHash;

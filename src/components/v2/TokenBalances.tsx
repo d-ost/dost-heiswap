@@ -1,5 +1,4 @@
 import React from 'react';
-import Table from "react-bootstrap/es/Table";
 import Token from "../../viewModels/Token";
 import TokenBalance from "./TokenBalance"
 import Container from "react-bootstrap/es/Container";
