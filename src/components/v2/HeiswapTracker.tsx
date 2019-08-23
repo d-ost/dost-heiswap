@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import {HeiswapToken} from "../../services/Heiswap/Heiswap";
 import heiswap from "../../services/Heiswap/Heiswap";
-import {HEISWAP_GOERLI} from "../../utils/Constants";
+import {HEISWAP_GOERLI, HEISWAP_ROPSTEN} from "../../utils/Constants";
 import {claimHeiswapToken} from "../../redux/actions";
+import Utils, {NetworkType} from "../../utils/Utils";
 
 interface Props {
   heiswapTokens: HeiswapToken[];
@@ -43,15 +44,14 @@ class HeiswapTracker extends Component<Props, State> {
   }
 
   async tryWithdraw() {
-
-    console.log('this.props.heiswapTokens[0]  ', this.props.heiswapTokens);
-
     if (window.web3 && this.props.heiswapTokens.length > 0) {
       this.props.heiswapTokens.filter((ht) => !ht.isClaimed).forEach(async (ht) => {
         try {
+          let networkType = await Utils.getNetworkType();
+          let heiswapAddress = networkType === NetworkType.ropsten ? HEISWAP_ROPSTEN : HEISWAP_GOERLI;
           const result = await heiswap.withdraw(
             window.web3,
-            HEISWAP_GOERLI,
+            heiswapAddress,
             ht,
           );
           if (result.heiswapToken.isClaimed) {

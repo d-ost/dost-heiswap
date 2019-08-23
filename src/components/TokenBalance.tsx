@@ -1,6 +1,6 @@
 import React from 'react';
 import {Avatar, Text, Flex, Box} from 'rimble-ui';
-import Utils from '../KeyManager/Utils'
+import Utils from '../utils/Utils'
 import BaseToken from "../KeyManager/BaseToken";
 
 interface Props {

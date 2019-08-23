@@ -7,7 +7,7 @@ import Alert from "react-bootstrap/Alert";
 import ListGroup from "react-bootstrap/es/ListGroup";
 import Row from "react-bootstrap/es/Row";
 import Col from "react-bootstrap/es/Col";
-import Utils from "../../KeyManager/Utils";
+import Utils from "../../utils/Utils";
 import InputGroup from "react-bootstrap/InputGroup";
 import {FormControl} from "react-bootstrap";
 import {ReserveAccount} from "../../viewModels/SelectReserveModel";
@@ -17,7 +17,9 @@ import Button from "react-bootstrap/es/Button";
 import {addAccount, addHeiswapToken} from "../../redux/actions";
 import Account, {AccountType} from "../../viewModels/Account";
 import heiswap from '../../services/Heiswap/Heiswap';
-import {HEISWAP_GOERLI} from "../../utils/Constants";
+import {HEISWAP_GOERLI, HEISWAP_ROPSTEN} from "../../utils/Constants";
+import {NetworkType} from "../../utils/Utils";
+import {fromWei, toWei} from "web3-utils";
 
 interface Props {
   selectedToken: Token;
@@ -42,7 +44,7 @@ class Topup extends Component<Props, State> {
     super(props);
     this.state = {
       error: '',
-      amount: '0',
+      amount: '',
       reserve: this.props.reserves[0].type,
       reserveAccount: this.props.reserves[0],
       pendingTopup: false,
@@ -70,8 +72,10 @@ class Topup extends Component<Props, State> {
   }
 
   async handleAmountChange(e) {
+
+    const val = e.target.value;
     this.setState({
-      amount: e.target.value
+      amount: val ? toWei(val, 'ether').toString(10) : val
     });
   }
 
@@ -134,10 +138,14 @@ class Topup extends Component<Props, State> {
     const reserveAccount = this.state.reserveAccount;
     // Always create a new burner key
     let burnerAccount = reserveAccount.web3.eth.accounts.create(reserveAccount.web3.utils.randomHex(32));
+
     try {
+      let networkType = await Utils.getNetworkType();
+      console.log('network typee ', networkType);
+      let heiswapAddress = networkType === NetworkType.ropsten ? HEISWAP_ROPSTEN : HEISWAP_GOERLI;
       const token = await heiswap.deposit(
         reserveAccount.web3,
-        HEISWAP_GOERLI,
+        heiswapAddress,
         reserveAccount.account!,
         this.state.amount,
         burnerAccount.address,
@@ -277,11 +285,11 @@ class Topup extends Component<Props, State> {
                         </InputGroup.Prepend>
                         <FormControl
                           style={{borderColor: 'rgb(231, 246, 247)'}}
-                          placeholder="Amount in wei"
-                          aria-label="Amount"
+                          placeholder="Amount in ether"
+                          aria-label="Amount in ether"
                           onChange={this.handleAmountChange}
                           type="number"
-                          defaultValue={this.state.amount}
+                          defaultValue={fromWei(this.state.amount, 'ether')}
                         />
                       </InputGroup>
                     </div>
@@ -349,7 +357,7 @@ class Topup extends Component<Props, State> {
                             boxShadow: '0 5px 15px rgba(0,0,0,.15)',
                             borderRadius: '15px',
                           }}>
-                          Top-up
+                          {this.state.pendingTopup ? 'Sending transaction' : 'Top-up'}
                         </Button>
                     }
                   </div>

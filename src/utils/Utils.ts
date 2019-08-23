@@ -1,3 +1,5 @@
+const Web3Utils = require('web3-utils');
+
 export enum NetworkType {
   goerli = 'goerli',
   ropsten = 'ropsten',
@@ -7,10 +9,9 @@ export enum NetworkType {
 
 export default class Utils {
 
-  static async getNetworkType(): Promise<string> {
+  static async getNetworkType(): Promise<NetworkType> {
      const networkType = await window.web3.eth.net.getNetworkType();
-     console.log(`networkType: ${networkType}`);
-     return networkType;
+    return networkType as NetworkType;
   }
 
   static async getEtherScanLink(txHash: string): Promise<string> {
@@ -60,5 +61,25 @@ export default class Utils {
     }
 
     return formattedEvents;
+  }
+
+  static isValidAddress(address: string):boolean {
+    return Web3Utils.isAddress(address);
+  }
+
+  static getImagePathForSymbol(symbol: string):string {
+    if (symbol) {
+      symbol = symbol.toLowerCase();
+      if (symbol === 'st' || symbol === 'ost') {
+        return 'ost.jpg'
+      }
+      if (symbol === 'eth') {
+        return 'ethereum.png';
+      }
+      if (symbol === 'weth') {
+        return 'ethereum.png'
+      }
+    }
+    return 'ost.jpg'
   }
 }

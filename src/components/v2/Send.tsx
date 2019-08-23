@@ -25,6 +25,7 @@ import {Routes} from "./Routes";
 import Utils from "../../utils/Utils";
 import {ORIGIN_GAS_PRICE} from "../../utils/Constants";
 import BigNumber from "bignumber.js";
+import {toWei} from "web3-utils";
 
 interface Props {
   tokens: Token[],
@@ -76,8 +77,9 @@ class Send extends Component<Props, State> {
   }
 
   handleAmountChange(e) {
+    let val = e.target.value;
     this.setState({
-      amount: e.target.value
+      amount: val ? toWei(val, 'ether').toString(10) : val
     });
   }
 
@@ -249,7 +251,7 @@ class Send extends Component<Props, State> {
               </InputGroup.Prepend>
               <FormControl
                 style={{borderColor:'rgb(231, 246, 247)'}}
-                placeholder="Amount in wei"
+                placeholder="Amount in ether"
                 aria-label="Amount"
                 onChange={this.handleAmountChange}
                 type="number"

@@ -1,9 +1,10 @@
 import React from 'react';
-import Utils from '../../KeyManager/Utils'
+import Utils from '../../utils/Utils'
 import Token from "../../viewModels/Token";
 import Row from "react-bootstrap/es/Row";
 import Col from "react-bootstrap/es/Col";
 import ListGroup from "react-bootstrap/es/ListGroup";
+import {fromWei} from 'web3-utils';
 
 interface Props {
   context: string;
@@ -42,14 +43,14 @@ export default class TokenBalance extends React.Component<Props, State> {
                   paddingRight: '15px',
                   paddingTop: '15px',
                   color: '#34445b'
-                }}> {this.props.token.getBurnerBalance()} </div>
+                }}> {fromWei(this.props.token.getBurnerBalance(),'ether')} </div>
               </Col>
               <Col style={{padding:'0',textAlign:'right', display:`${this.props.showBucketKeyBalances?'block':'none'}`}}>
                 <div style={{
                   paddingRight: '15px',
                   paddingTop: '15px',
                   color: '#34445b'
-                }}> {this.props.token.getBucketBalance()} </div>
+                }}> {fromWei(this.props.token.getBucketBalance(), 'ether')} </div>
               </Col>
             </Row>
           </ListGroup.Item>

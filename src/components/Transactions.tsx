@@ -1,6 +1,5 @@
 import React from 'react';
 import {Box, Button, Card, Flex, Text} from 'rimble-ui';
-import Utils from '../KeyManager/Utils'
 import TransactionDetails from './TransactionDetails'
 
 interface Props {

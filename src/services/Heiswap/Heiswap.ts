@@ -3,16 +3,17 @@ import HeiswapABI from '../../contracts/Heiswap.abi';
 import Web3 from "web3";
 import axios from 'axios'
 import {append0x} from './Utils/Helper';
-import Utils from "../../utils/Utils";
+import Utils, {NetworkType} from "../../utils/Utils";
 import {
   bn128,
-  powmod,
   h1,
-  h2,
   serialize
 } from '../../utils/AltBn128V2';
 import abiDecoder from 'abi-decoder';
-import {HEISWAP_RELAYER} from "../../utils/Constants";
+import {
+  HEISWAP_RELAYER_GOERLI,
+  HEISWAP_RELAYER_ROPSTEN
+} from "../../utils/Constants";
 
 const BN = require("bn.js");
 
@@ -171,9 +172,11 @@ class Heiswap {
         .call();
 
       console.log('currentParticipants  ', currentParticipants);
-      throw new Error(`Ring has not yet closed. Requires ${participantsRequired}. \n` +
+      let messageError = `Ring has not yet closed. Requires ${participantsRequired}. \n` +
         `${currentParticipants[0]} have deposited. \n` +
-        `${currentParticipants[1]} have withdrawn.`); // always zero if ring open
+        `${currentParticipants[1]} have withdrawn.`;
+      console.log('message error ', messageError);
+      throw new Error(messageError); // always zero if ring open
     }
 
     // trim "0x" for generating the message-to-be-signed
@@ -225,12 +228,9 @@ class Heiswap {
       }
     }
 
-    console.log('some cryptograohy');
-
     if (!canSign) {
       throw new Error("Heiswap Token refers to a ring for which it cannot sign.");
     }
-
 
     // sign the receiver address
     const signature = bn128.ringSign(
@@ -256,17 +256,30 @@ class Heiswap {
       message,
       heiswapToken.heiTargetPrivateKey,
     );
+    try {
+      console.log('targetAddress  ', targetAddress);
+      console.log('targetAmount  ', targetAmount);
+      console.log('ringIndex  ', ringIndex);
+      console.log('c0  ', c0);
+      console.log('keyImage  ', keyImage);
+      console.log('s  ', s);
+      await heiswapInstance.methods.withdraw(
+        targetAddress,
+        targetAmount,
+        ringIndex,
+        c0,
+        keyImage,
+        s
+      ).call();
+    } catch (e) {
+      console.log('contract exception while withdrawing ', e);
+    }
 
-    console.log("message  ", message);
-    console.log("signedMessage  ", signedMessage);
-    console.log("receiver  ", targetAddress);
-    console.log("targetAmount  ", targetAmount);
-    console.log("ringIndex  ", ringIndex);
-    console.log("c0  ", c0);
-    console.log("keyImage  ", keyImage);
-    console.log("s  ", s);
-
-    const resp = await axios.post(HEISWAP_RELAYER, {
+    let networkType = await Utils.getNetworkType();
+    const relayer = networkType === NetworkType.ropsten
+      ? HEISWAP_RELAYER_ROPSTEN
+      : HEISWAP_RELAYER_GOERLI;
+    const resp = await axios.post(relayer, {
       message,
       signedMessage: signedMessage.signature,
       receiver: targetAddress,
