@@ -21,7 +21,6 @@ export default class TokenBalance extends React.Component<Props, State> {
   }
 
   componentWillMount(): void {
-    // this.setState({balance: this.props.token.totalBalances[this.props.context]});
   }
 
   render() {
@@ -58,17 +57,4 @@ export default class TokenBalance extends React.Component<Props, State> {
       </div>
     );
   }
-  /*
-  render() {
-    const imageName = Utils.getImagePathForSymbol(this.props.token.symbol);
-    const image = require(`../../images/${imageName}`);
-    return (
-      <tr>
-        <td>{this.props.token.symbol}</td>
-        <td>{this.state.burnerKeysTotalBalance}</td>
-        <td hidden={!this.props.showBucketKeyBalances}>{this.state.bucketKeysTotalBalance}</td>
-      </tr>
-    );
-  }
-   */
 }

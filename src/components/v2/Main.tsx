@@ -107,7 +107,8 @@ class Main extends Component<Props, State> {
         <Modal show={this.state.modalShow} onHide={() => this.closeModal()}>
           <Receive
             address={this.state.address}
-            onHide={() => this.closeModal()}/>
+            onHide={() => this.closeModal()}
+          />
         </Modal>
         <Modal show={this.state.showScanner} onHide={() => this.closeModal()}>
           <Scanner

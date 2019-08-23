@@ -31,6 +31,7 @@ export default class Receive extends Component<Props, State> {
   onDone(){
     this.props.onHide();
   }
+
   render() {
     return (
 

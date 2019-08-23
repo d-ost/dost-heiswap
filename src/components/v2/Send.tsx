@@ -7,7 +7,6 @@ import Col from "react-bootstrap/Col";
 import InputGroup from "react-bootstrap/InputGroup";
 import Alert from "react-bootstrap/Alert";
 import {FormControl} from "react-bootstrap";
-import queryString from "query-string";
 import * as Web3Utils from 'web3-utils';
 import NavigationBarWBB from "./NavigationBarWBB";
 import TokenBalance from "./TokenBalance";
@@ -27,13 +26,9 @@ import Utils from "../../utils/Utils";
 import {ORIGIN_GAS_PRICE} from "../../utils/Constants";
 import BigNumber from "bignumber.js";
 
-interface Balance {
-  chain: string;
-  amount: string;
-}
 interface Props {
+  tokens: Token[],
   selectedToken: Token;
-  location: any;
   context?: any;
   history: any;
   addTransaction: Function,
@@ -41,8 +36,7 @@ interface Props {
 
 interface State {
   beneficiary: string;
-  token: Token;
-  balances: Balance[];
+  selectedToken: Token;
   amount: string;
   error: string;
   modalShow: boolean;
@@ -51,37 +45,12 @@ interface State {
   transactionHash: string;
 }
 
-const ColoredLine = ({color, height}) => (
-  <hr
-    style={{
-      color: color,
-      backgroundColor: color,
-      height: height
-    }}
-  />
-);
-
 class Send extends Component<Props, State> {
   constructor(props) {
     super(props);
-    const tokens = Token.getAll();
     this.state = {
-      beneficiary: this.props.location.state.beneficiary || '',
-      token: this.props.location.state.token || tokens[0],
-      balances: [
-        {
-          chain: 'Plasma',
-          amount: '1',
-        },
-        {
-          chain: 'Mosaic',
-          amount: '4',
-        },
-        {
-          chain: 'ETH 1.X',
-          amount: '7',
-        },
-      ],
+      beneficiary: '',
+      selectedToken: this.props.selectedToken,
       amount: '',
       error: '',
       modalShow: false,
@@ -98,15 +67,6 @@ class Send extends Component<Props, State> {
   }
 
   componentDidMount() {
-    const values = queryString.parse(this.props.location.search);
-    if (values) {
-      const beneficiary = values.beneficiary as string;
-      if (values.beneficiary) {
-        this.setState({
-          beneficiary: beneficiary,
-        })
-      }
-    }
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -174,7 +134,7 @@ class Send extends Component<Props, State> {
   // if burner account balance is not sufficient => Return error
   // else return first burner account.
   getFundedBurnerAccount(amountToTransfer): Account {
-    const burnerAccounts = this.state.token.accounts.filter(
+    const burnerAccounts = this.state.selectedToken.accounts.filter(
       account => account.accountType === AccountType.burner
     );
     const gasToBeUsed = Transaction.baseTokenTransferGasUsed(ORIGIN_GAS_PRICE);
@@ -194,7 +154,7 @@ class Send extends Component<Props, State> {
   }
 
   changeToken(token:Token) {
-    this.setState({token: token, accordianActionKey: '0'});
+    this.setState({selectedToken: token, accordianActionKey: '0'});
   }
 
   closeModal() {
@@ -205,11 +165,6 @@ class Send extends Component<Props, State> {
       this.props.history.push(Routes.Main);
       return (null);
     }
-    const totalBalance = this.state.balances
-      .map(b => Web3Utils.toBN(b.amount))
-      .reduce((acc, amount) => acc.add(amount)).toString(10);
-
-    const tokens = Token.getAll();
     return (
       <NavigationBarWBB {...this.props} title='Send'>
         <div style={{
@@ -239,7 +194,7 @@ class Send extends Component<Props, State> {
                   <TokenBalance
                     onClick={()=>{}}
                     context={this.props.context}
-                    token={this.state.token}
+                    token={this.state.selectedToken}
                     showBucketKeyBalances={false}
                   />
                 </this.selectTokens>
@@ -247,7 +202,7 @@ class Send extends Component<Props, State> {
                   <div></div>
                 </Accordion.Collapse>
                 {
-                  tokens.length > 1
+                  this.props.tokens.length > 1
                  ? <Accordion.Collapse eventKey="1">
                   <Card.Body style={{padding:'0px'}}>this.tokenOptions()</Card.Body>
                 </Accordion.Collapse>
@@ -255,20 +210,6 @@ class Send extends Component<Props, State> {
                 }
               </Accordion>
             </div>
-            {/*{this.state.balances.map(b =>*/}
-              {/*<div style={{marginLeft:'10px', marginRight:'10px', padding:'10px', borderBottomWidth:'1px', borderBottomStyle:'solid', borderBottomColor:'rgb(231, 246, 247)'}}>*/}
-                {/*<Row style={{borderBottomColor:'red', borderBottomWidth:'10px'}}>*/}
-                  {/*<Col xs={5} style={{padding:'0'}}>*/}
-                    {/*<div style={{paddingRight:'10px', paddingLeft:'10px'}}>*/}
-                      {/*<span style={{marginLeft:'15px', color:'#34445b'}}>{b.chain}</span>*/}
-                    {/*</div>*/}
-                  {/*</Col>*/}
-                  {/*<Col style={{padding:'0',textAlign:'right'}}>*/}
-                    {/*<span style={{paddingRight:'15px', color:'#34445b'}}> {b.amount} </span>*/}
-                  {/*</Col>*/}
-                {/*</Row>*/}
-              {/*</div>*/}
-            {/*)}*/}
           </div>
 
           <Modal show={this.state.modalShow} onHide={() => this.closeModal()}>
@@ -372,7 +313,6 @@ class Send extends Component<Props, State> {
   }
 
   tokenOptions() {
-    const tokens = Token.getAll();
     return(
       <div style={{width: '100%'}}>
         <div style={{width: '100%', height:'20px', WebkitBoxShadow:'inset 0 10px 10px -5px rgba(0,0,0,0.15)'}}></div>
@@ -382,8 +322,8 @@ class Send extends Component<Props, State> {
             borderBottomStyle:'solid'}}>
             <p style={{padding: '10px', color:'#34445b', fontWeight: 'bolder'}}>Select Token</p>
           </div>
-          {tokens.map((value, index) => {
-            if (this.state.token.symbol !== value.symbol) {
+          {this.props.tokens.map((value, index) => {
+            if (this.state.selectedToken.symbol !== value.symbol) {
               return <div
                 style={{
                   borderBottomWidth:'1px',
@@ -430,6 +370,7 @@ class Send extends Component<Props, State> {
 const mapStateToProps = state => {
   return {
     selectedToken: state.token.selectedToken,
+    tokens: state.token.tokens,
   };
 };
 
