@@ -59,7 +59,6 @@ class Main extends Component<Props, State> {
     this.props.selectToken(token);
     this.props.history.push({
       pathname: Routes.Send,
-      state: {token: token}
     });
   }
 
@@ -72,9 +71,13 @@ class Main extends Component<Props, State> {
   }
 
   handleScannerResult(address) {
+    // Select default token on general send
+    this.props.selectToken(this.props.tokens[0]);
     this.props.history.push({
       pathname: Routes.Send,
-      state: {beneficiary: address}
+      state: {
+        beneficiary: address,
+      }
     });
   }
 
