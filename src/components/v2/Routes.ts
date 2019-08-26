@@ -8,4 +8,5 @@ export class Routes {
   static readonly SelectReserve = '/select-reserve';
   static readonly Topup = '/topup';
   static readonly Scanner = '/scanner';
+  static readonly Transactions = '/transactions';
 }

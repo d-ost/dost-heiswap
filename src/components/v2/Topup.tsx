@@ -258,7 +258,7 @@ class Topup extends Component<Props, State> {
           overflow: 'hidden',
           boxShadow: '0 5px 15px rgba(0,0,0,.15)'
         }}>
-          <div style={{width: '100%', backgroundColor: 'white'}}>
+          <div style={{width: '100%', backgroundColor: 'white'}} >
             {this.state.error.length > 0 ?
               <Alert variant="danger">
                 {this.state.error}

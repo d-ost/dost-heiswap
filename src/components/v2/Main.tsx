@@ -14,6 +14,7 @@ import Receive from "./Receive";
 import {selectToken, addAccount} from "../../redux/actions";
 import {connect} from "react-redux";
 import {default as Account, AccountType} from "../../viewModels/Account";
+import Transactions from "./Transactions";
 
 interface Props {
   context: string
