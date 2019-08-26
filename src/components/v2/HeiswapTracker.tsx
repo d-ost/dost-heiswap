@@ -45,24 +45,25 @@ class HeiswapTracker extends Component<Props, State> {
 
   async tryWithdraw() {
     if (window.web3 && this.props.heiswapTokens.length > 0) {
-      this.props.heiswapTokens.filter((ht) => !ht.isClaimed).forEach(async (ht) => {
+      const networkType = await Utils.getNetworkType();
+      const heiswapAddress = networkType === NetworkType.ropsten ? HEISWAP_ROPSTEN : HEISWAP_GOERLI;
+      const filteredTokens = this.props.heiswapTokens.filter((ht) => !ht.isClaimed);
+      for (let filteredToken of filteredTokens) {
         try {
-          let networkType = await Utils.getNetworkType();
-          let heiswapAddress = networkType === NetworkType.ropsten ? HEISWAP_ROPSTEN : HEISWAP_GOERLI;
           const result = await heiswap.withdraw(
             window.web3,
             heiswapAddress,
-            ht,
+            filteredToken,
           );
           if (result.heiswapToken.isClaimed) {
             console.log('claimed transaction hash  ', result.heiswapToken.claimTransactionHash)
             this.props.claimHeiswapToken(result.heiswapToken);
           }
-          console.log('response from relayer  ', result);
+          console.log('response from Relayer  ', result);
         } catch (e) {
           console.log('error on withdraw with heiswap  ', e);
         }
-      });
+      }
 
     }
   }
