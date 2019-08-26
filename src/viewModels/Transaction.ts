@@ -5,6 +5,9 @@ import BigNumber from "bignumber.js";
 export enum TransactionType {
   baseTokenTransfer = 'baseTokenTransfer',
   erc20TokenTransfer = 'erc20TokenTransfer',
+  heiswapDeposit = 'heiswapDeposit',
+  heiswapWithdraw = 'heiswapWithdraw',
+  baseTokenTopup = 'baseTokenTopup',
 }
 
 export default class Transaction {
@@ -17,7 +20,11 @@ export default class Transaction {
     amount: string
   };
 
-  constructor(transactionHash, transactionType, data) {
+  constructor(transactionHash: string, transactionType: TransactionType, data: {
+    from: Account;
+    to: string;
+    amount: string;
+  }) {
     this.transactionHash = transactionHash;
     this.transactionType = transactionType;
     this.data = data;

@@ -1,5 +1,7 @@
 import Account, {AccountType} from "./Account";
 import BigNumber from "bignumber.js";
+import Transaction from "./Transaction";
+import {HeiswapToken} from "../services/Heiswap/Heiswap";
 
 export default class Token {
 
@@ -8,23 +10,30 @@ export default class Token {
   isBaseCurrency: boolean;
   erc20Address?: string;
   accounts: Account[];
+  transactions: Transaction[];
+  heiswapTokens: HeiswapToken[];
 
   constructor(
     symbol: string,
     name: string,
     isBaseCurrency: boolean,
     erc20Address?: string,
-    accounts?: Account[]
+    accounts?: Account[],
+    transactions?: Transaction[],
+    heiswapToken?: HeiswapToken[],
   ) {
     this.symbol = symbol;
     this.name = name;
     this.isBaseCurrency = isBaseCurrency;
     this.erc20Address = erc20Address;
     this.accounts = accounts || [];
+    this.transactions = transactions || [];
+    this.heiswapTokens = heiswapToken || [];
   }
 
   addAccount(account: Account) {
-    this.accounts.push(account);
+    if (this.accounts.filter(a => a.address === account.address).length === 0)
+      this.accounts.push(account);
   }
 
   removeAccount(account: Account) {
@@ -64,6 +73,16 @@ export default class Token {
       .filter(account => account.accountType === AccountType.bucket)
       .map(account => account.balance)
       .reduce((accumulator, balance) => balance.add(accumulator), new BigNumber('0')).toString(10);
+  }
+
+  addTransaction(transaction: Transaction): void {
+    this.transactions.push(transaction);
+  }
+
+  addHeiswapToken(heiswapToken: HeiswapToken): void {
+    const tokens = this.heiswapTokens.filter(ht => ht.txHash !== heiswapToken.txHash);
+    tokens.push(heiswapToken);
+    this.heiswapTokens = tokens;
   }
 
   static getAll() {
@@ -142,12 +161,18 @@ export default class Token {
         account.setBalance(new BigNumber(a.balance));
         return account;
       });
+
+      const transactions = parsedTokens[i].transactions.map(t =>
+        new Transaction(t.transactionHash, t.transactionType, t.data)
+      );
       const tokenObj = new Token(
         parsedTokens[i].symbol,
         parsedTokens[i].name,
         parsedTokens[i].isBaseCurrency,
         parsedTokens[i].erc20Address,
         accounts,
+        transactions,
+        parsedTokens[i].heiswapTokens,
       );
       listOfToken.push(tokenObj);
     }

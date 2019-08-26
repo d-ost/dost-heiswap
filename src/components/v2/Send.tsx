@@ -131,14 +131,14 @@ class Send extends Component<Props, State> {
         transactionHash: txHash,
         etherScanLink: etherScanLink,
       });
+
       this.props.addTransaction({
-        transactionHash: txHash,
-        transactionType: TransactionType.baseTokenTransfer,
-        data: {
+        token: this.props.selectedToken,
+        transaction: new Transaction(txHash, TransactionType.baseTokenTransfer, {
           from: account,
           to: beneficiary,
           amount: amount,
-        },
+        })
       });
     } catch(err) {
       this.setState({
