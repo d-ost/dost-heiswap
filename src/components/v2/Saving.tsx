@@ -53,6 +53,7 @@ class Saving extends Component<Props, State> {
             context={this.props.context}
             tokens ={this.props.tokens}
             showBucketKeyBalances={ true }
+            history={this.props.history}
           />
         </div>
 

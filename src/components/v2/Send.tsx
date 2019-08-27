@@ -20,7 +20,7 @@ import Transaction, {TransactionType} from "../../viewModels/Transaction";
 import Account, {AccountType} from "../../viewModels/Account";
 import queryString from "query-string";
 import {
-  addTransaction,
+  addTransaction, selectToken,
 } from "../../redux/actions";
 import {Routes} from "./Routes";
 import Utils from "../../utils/Utils";
@@ -35,6 +35,7 @@ interface Props {
   history: any;
   location: any,
   addTransaction: Function,
+  selectToken:Function,
 }
 
 interface State {
@@ -215,6 +216,8 @@ class Send extends Component<Props, State> {
                     context={this.props.context}
                     token={this.state.selectedToken}
                     showBucketKeyBalances={false}
+                    selectToken={this.props.selectToken}
+                    history={this.props.history}
                   />
                 </this.selectTokens>
                 <Accordion.Collapse eventKey="0">
@@ -354,6 +357,8 @@ class Send extends Component<Props, State> {
                   context={this.props.context}
                   token={value}
                   showBucketKeyBalances={false}
+                  history={this.props.history}
+                  selectToken={this.props.selectToken}
                 />
               </div>
             } else {
@@ -395,6 +400,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   addTransaction,
+  selectToken
 };
 
 export default connect(

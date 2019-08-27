@@ -10,7 +10,7 @@ import Col from "react-bootstrap/es/Col";
 import Table from 'react-bootstrap/Table'
 
 interface Props {
-  tokens: Token[];
+  selectedToken: Token;
   history?: any;
 }
 
@@ -23,6 +23,9 @@ class Transactions extends React.Component<Props, State> {
 
   render() {
 
+    const token = this.props.selectedToken;
+    const imageName = Utils.getImagePathForSymbol(token.symbol);
+    const image = require(`../../images/${imageName}`);
     return <NavigationBarWBB {...this.props} title='Transactions'>
     <div style={{
       margin: '10px',
@@ -39,11 +42,7 @@ class Transactions extends React.Component<Props, State> {
         paddingBottom: '65px'
 
       }}>
-        {
-          this.props.tokens.map(token => {
-            const imageName = Utils.getImagePathForSymbol(token.symbol);
-            const image = require(`../../images/${imageName}`);
-            return <div>
+        <div>
 
               <div>
                 <ListGroup variant="flush">
@@ -83,9 +82,6 @@ class Transactions extends React.Component<Props, State> {
               </Table>
             </div>
 
-          })
-        }
-
       </div>
     </div>
     </NavigationBarWBB>
@@ -94,7 +90,7 @@ class Transactions extends React.Component<Props, State> {
 
 const mapStateToProps = state => {
   return {
-    tokens: state.token.tokens,
+    selectedToken: state.token.selectedToken,
   };
 };
 
@@ -103,8 +99,4 @@ const mapDispatchToProps = {};
 export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)
-
-(
-  Transactions
-);
+)(Transactions);

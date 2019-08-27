@@ -137,6 +137,7 @@ class Main extends Component<Props, State> {
               onClick={(token: Token) => (this.tokenClicked(token))}
               context={this.props.context}
               showBucketKeyBalances={false}
+              history={this.props.history}
             />
           </div>
         </div>
