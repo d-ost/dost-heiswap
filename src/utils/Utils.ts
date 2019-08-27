@@ -10,7 +10,7 @@ export enum NetworkType {
 export default class Utils {
 
   static async getNetworkType(): Promise<NetworkType> {
-     const networkType = await window.web3.eth.net.getNetworkType();
+    const networkType = await window.web3.eth.net.getNetworkType();
     return networkType as NetworkType;
   }
 

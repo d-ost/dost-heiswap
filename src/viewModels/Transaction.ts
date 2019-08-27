@@ -52,42 +52,4 @@ export default class Transaction {
 
     return transactions;
   }
-
-  static transferBaseToken(fromAccount: Account, toAddress: string, amount: string, gasPrice: string):
-    Promise<string> {
-    console.log('from Address: ', fromAccount, 'toAddress: ', toAddress, 'amount: ',  amount);
-    const web3 = window.web3;
-
-    return new Promise(async (onResolve, onReject): Promise<void> => {
-      if (!fromAccount.privateKey) {
-        onReject('From Account can"t be unlocked');
-      }
-      const web3FromAccount = web3.eth.accounts.privateKeyToAccount(fromAccount.privateKey!);
-      web3.eth.accounts.wallet.add(web3FromAccount);
-      web3.transactionConfirmationBlocks = 2;
-      web3.eth.sendTransaction({
-        from: fromAccount.address,
-        to: toAddress,
-        value: amount,
-        gas: BASETOKEN_TRANSFER_GAS,
-        gasPrice: gasPrice,
-      }).on('transactionHash', (transactionHash) => {
-        console.log('transactionHash  ', transactionHash);
-        onResolve(transactionHash);
-      }).on('error', (error) => {
-        console.log('error  ', error);
-        onReject(error);
-      });
-    });
-  }
-
-  static baseTokenTransferGasUsed(gasPrice) {
-    const gasPriceBN = new BigNumber(gasPrice);
-    const gasBN = new BigNumber(BASETOKEN_TRANSFER_GAS);
-    return gasBN.mul(gasPriceBN);
-  }
-
-  static sendERC20Token() {
-
-  }
 }

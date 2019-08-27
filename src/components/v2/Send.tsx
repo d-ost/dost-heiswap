@@ -24,8 +24,6 @@ import {
 } from "../../redux/actions";
 import {Routes} from "./Routes";
 import Utils from "../../utils/Utils";
-import {ORIGIN_GAS_PRICE} from "../../utils/Constants";
-import BigNumber from "bignumber.js";
 import {toWei} from "web3-utils";
 
 interface Props {
@@ -38,6 +36,11 @@ interface Props {
   selectToken:Function,
 }
 
+interface TransactionDetails {
+  etherScanLink: string,
+  transaction: Transaction,
+}
+
 interface State {
   beneficiary: string;
   selectedToken: Token;
@@ -45,8 +48,7 @@ interface State {
   error: string;
   modalShow: boolean;
   accordianActionKey: string;
-  etherScanLink: string;
-  transactionHash: string;
+  transactionInfo: TransactionDetails[];
 }
 
 class Send extends Component<Props, State> {
@@ -60,8 +62,7 @@ class Send extends Component<Props, State> {
       error: '',
       modalShow: false,
       accordianActionKey: '0',
-      etherScanLink: '',
-      transactionHash: '',
+      transactionInfo: [],
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -102,17 +103,16 @@ class Send extends Component<Props, State> {
     });
   }
 
-  resetEtherScanLink() {
+  resetTransactions() {
     this.setState({
       error: '',
-      etherScanLink: '',
-      transactionHash: '',
+      transactionInfo: [],
     });
   }
 
   async handleSubmit() {
     // Reset etherScanLink link.
-    this.resetEtherScanLink();
+    this.resetTransactions();
     const {amount, beneficiary} = this.state;
     if (!amount || amount.length === 0) {
       this.setState({error: `Invalid Amount ${amount}.`});
@@ -123,54 +123,35 @@ class Send extends Component<Props, State> {
       console.log('Invalid address ', beneficiary);
       this.setState({error: `Invalid beneficiary address ${beneficiary}.`})
     }
-
+    console.log('beneficiary:', beneficiary, 'amount:', amount);
     try {
-      const account = this.getFundedBurnerAccount(amount);
-      const txHash = await Transaction.transferBaseToken(account, beneficiary, amount, ORIGIN_GAS_PRICE);
-      const etherScanLink = await Utils.getEtherScanLink(txHash);
+      const transactions = await this.props.selectedToken.transfer(
+        AccountType.burner,
+        amount,
+        beneficiary,
+      );
+      let transactionInfo: TransactionDetails[] = [];
+      for(let i=0; i< transactions.length; i++ ){
+        const txHash = transactions[i].transactionHash;
+        const etherScanLink = await Utils.getEtherScanLink(txHash);
+        transactionInfo.push({
+          transaction: transactions[i],
+          etherScanLink: etherScanLink
+        });
+        this.props.addTransaction({
+          token: this.props.selectedToken,
+          transactionHash: txHash,
+          transaction: transactions[i],
+        });
+      }
       this.setState({
-        transactionHash: txHash,
-        etherScanLink: etherScanLink,
-      });
-
-      this.props.addTransaction({
-        token: this.props.selectedToken,
-        transaction: new Transaction(txHash, TransactionType.baseTokenTransfer, {
-          from: account,
-          to: beneficiary,
-          amount: amount,
-        })
+        transactionInfo: transactionInfo,
       });
     } catch(err) {
       this.setState({
         error: 'Error sending transaction. Please check if you have sufficient funds.'
       });
     }
-  }
-
-  // Filter the account by type Burner.
-  // Loop over burner accounts.
-  // Check if burner account balance contains eth higher than (transferAmount+gasPrice*gas)
-  // if burner account balance is not sufficient => Return error
-  // else return first burner account.
-  getFundedBurnerAccount(amountToTransfer): Account {
-    const burnerAccounts = this.state.selectedToken.accounts.filter(
-      account => account.accountType === AccountType.burner
-    );
-    const gasToBeUsed = Transaction.baseTokenTransferGasUsed(ORIGIN_GAS_PRICE);
-    const fundNeeded = (new BigNumber(amountToTransfer)).add(gasToBeUsed);
-    let accountToUse;
-    for (let i = 0; i < burnerAccounts.length; i += 1) {
-      if(burnerAccounts[i].balance.gt(fundNeeded)) {
-        accountToUse = burnerAccounts[i];
-        break;
-      }
-    }
-    console.log('burnerAccountToUse:', accountToUse);
-    if (!accountToUse) {
-      throw new Error('Non Availability of funded burner account.');
-    }
-    return accountToUse;
   }
 
   changeToken(token:Token) {
@@ -200,14 +181,7 @@ class Send extends Component<Props, State> {
                 {this.state.error}
               </Alert> : ''
             }
-            {this.state.etherScanLink ?
-              <Alert variant="success" onClick={() => this.resetEtherScanLink()} dismissible>
-                Transaction {this.state.transactionHash} is in progress.&nbsp;
-                {this.state.etherScanLink.indexOf('http') !== -1 ?
-                <Alert.Link href={this.state.etherScanLink} target="_blank"> Click to Track Status</Alert.Link>
-                : ''}
-              </Alert> : ''
-            }
+            {this.getTransactionDetails()}
             <div style={{padding:'0px', borderBottomWidth:'1px', borderBottomStyle:'solid', borderBottomColor:'rgb(231, 246, 247)'}}>
               <Accordion activeKey={this.state.accordianActionKey}>
                 <this.selectTokens eventKey="1">
@@ -372,6 +346,26 @@ class Send extends Component<Props, State> {
       </div>
     );
   }
+
+  getTransactionDetails() {
+    return (
+      this.state.transactionInfo.length > 0 ?
+        <Alert variant="success" onClick={() => this.resetTransactions()} dismissible>
+          Transaction is in progress. Click to track status<br/>
+          {this.state.transactionInfo.map((tInfo, index) => {
+            if (tInfo.etherScanLink.indexOf('http') !== -1) {
+              return <Alert.Link href={tInfo.etherScanLink} target="_blank">
+                {tInfo.transaction.transactionHash.substring(0,25)}...<br/>
+              </Alert.Link>
+            } else {
+              return <Row>{tInfo.transaction.transactionHash.substring(0,25)}...<br/></Row>
+            }
+          })}
+       </Alert>
+      : ''
+    );
+  }
+
   selectTokens({ children, eventKey }) {
     const toggle = useAccordionToggle(eventKey, () =>{
       this.setState({accordianActionKey: this.state.accordianActionKey === '1'?'0':'1'})

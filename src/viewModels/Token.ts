@@ -1,7 +1,8 @@
 import Account, {AccountType} from "./Account";
 import BigNumber from "bignumber.js";
-import Transaction from "./Transaction";
+import Transaction, {TransactionType} from "./Transaction";
 import {HeiswapToken} from "../services/Heiswap/Heiswap";
+import {BASETOKEN_TRANSFER_GAS, ORIGIN_GAS_PRICE} from "../utils/Constants";
 
 export default class Token {
 
@@ -85,6 +86,123 @@ export default class Token {
     this.heiswapTokens = tokens;
   }
 
+  async transfer(accountType, amount, beneficiary): Promise<Transaction[]> {
+    const fundedAccounts = this.getFundedBurnerAccounts(amount);
+    let transactions: Transaction[] = [];
+    for(let i=0; i< fundedAccounts.length; i++ ){
+      const burnerAccount = fundedAccounts[i].account;
+      const transactionAmount = fundedAccounts[i].amount.toString(10);
+      const txHash = await this.sendTransaction(
+        burnerAccount,
+        beneficiary,
+        transactionAmount,
+      );
+      const transaction =  new Transaction(txHash, TransactionType.baseTokenTransfer, {
+        from: burnerAccount,
+        to: beneficiary,
+        amount: amount,
+      });
+      transactions.push(transaction);
+    }
+    return transactions;
+  }
+
+  // Filter the account by type Burner.
+  // Sort burner accounts by increasing order of balance
+  // Loop over burner accounts.
+  // Check if burner accounts have sufficient balance
+  // Collect multiple burner accounts for sending transaction if needed
+  // Loop ends
+  // if burner accounts balance is not sufficient => Return error
+  // else return list of burner accounts.
+  private getFundedBurnerAccounts(transferAmount): {account: Account, amount: BigNumber}[] {
+    const sortedBurnerAccounts = this.getSortedAccounts();
+    const gasNeeded = this.baseTokenTransferGasUsed();
+    let remainingTransferAmount = (new BigNumber(transferAmount));
+    let burnerAccountsToUse: {account: Account, amount: BigNumber}[] = [];
+    for (let i = sortedBurnerAccounts.length-1; i >= 0; i -= 1) {
+      const fundNeeded = remainingTransferAmount.add(gasNeeded);
+      let transactionAmount;
+      if(sortedBurnerAccounts[i].balance.lte(new BigNumber(0))){
+        break;
+      } else if(sortedBurnerAccounts[i].balance.gte(fundNeeded)) {
+        transactionAmount = remainingTransferAmount;
+        remainingTransferAmount = new BigNumber(0);
+      } else {
+        // Amount utilized will be (burner account balance minus gasNeeded)
+        transactionAmount = (sortedBurnerAccounts[i].balance).minus(gasNeeded);
+        remainingTransferAmount = remainingTransferAmount.minus(transactionAmount);
+      }
+      console.log(`accountToUse:`, sortedBurnerAccounts[i]);
+      console.log(`Remaining transfer amount`, remainingTransferAmount.toString(10));
+      burnerAccountsToUse.push({
+        account: sortedBurnerAccounts[i],
+        amount: transactionAmount,
+      });
+      if(remainingTransferAmount.lte(new BigNumber(0))){
+        break;
+      }
+    }
+    console.log('burnerAccountsToUse:', burnerAccountsToUse);
+    if (burnerAccountsToUse.length === 0 || remainingTransferAmount.gt(new BigNumber(0))) {
+      throw new Error('Non Availability of funded burner accounts.');
+    }
+    return burnerAccountsToUse;
+  }
+
+  private sendTransaction(fromAccount: Account, toAddress: string, amount: string):
+    Promise<string> {
+    const web3 = window.web3;
+
+    return new Promise(async (onResolve, onReject): Promise<void> => {
+      if (!fromAccount.privateKey) {
+        onReject('From Account can"t be unlocked');
+      }
+      const web3FromAccount = web3.eth.accounts.privateKeyToAccount(fromAccount.privateKey!);
+      web3.eth.accounts.wallet.add(web3FromAccount);
+      web3.transactionConfirmationBlocks = 2;
+      web3.eth.sendTransaction({
+        from: fromAccount.address,
+        to: toAddress,
+        value: amount,
+        gas: BASETOKEN_TRANSFER_GAS,
+        gasPrice: ORIGIN_GAS_PRICE,
+      }).on('transactionHash', (transactionHash) => {
+        console.log('transactionHash  ', transactionHash);
+        onResolve(transactionHash);
+      }).on('error', (error) => {
+        console.log('error  ', error);
+        onReject(error);
+      });
+    });
+  }
+
+  private baseTokenTransferGasUsed() {
+    const gasPriceBN = new BigNumber(ORIGIN_GAS_PRICE);
+    const gasBN = new BigNumber(BASETOKEN_TRANSFER_GAS);
+    return gasPriceBN.mul(gasBN);
+  }
+
+  private compareAccountBalance(account1, account2 ): number {
+    if ( account1.balance.lt(account2.balance)){
+      return -1;
+    }
+    if ( account1.balance.gt(account2.balance) ){
+      return 1;
+    }
+    return 0;
+  }
+
+  private getSortedAccounts(): Account[] {
+    const burnerAccounts = this.accounts.filter(
+      account => account.accountType === AccountType.burner
+    );
+    // Sort by increasing order
+    const sortedBurnerAccounts = burnerAccounts.sort( this.compareAccountBalance );
+    console.log(`sortedAccounts`, sortedBurnerAccounts);
+    return sortedBurnerAccounts;
+  }
+
   static getAll() {
     return [
       new Token(
@@ -107,6 +225,7 @@ export default class Token {
       // )
     ];
   }
+
 
   /**
    * For bucket key add account to all tokens.
