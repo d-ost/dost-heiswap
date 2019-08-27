@@ -7,19 +7,23 @@ import Alert from "react-bootstrap/Alert";
 import ListGroup from "react-bootstrap/es/ListGroup";
 import Row from "react-bootstrap/es/Row";
 import Col from "react-bootstrap/es/Col";
-import Utils from "../../utils/Utils";
+import Utils, {NetworkType} from "../../utils/Utils";
 import InputGroup from "react-bootstrap/InputGroup";
 import {FormControl} from "react-bootstrap";
 import {ReserveAccount} from "../../viewModels/SelectReserveModel";
 import Form from 'react-bootstrap/Form'
 import {Routes} from "./Routes";
 import Button from "react-bootstrap/es/Button";
-import {addAccount, addHeiswapToken} from "../../redux/actions";
+import {
+  addAccount,
+  addHeiswapToken,
+  addTransaction
+} from "../../redux/actions";
 import Account, {AccountType} from "../../viewModels/Account";
 import heiswap from '../../services/Heiswap/Heiswap';
 import {HEISWAP_GOERLI, HEISWAP_ROPSTEN} from "../../utils/Constants";
-import {NetworkType} from "../../utils/Utils";
 import {fromWei, toWei} from "web3-utils";
+import Transaction, {TransactionType} from "../../viewModels/Transaction";
 
 interface Props {
   selectedToken: Token;
@@ -27,6 +31,7 @@ interface Props {
   history: any,
   addAccount: Function;
   addHeiswapToken: Function;
+  addTransaction: Function;
 }
 
 interface State {
@@ -141,7 +146,6 @@ class Topup extends Component<Props, State> {
 
     try {
       let networkType = await Utils.getNetworkType();
-      console.log('network typee ', networkType);
       let heiswapAddress = networkType === NetworkType.ropsten ? HEISWAP_ROPSTEN : HEISWAP_GOERLI;
       const token = await heiswap.deposit(
         reserveAccount.web3,
@@ -163,7 +167,20 @@ class Topup extends Component<Props, State> {
           ),
         }
       );
-      this.props.addHeiswapToken(token);
+      let accounts = this.props.selectedToken.accounts.filter(a => a.address === reserveAccount.account);
+      this.props.addTransaction({
+          token: this.props.selectedToken,
+          transaction: new Transaction(token.txHash!, TransactionType.heiswapDeposit, {
+            from: accounts[0],
+            to: burnerAccount.address,
+            amount: this.state.amount,
+          })
+        }
+      );
+      this.props.addHeiswapToken({
+        token: this.props.selectedToken,
+        heiswapToken: token,
+      });
       this.props.history.push(Routes.Savings);
     } catch (e) {
       console.log('error on deposit of fund');
@@ -177,7 +194,7 @@ class Topup extends Component<Props, State> {
   private topupBurnerKey() {
 
     const reserveAccount = this.state.reserveAccount;
-    let burnerAccounts = this.props.selectedToken.accounts.filter(acc => acc.accountType === AccountType.burner)
+    let burnerAccounts = this.props.selectedToken.accounts.filter(acc => acc.accountType === AccountType.burner);
 
     let burnerAccount = burnerAccounts.length > 0 ? burnerAccounts[0]
       : reserveAccount.web3.eth.accounts.create(reserveAccount.web3.utils.randomHex(32));
@@ -192,6 +209,16 @@ class Topup extends Component<Props, State> {
         pendingTopup: false,
       });
 
+      let accounts = this.props.selectedToken.accounts.filter(a => a.address === reserveAccount.account);
+      this.props.addTransaction({
+          token: this.props.selectedToken,
+          transaction: new Transaction(transactionHash, TransactionType.baseTokenTopup, {
+            from: accounts[0],
+            to: burnerAccount.address,
+            amount: this.state.amount,
+          })
+        }
+      );
       // If burner account exists already
       if (burnerAccounts.length === 0)
         this.props.addAccount({
@@ -231,7 +258,7 @@ class Topup extends Component<Props, State> {
           overflow: 'hidden',
           boxShadow: '0 5px 15px rgba(0,0,0,.15)'
         }}>
-          <div style={{width: '100%', backgroundColor: 'white'}}>
+          <div style={{width: '100%', backgroundColor: 'white'}} >
             {this.state.error.length > 0 ?
               <Alert variant="danger">
                 {this.state.error}
@@ -381,7 +408,6 @@ class Topup extends Component<Props, State> {
       </NavigationBarWBB>
     )
   }
-
 }
 
 
@@ -396,6 +422,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
   addAccount,
   addHeiswapToken,
+  addTransaction
 };
 
 export default connect(

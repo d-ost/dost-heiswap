@@ -101,13 +101,17 @@ class Send extends Component<Props, State> {
     });
   }
 
-  async handleSubmit() {
-    // Reset etherScanLink link.
+  resetEtherScanLink() {
     this.setState({
       error: '',
       etherScanLink: '',
       transactionHash: '',
     });
+  }
+
+  async handleSubmit() {
+    // Reset etherScanLink link.
+    this.resetEtherScanLink();
     const {amount, beneficiary} = this.state;
     if (!amount || amount.length === 0) {
       this.setState({error: `Invalid Amount ${amount}.`});
@@ -127,14 +131,14 @@ class Send extends Component<Props, State> {
         transactionHash: txHash,
         etherScanLink: etherScanLink,
       });
+
       this.props.addTransaction({
-        transactionHash: txHash,
-        transactionType: TransactionType.baseTokenTransfer,
-        data: {
+        token: this.props.selectedToken,
+        transaction: new Transaction(txHash, TransactionType.baseTokenTransfer, {
           from: account,
           to: beneficiary,
           amount: amount,
-        },
+        })
       });
     } catch(err) {
       this.setState({
@@ -196,7 +200,7 @@ class Send extends Component<Props, State> {
               </Alert> : ''
             }
             {this.state.etherScanLink ?
-              <Alert variant="success">
+              <Alert variant="success" onClick={() => this.resetEtherScanLink()} dismissible>
                 Transaction {this.state.transactionHash} is in progress.&nbsp;
                 {this.state.etherScanLink.indexOf('http') !== -1 ?
                 <Alert.Link href={this.state.etherScanLink} target="_blank"> Click to Track Status</Alert.Link>

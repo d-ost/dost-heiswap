@@ -1,5 +1,5 @@
 import {
-  ADD_ACCOUNT,
+  ADD_ACCOUNT, ADD_HEISWAP_TOKEN, ADD_TRANSACTION, CLAIM_HEISWAP,
   REMOVE_ACCOUNT,
   SELECT_TOKEN,
   UPDATE_BALANCE,
@@ -8,6 +8,8 @@ import Token from "../../viewModels/Token";
 import Account from "../../viewModels/Account"
 import BigNumber from "bignumber.js";
 import LocalStorage from "../../services/LocalStorageV2";
+import Transaction from "../../viewModels/Transaction";
+import {HeiswapToken} from "../../services/Heiswap/Heiswap";
 
 interface State {
   tokens: Token[],
@@ -76,7 +78,39 @@ export default function (state: State = initialState, action) {
         tokens,
       }
     }
-
+    case ADD_TRANSACTION: {
+      const token: Token = action.payload.token;
+      const transaction: Transaction = action.payload.transaction;
+      token.addTransaction(transaction);
+      const tokens = Token.replaceToken(state.tokens, token);
+      LocalStorage.setTokens(tokens);
+      return {
+        ...state,
+        tokens,
+      }
+    }
+    case ADD_HEISWAP_TOKEN: {
+      const token: Token = action.payload.token;
+      const heiswapToken: HeiswapToken = action.payload.heiswapToken;
+      token.addHeiswapToken(heiswapToken);
+      const tokens = Token.replaceToken(state.tokens, token);
+      LocalStorage.setTokens(tokens);
+      return {
+        ...state,
+        tokens,
+      };
+    }
+    case CLAIM_HEISWAP: {
+      const token: Token = action.payload.token;
+      const heiswapToken: HeiswapToken = action.payload.heiswapToken;
+      token.addHeiswapToken(heiswapToken);
+      const tokens = Token.replaceToken(state.tokens, token);
+      LocalStorage.setTokens(tokens);
+      return {
+        ...state,
+        tokens,
+      };
+    }
     default:
       return state;
   }

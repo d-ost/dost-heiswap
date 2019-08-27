@@ -16,6 +16,7 @@ import BalanceTracker from "./components/v2/BalanceTracker";
 import {Routes} from "./components/v2/Routes";
 import HeiswapTracker from "./components/v2/HeiswapTracker";
 import Network from "./components/v2/Network";
+import Transactions from "./components/v2/Transactions";
 
 declare global {
   interface Window {
@@ -65,6 +66,7 @@ export default class App extends Component<Props, State> {
         <Route exact path={Routes.Savings} component={Saving}/>
         <Route exact path={Routes.Settings} component={Setting}/>
         <Route exact path={Routes.Topup} component={Topup}/>
+        <Route exact path={Routes.Transactions} component={Transactions}/>
       </Router>
     );
   }

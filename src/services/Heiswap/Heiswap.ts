@@ -139,11 +139,7 @@ class Heiswap {
     heiswapToken: HeiswapToken;
   }> {
 
-    console.log('heiswapAddress  ', heiswapAddress);
-    console.log('heiswapToken  ', heiswapToken);
-    console.log('withdraw  called');
     const heiswapInstance = new web3.eth.Contract(HeiswapABI as any, heiswapAddress);
-    console.log('done instance');
     const targetAmount = '1';
     const targetAddress = heiswapToken.heiTargetAddress;
     const ringIndex = heiswapToken.heiRingIndexFinal;
@@ -156,7 +152,6 @@ class Heiswap {
       .getRingHash(targetAmount, ringIndex)
       .call();
 
-    console.log('ring hashh ', ringHash);
     // check if ring has closed
     // if ring hasn't closed yet the return value is:
     // > abi.encodePacked("closeRing", receivedEther, index);
@@ -165,13 +160,11 @@ class Heiswap {
         .methods
         .getRingMaxParticipants()
         .call();
-      console.log('participantsRequired  ', participantsRequired);
       const currentParticipants = await heiswapInstance
         .methods
         .getParticipants(targetAmount, ringIndex)
         .call();
 
-      console.log('currentParticipants  ', currentParticipants);
       let messageError = `Ring has not yet closed. Requires ${participantsRequired}. \n` +
         `${currentParticipants[0]} have deposited. \n` +
         `${currentParticipants[1]} have withdrawn.`;
@@ -199,7 +192,6 @@ class Heiswap {
       .getPublicKeys(targetAmount, ringIndex)
       .call();
 
-    console.log('public keyss ', publicKeys);
     // Slice public keys into an array of Points [[BN,BN]]
     const publicKeysBN = publicKeys
       .map(x => {
@@ -210,7 +202,6 @@ class Heiswap {
       })
       .filter(x => x[0].cmp(bnZero) !== 0 && x[1].cmp(bnZero) !== 0);
 
-    console.log('publicKeysBN  ', publicKeysBN);
     // Check if user is able to generate any one of these public keys
     const stealthSecretKey = h1(serialize([randomSecretKey, targetAddress]));
     const stealthPublicKey = bn128.ecMulG(stealthSecretKey);
@@ -240,7 +231,6 @@ class Heiswap {
       secretIndex
     );
 
-    console.log(' signature   ', signature);
 
     // create the meta-transaction
     const c0 = append0x(signature[0].toString('hex'));
@@ -257,12 +247,6 @@ class Heiswap {
       heiswapToken.heiTargetPrivateKey,
     );
     try {
-      console.log('targetAddress  ', targetAddress);
-      console.log('targetAmount  ', targetAmount);
-      console.log('ringIndex  ', ringIndex);
-      console.log('c0  ', c0);
-      console.log('keyImage  ', keyImage);
-      console.log('s  ', s);
       await heiswapInstance.methods.withdraw(
         targetAddress,
         targetAmount,
@@ -290,7 +274,7 @@ class Heiswap {
       s
     });
     console.log('response data  ', resp.data);
-    if (resp.data.txHash) {
+    if (resp.data.txHash && resp.data.txHash.length > 0) {
       heiswapToken.isClaimed = true;
       heiswapToken.claimTransactionHash = resp.data.txHash;
     }

@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 import {connect} from "react-redux";
-import {HeiswapToken} from "../../services/Heiswap/Heiswap";
 import heiswap from "../../services/Heiswap/Heiswap";
 import {HEISWAP_GOERLI, HEISWAP_ROPSTEN} from "../../utils/Constants";
 import {claimHeiswapToken} from "../../redux/actions";
 import Utils, {NetworkType} from "../../utils/Utils";
+import Token from "../../viewModels/Token";
 
 interface Props {
-  heiswapTokens: HeiswapToken[];
+  tokens: Token[];
   claimHeiswapToken: Function;
 }
 
@@ -44,26 +44,33 @@ class HeiswapTracker extends Component<Props, State> {
   }
 
   async tryWithdraw() {
-    if (window.web3 && this.props.heiswapTokens.length > 0) {
-      this.props.heiswapTokens.filter((ht) => !ht.isClaimed).forEach(async (ht) => {
-        try {
-          let networkType = await Utils.getNetworkType();
-          let heiswapAddress = networkType === NetworkType.ropsten ? HEISWAP_ROPSTEN : HEISWAP_GOERLI;
-          const result = await heiswap.withdraw(
-            window.web3,
-            heiswapAddress,
-            ht,
-          );
-          if (result.heiswapToken.isClaimed) {
-            console.log('claimed transaction hash  ', result.heiswapToken.claimTransactionHash)
-            this.props.claimHeiswapToken(result.heiswapToken);
-          }
-          console.log('response from relayer  ', result);
-        } catch (e) {
-          console.log('error on withdraw with heiswap  ', e);
-        }
-      });
+    if (window.web3) {
+      const networkType = await Utils.getNetworkType();
+      const heiswapAddress = networkType === NetworkType.ropsten ? HEISWAP_ROPSTEN : HEISWAP_GOERLI;
 
+      for (let token of this.props.tokens) {
+        const filteredHeiswapTokens = token.heiswapTokens.filter((ht) => !ht.isClaimed);
+        for (let filteredToken of filteredHeiswapTokens) {
+          try {
+            const result = await heiswap.withdraw(
+              window.web3,
+              heiswapAddress,
+              filteredToken,
+            );
+            if (result.heiswapToken.isClaimed) {
+              console.log('claimed transaction hash  ', result.heiswapToken.claimTransactionHash)
+              this.props.claimHeiswapToken({
+                  token: token,
+                  heiswapToken: result.heiswapToken,
+                }
+              );
+            }
+            console.log('response from Relayer  ', result);
+          } catch (e) {
+            console.log('error on withdraw with heiswap  ', e);
+          }
+        }
+      }
     }
   }
 
@@ -75,7 +82,7 @@ class HeiswapTracker extends Component<Props, State> {
 
 const mapStateToProps = state => {
   return {
-    heiswapTokens: state.heiswap.heiswapTokens,
+    tokens: state.token.tokens,
   }
 };
 
