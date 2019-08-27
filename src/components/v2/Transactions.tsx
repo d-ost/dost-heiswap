@@ -31,7 +31,7 @@ class Transactions extends React.Component<Props, State> {
     const token = this.props.selectedToken;
     const imageName = Utils.getImagePathForSymbol(token.symbol);
     const image = require(`../../images/${imageName}`);
-    return <NavigationBarWBB {...this.props} title='Transactions'>
+    return <NavigationBarWBB {...this.props} title='ETH Transactions'>
     <div style={{
       padding: '0px',
       borderRadius: '15px',
@@ -47,29 +47,6 @@ class Transactions extends React.Component<Props, State> {
 
       }}>
         <div>
-
-              <div>
-                <ListGroup variant="flush">
-                  <ListGroup.Item action>
-                    <Row>
-                      <Col style={{padding: '0'}}>
-                        <div
-                          style={{
-                            paddingRight: '10px',
-                            paddingLeft: '10px',
-                            marginLeft: '43%'
-                          }}>
-                          <img src={image} height='50' width='50' alt=""/>
-                          <span style={{
-                            marginLeft: '15px',
-                            color: '#34445b'
-                          }}>{token.symbol}</span>
-                        </div>
-                      </Col>
-                    </Row>
-                  </ListGroup.Item>
-                </ListGroup>
-              </div>
 
           <div style={{padding: '10px', paddingBottom: '10px'}}>
             <Container style={{
@@ -157,11 +134,16 @@ class Transactions extends React.Component<Props, State> {
                   </ListGroup.Item>
                 </ListGroup>
               </div>
+               <div style={{
+                 height:'581px',
+                 overflow:'scroll'
+               }}>
               {token.transactions.map((transaction) =>
                 <TransactionComponent
                   transaction={transaction}
                   token={token}/>
               )}
+               </div>
             </Container>
           </div>
         </div>
