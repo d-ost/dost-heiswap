@@ -6,6 +6,6 @@
   "goerli": {
     "heiswapAddress":"0xFD546C315e6b09ba6E647b424Ef94CA743a74379",
     "relayerUrl":"http://3.248.54.171:6363/relay",
-    "gasPrice":"0x2540BE400" // 10GWei
+    "gasPrice":"0x2540BE400"
   }
 }
