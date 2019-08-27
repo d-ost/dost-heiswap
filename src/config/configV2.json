@@ -1,0 +1,11 @@
+{
+  "ropsten": {
+    "heiswapAddress":"0x8AAbE42EeCA45E040fab330fD24eA6746b832Ad2",
+    "relayerUrl":""
+  },
+  "goerli": {
+    "heiswapAddress":"0xFD546C315e6b09ba6E647b424Ef94CA743a74379",
+    "relayerUrl":"http://3.248.54.171:6363/relay",
+    "gasPrice":"0x2540BE400" // 10GWei
+  }
+}

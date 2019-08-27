@@ -4,6 +4,7 @@ import token from "./token";
 import profile from './profile';
 import transaction from './transaction'
 import heiswap from "./heiswap";
+import network from "./network";
 
 export default combineReducers({
   reserves,
@@ -11,4 +12,5 @@ export default combineReducers({
   profile,
   transaction,
   heiswap,
+  network,
 });
