@@ -30,6 +30,21 @@ export default class Transaction {
     this.data = data;
   }
 
+  getType(): string {
+    switch (this.transactionType) {
+      case TransactionType.baseTokenTopup:
+        return 'Topup';
+      case TransactionType.erc20TokenTransfer:
+        return 'Transfer';
+      case TransactionType.heiswapDeposit:
+        return 'Topup';
+      case TransactionType.heiswapWithdraw:
+        return 'Topu';
+      case TransactionType.baseTokenTransfer:
+        return 'Transfer';
+
+    }
+  }
   /**
    * It provides transactions history from stringified json object.
    * @param jsonTransactions It contains Transaction data in JSON format.

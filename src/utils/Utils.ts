@@ -16,7 +16,11 @@ export default class Utils {
 
   static async getEtherScanLink(txHash: string): Promise<string> {
     const networkType = await Utils.getNetworkType();
-    let url;
+    return this.getEtherScanLinkByNetwork(networkType, txHash);
+  }
+
+  static getEtherScanLinkByNetwork(networkType: NetworkType, txHash: string): string {
+    let url: string;
     switch (networkType) {
       case NetworkType.ropsten:
         url = `https://ropsten.etherscan.io/tx/${txHash}`;
@@ -33,7 +37,6 @@ export default class Utils {
       default:
         url = txHash;
     }
-
     return url;
   }
 

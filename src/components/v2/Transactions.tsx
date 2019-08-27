@@ -7,7 +7,8 @@ import NavigationBarWBB from "./NavigationBarWBB";
 import ListGroup from "react-bootstrap/es/ListGroup";
 import Row from "react-bootstrap/es/Row";
 import Col from "react-bootstrap/es/Col";
-import Table from 'react-bootstrap/Table'
+import Container from "react-bootstrap/es/Container";
+import {Routes} from "./Routes";
 
 interface Props {
   selectedToken: Token;
@@ -23,12 +24,15 @@ class Transactions extends React.Component<Props, State> {
 
   render() {
 
+    if (!this.props.selectedToken) {
+      this.props.history.push(Routes.Main);
+      return (null);
+    }
     const token = this.props.selectedToken;
     const imageName = Utils.getImagePathForSymbol(token.symbol);
     const image = require(`../../images/${imageName}`);
     return <NavigationBarWBB {...this.props} title='Transactions'>
     <div style={{
-      margin: '10px',
       padding: '0px',
       borderRadius: '15px',
       overflow: 'hidden',
@@ -66,21 +70,101 @@ class Transactions extends React.Component<Props, State> {
                   </ListGroup.Item>
                 </ListGroup>
               </div>
-              <Table striped bordered hover>
 
-                <thead>
-                <tr>
-                  <th>Transaction hash</th>
-                  <th>Type</th>
-                </tr>
-                </thead>
+          <div style={{padding: '10px', paddingBottom: '10px'}}>
+            <Container style={{
+              padding: '0px',
+              borderRadius: '15px',
+              overflow: 'hidden',
+              boxShadow: '0 5px 15px rgba(0,0,0,.15)'
+            }}>
+              <div
+                style={{
+                  borderBottomWidth: '1px',
+                  borderBottomColor: 'rgb(231, 246, 247)',
+                  borderBottomStyle: 'solid'
+                }}>
+                <ListGroup variant="flush">
+                  <ListGroup.Item style={{padding: '0px'}}>
+                    <Row style={{backgroundColor: '#34445b'}}>
+                      <Col>
+                        <div style={{
+                          fontWeight: 'bolder',
+                          height: '60px',
+                          color: 'white',
+                          paddingTop: '20px',
+                          paddingBottom: '20px',
+                          paddingRight: '0px',
+                          paddingLeft: '40px'
+                        }}> Type
+                        </div>
+                      </Col>
+                      <Col style={{textAlign: 'right'}}>
+                        <div style={{
+                          fontWeight: 'bolder',
+                          height: '60px',
+                          color: 'white',
+                          paddingRight: '20px',
+                          paddingTop: '20px'
+                        }}> TransactionHash
+                        </div>
+                      </Col>
+                      <Col style={{
+                        textAlign: 'right',
+                        height: '60px'
+                      }}>
+                        <div style={{
+                          fontWeight: 'bolder',
+                          color: 'white',
+                          paddingTop: '20px',
+                          paddingBottom: '20px',
+                          paddingRight: '20px',
+                          paddingLeft: '0px'
+                        }}> From
+                        </div>
+                      </Col>
+
+                      <Col style={{
+                        textAlign: 'right',
+                        height: '60px'
+                      }}>
+                        <div style={{
+                          fontWeight: 'bolder',
+                          color: 'white',
+                          paddingTop: '20px',
+                          paddingBottom: '20px',
+                          paddingRight: '20px',
+                          paddingLeft: '0px'
+                        }}> To
+                        </div>
+                      </Col>
+
+                      <Col style={{
+                        textAlign: 'right',
+                        height: '60px'
+                      }}>
+                        <div style={{
+                          fontWeight: 'bolder',
+                          color: 'white',
+                          paddingTop: '20px',
+                          paddingBottom: '20px',
+                          paddingRight: '20px',
+                          paddingLeft: '0px'
+                        }}> Amount
+                        </div>
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
+                </ListGroup>
+              </div>
               {token.transactions.map((transaction) =>
                 <TransactionComponent
                   transaction={transaction}
                   token={token}/>
               )}
-              </Table>
-            </div>
+            </Container>
+          </div>
+        </div>
 
       </div>
     </div>
