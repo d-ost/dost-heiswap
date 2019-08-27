@@ -20,7 +20,6 @@ export default function (state: State = initialState, action) {
   switch (action.type) {
     case REMOVE_WALLET_TYPE: {
       const walletType = action.payload;
-
       return {
         ...state,
         walletType,
@@ -29,7 +28,6 @@ export default function (state: State = initialState, action) {
 
     case REMOVE_NETWORK_CONFIG: {
       const networkConfig = action.payload;
-
       return {
         ...state,
         networkConfig,

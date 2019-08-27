@@ -75,11 +75,11 @@ export const addNetworkConfig = content => ({
 });
 
 export const removeWalletType = content => ({
-  type: ADD_WALLET_TYPE,
+  type: REMOVE_WALLET_TYPE,
   payload: content,
 });
 
 export const removeNetworkConfig = content => ({
-  type: ADD_NETWORK_CONFIG,
+  type: REMOVE_NETWORK_CONFIG,
   payload: content,
 });

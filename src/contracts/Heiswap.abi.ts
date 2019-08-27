@@ -178,7 +178,7 @@ export default [
   {
     "constant": true,
     "inputs": [],
-    "name": "relayerUrl",
+    "name": "relayerAddress",
     "outputs": [
       {
         "name": "",
