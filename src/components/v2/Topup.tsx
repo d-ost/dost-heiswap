@@ -191,52 +191,40 @@ class Topup extends Component<Props, State> {
     }
   }
 
-  private topupBurnerKey() {
-
-    const reserveAccount = this.state.reserveAccount;
-    let burnerAccounts = this.props.selectedToken.accounts.filter(acc => acc.accountType === AccountType.burner);
-
-    let burnerAccount = burnerAccounts.length > 0 ? burnerAccounts[0]
-      : reserveAccount.web3.eth.accounts.create(reserveAccount.web3.utils.randomHex(32));
-
-    reserveAccount.web3.eth.sendTransaction({
-      from: reserveAccount.account,
-      to: burnerAccount.address,
-      value: this.state.amount,
-    }).on('transactionHash', (transactionHash) => {
-      console.log('transactionHash  ', transactionHash);
+  private async topupBurnerKey() {
+    try {
+      const reserve = this.state.reserveAccount;
+      let reserverAccounts = this.props.selectedToken.accounts.filter(a => a.address === reserve.account);
+      const response = await this.props.selectedToken.topUp(
+        reserverAccounts[0],
+        this.state.amount,
+      );
       this.setState({
         pendingTopup: false,
       });
-
-      let accounts = this.props.selectedToken.accounts.filter(a => a.address === reserveAccount.account);
       this.props.addTransaction({
           token: this.props.selectedToken,
-          transaction: new Transaction(transactionHash, TransactionType.baseTokenTopup, {
-            from: accounts[0],
-            to: burnerAccount.address,
-            amount: this.state.amount,
-          })
+          transaction: response.transaction,
         }
       );
-      // If burner account exists already
-      if (burnerAccounts.length === 0)
+      // If no burner accounts exist
+      if (response.existingBurnerAccounts.length === 0)
         this.props.addAccount({
           token: this.props.selectedToken,
           account: new Account(
             AccountType.burner,
-            burnerAccount.address,
+            response.selectedBurnerAccount.address,
             false,
-            burnerAccount.privateKey,
+            response.selectedBurnerAccount.privateKey,
           ),
         });
       this.props.history.push(Routes.Savings);
-    }).on('error', (error) => {
-        console.log('error  ', error);
-        this.setState({
-          pendingTopup: false,
-        })
+    } catch(err) {
+      console.log('error  ', err);
+      this.setState({
+        pendingTopup: false,
       });
+    }
   }
 
   render() {

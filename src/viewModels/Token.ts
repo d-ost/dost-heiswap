@@ -86,13 +86,41 @@ export default class Token {
     this.heiswapTokens = tokens;
   }
 
-  async transfer(accountType, amount, beneficiary): Promise<Transaction[]> {
+  async topUp(from: Account, amount: string): Promise<{
+    transaction: Transaction,
+    existingBurnerAccounts: Account[],
+    selectedBurnerAccount: any
+  }> {
+    const web3 = window.web3;
+    const existingBurnerAccounts = this.accounts.filter(acc => acc.accountType === AccountType.burner);
+    const selectedBurnerAccount = existingBurnerAccounts.length > 0 ? existingBurnerAccounts[0]
+      : web3.eth.accounts.create(web3.utils.randomHex(32));
+    const txHash = await this.sendTransaction(
+      AccountType.bucket,
+      from,
+      selectedBurnerAccount.address,
+      amount,
+    );
+    const transaction =  new Transaction(txHash, TransactionType.baseTokenTopup, {
+      from: from,
+      to: selectedBurnerAccount.address,
+      amount: amount,
+    });
+    return {
+      transaction: transaction,
+      existingBurnerAccounts: existingBurnerAccounts,
+      selectedBurnerAccount: selectedBurnerAccount,
+    }
+  }
+
+  async send(beneficiary, amount): Promise<Transaction[]> {
     const fundedAccounts = this.getFundedBurnerAccounts(amount);
     let transactions: Transaction[] = [];
     for(let i=0; i< fundedAccounts.length; i++ ){
       const burnerAccount = fundedAccounts[i].account;
       const transactionAmount = fundedAccounts[i].amount.toString(10);
       const txHash = await this.sendTransaction(
+        AccountType.burner,
         burnerAccount,
         beneficiary,
         transactionAmount,
@@ -133,8 +161,6 @@ export default class Token {
         transactionAmount = (sortedBurnerAccounts[i].balance).minus(gasNeeded);
         remainingTransferAmount = remainingTransferAmount.minus(transactionAmount);
       }
-      console.log(`accountToUse:`, sortedBurnerAccounts[i]);
-      console.log(`Remaining transfer amount`, remainingTransferAmount.toString(10));
       burnerAccountsToUse.push({
         account: sortedBurnerAccounts[i],
         amount: transactionAmount,
@@ -150,16 +176,18 @@ export default class Token {
     return burnerAccountsToUse;
   }
 
-  private sendTransaction(fromAccount: Account, toAddress: string, amount: string):
+  private sendTransaction(accountType: AccountType, fromAccount: Account, toAddress: string, amount: string):
     Promise<string> {
     const web3 = window.web3;
 
     return new Promise(async (onResolve, onReject): Promise<void> => {
-      if (!fromAccount.privateKey) {
-        onReject('From Account can"t be unlocked');
+      if (accountType === AccountType.burner) {
+        if (!fromAccount.privateKey) {
+          onReject('From Account can"t be unlocked');
+        }
+        const web3FromAccount = web3.eth.accounts.privateKeyToAccount(fromAccount.privateKey!);
+        web3.eth.accounts.wallet.add(web3FromAccount);
       }
-      const web3FromAccount = web3.eth.accounts.privateKeyToAccount(fromAccount.privateKey!);
-      web3.eth.accounts.wallet.add(web3FromAccount);
       web3.transactionConfirmationBlocks = 2;
       web3.eth.sendTransaction({
         from: fromAccount.address,
@@ -199,7 +227,6 @@ export default class Token {
     );
     // Sort by increasing order
     const sortedBurnerAccounts = burnerAccounts.sort( this.compareAccountBalance );
-    console.log(`sortedAccounts`, sortedBurnerAccounts);
     return sortedBurnerAccounts;
   }
 

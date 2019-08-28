@@ -125,10 +125,9 @@ class Send extends Component<Props, State> {
     }
     console.log('beneficiary:', beneficiary, 'amount:', amount);
     try {
-      const transactions = await this.props.selectedToken.transfer(
-        AccountType.burner,
-        amount,
+      const transactions = await this.props.selectedToken.send(
         beneficiary,
+        amount,
       );
       let transactionInfo: TransactionDetails[] = [];
       for(let i=0; i< transactions.length; i++ ){
