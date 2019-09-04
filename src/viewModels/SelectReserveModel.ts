@@ -60,7 +60,7 @@ class SelectReserveModel {
       supportedByBrowser: isMetamaskSupportedByBrowser,
       web3: window.web3,
     };
-    if (this.metamask.isMetamaskSupported()) {
+    if (isMetamaskSupportedByBrowser) {
       if (this.metamaskAccount) {
         metamaskReserveAccount.description = i18n.t('metamask_connected_description');
         connectedOptions.push(metamaskReserveAccount);

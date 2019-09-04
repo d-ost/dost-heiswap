@@ -15,6 +15,7 @@ import Topup from "./components/v2/Topup";
 import BalanceTracker from "./components/v2/BalanceTracker";
 import {Routes} from "./components/v2/Routes";
 import HeiswapTracker from "./components/v2/HeiswapTracker";
+import Network from "./components/v2/Network";
 import Transactions from "./components/v2/Transactions";
 
 declare global {
@@ -53,6 +54,7 @@ export default class App extends Component<Props, State> {
     return (
 
       <Router>
+        <Network/>
         <BalanceTracker/>
         <HeiswapTracker/>
         <Route exact path={Routes.Main} component={Main}/>

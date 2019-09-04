@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import Web3 from 'web3';
 import Card from "react-bootstrap/Card";
 import selectReserverModel, {
   ReserveAccount,
@@ -12,8 +13,16 @@ import {
   disconnectToReserve,
   addAccount,
   removeAccount,
+  addWalletType,
+  addNetworkConfig,
+  removeWalletType,
+  removeNetworkConfig
 } from "../../redux/actions";
 import Account, {AccountType} from "../../viewModels/Account";
+import {NetworkConfig, WalletType} from "../../viewModels/Network";
+import Config from "../../services/Config";
+import {Chains} from "../../services/Chains";
+import configData from '../../config/configV2.json';
 
 interface Props {
   reserves: ReserveAccount[];
@@ -21,6 +30,10 @@ interface Props {
   disconnectToReserve: Function;
   addAccount: Function;
   removeAccount: Function;
+  addWalletType: Function;
+  addNetworkConfig: Function;
+  removeWalletType: Function;
+  removeNetworkConfig: Function;
 }
 
 interface State {
@@ -153,6 +166,26 @@ class SelectReserve extends Component<Props, State> {
       token: undefined,
       account: account,
     });
+
+    this.props.addWalletType(WalletType.Metamask);
+    const web3:Web3 = window.web3;
+    const networkId = await web3.eth.net.getId();
+
+    const networkName = Chains.getNetworkName(networkId);
+
+    const config: NetworkConfig = Config.parse(
+      JSON.stringify(configData),
+      networkName === null ? networkId.toString() : networkName,
+    );
+
+    const networkConfig = new NetworkConfig(
+      networkName,
+      config.heiswapAddress,
+      config.relayerUrl,
+      web3,
+    );
+    this.props.addNetworkConfig(networkConfig);
+    console.log('networkConfig : ',networkConfig);
   }
 
   public metamaskDisconnect() {
@@ -173,6 +206,8 @@ class SelectReserve extends Component<Props, State> {
       token: undefined,
       account: account,
     });
+    this.props.removeWalletType(WalletType.None);
+    this.props.removeNetworkConfig(new NetworkConfig());
   }
 }
 
@@ -188,6 +223,10 @@ const mapDispatchToProps = {
   disconnectToReserve,
   addAccount,
   removeAccount,
+  addWalletType,
+  addNetworkConfig,
+  removeWalletType,
+  removeNetworkConfig
 };
 
 export default connect(

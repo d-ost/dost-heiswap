@@ -8,6 +8,10 @@ import {
   UPDATE_BALANCE,
   ADD_TRANSACTION,
   ADD_HEISWAP_TOKEN, CLAIM_HEISWAP,
+  REMOVE_WALLET_TYPE,
+  ADD_WALLET_TYPE,
+  REMOVE_NETWORK_CONFIG,
+  ADD_NETWORK_CONFIG
 } from "./actionTypes";
 
 export const connectToReserve = content => ({
@@ -58,4 +62,24 @@ export const addHeiswapToken = content => ({
 export const claimHeiswapToken = content => ({
   type: CLAIM_HEISWAP,
   payload: content,
-})
+});
+
+export const addWalletType = content => ({
+  type: ADD_WALLET_TYPE,
+  payload: content,
+});
+
+export const addNetworkConfig = content => ({
+  type: ADD_NETWORK_CONFIG,
+  payload: content,
+});
+
+export const removeWalletType = content => ({
+  type: REMOVE_WALLET_TYPE,
+  payload: content,
+});
+
+export const removeNetworkConfig = content => ({
+  type: REMOVE_NETWORK_CONFIG,
+  payload: content,
+});
