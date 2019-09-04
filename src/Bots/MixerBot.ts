@@ -27,8 +27,7 @@ class MixerBot {
   constructor(numberOfAddress, maxTimeInterval) {
     this.numberOfAddress = numberOfAddress;
     this.maxTimeInterval = maxTimeInterval;
-console.log('config', config);
-    console.log('config', config.domains);
+
     this.originWeb3 = config.originWeb3();
     this.auxiliaryWeb3 = config.auxiliaryWeb3();
     this.heiSwapContract = new this.originWeb3.eth.Contract(HeiswapAbi as any, config.auxiliaryChain.heiswapAddress);
@@ -40,7 +39,7 @@ console.log('config', config);
 
     const signerPrivateKey = process.env['SIGNER_PRIVATE_KEY'];
     signerAccount = Account.fromPrivateKey(signerPrivateKey);
-    console.log('account: ', signerAccount.address);
+    console.log('signerAccount: ', signerAccount.address);
     this.originWeb3.eth.accounts.wallet.add(
       signerAccount
     );
@@ -68,7 +67,7 @@ console.log('config', config);
   deposit():void {
     console.log('trying to deposit');
     const address = Object.keys(addresses)[0];
-    console.log('signerAccountAddress', signerAccount.address);
+    console.log('deposit signerAccountAddress', signerAccount.address);
     console.log('targerAddress', address);
     Deposit(this.originWeb3, this.heiSwapContract, signerAccount.address, OST_AMOUNT, address)
       .then((result) => {
